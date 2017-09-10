@@ -1,0 +1,24 @@
+/* style.css */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 10px;
+}
+
+
+.form-rounded {
+    border: 1px solid #888888;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.btn-add-color {
+	margin-bottom: 5px;
+}
+
+.colorpicker-component {
+	margin-top: 5px;
+}
