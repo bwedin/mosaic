@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>My Sketch</title>
+    <title>Sationes</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" 
     	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link href="lib/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
@@ -17,7 +17,6 @@
     <script src="sketch.js"></script>
   </head>
   <body>
-    <p>Here is my sketch:</p>
 <!--     <div class="row">
         <div class="col-md-8">
     		<div id="sketch-holder" />
@@ -29,13 +28,13 @@
 	</div> -->
 	<div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-8">
+		<div class="col-lg-9" align="center">
 		<div id="sketch-holder" />
     	</div>
     	</div>
 
 
-		<div class="col-sm-4">
+		<div class="col-lg-3">
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
 		  <label class="btn btn-secondary active">
 		    <input type="radio" name="options" id="option1" value="triangle"autocomplete="off" checked> Tri
@@ -51,13 +50,132 @@
 		<br>
 		<strong>Color</strong>
 		<div id="color-picker-master" class="form-rounded">
-			<label for="colorset-1">Colorset 1</label>
-			<div id="colorset-1" class="form-rounded">
-				<button type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-1')>+ Add Color</button>
-				<button type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-1')>- Remove</button>
-				<div id="colorset-1-color-1" class="input-group colorpicker-component">
-			    <input type="text" value="#00AABB" class="form-control" />
-			    <span class="input-group-addon"><i></i></span>
+				<button id="add-colorset" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColorset()>+ Add Colorset</button>
+				<button id="remove-colorset" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColorset()>- Remove</button><br>
+
+
+				<!-- <div class="panel-group">
+				    <div class="panel panel-default">
+				      <div class="panel-heading">
+				        <h4 class="panel-title">
+				          <a data-toggle="collapse" href="#colorset-1">Colorset 1</a>
+				        </h4>
+				      </div>
+ -->
+
+			<div id="colorset-1">
+				<label for="colorset-1">Colorset 1</label><button type="button" class="btn btn-sm float-right" data-toggle="collapse" data-target="#colorset-1-collapse">Show colors</button>
+				<div id="colorset-1-collapse" class="form-rounded collapse in">
+					<button id="add-colorset-1" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-1')>+ Add Color</button>
+					<button id="remove-colorset-1" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-1')>- Remove</button>
+					<div id="colorset-1-color-1" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-2" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-3" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-4" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-5" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-6" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-7" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-1-color-8" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				</div>
+			</div>
+			<div id="colorset-2">
+				<label for="colorset-2">Colorset 2</label><button type="button" class="btn btn-sm float-right" data-toggle="collapse" data-target="#colorset-2-collapse">Show colors</button>
+					<div id="colorset-2-collapse" class="form-rounded collapse in">
+					<button id="add-colorset-2" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-2')>+ Add Color</button>
+					<button id="remove-colorset-2" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-2')>- Remove</button>
+					<div id="colorset-2-color-1" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-2" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-3" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-4" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-5" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-6" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-7" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-2-color-8" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				</div>
+			</div>
+			<div id="colorset-3">
+				<label for="colorset-3">Colorset 3</label><button type="button" class="btn btn-sm float-right" data-toggle="collapse" data-target="#colorset-3-collapse">Show colors</button>
+				<div id="colorset-3-collapse" class="form-rounded collapse in">
+					<button id="add-colorset-3" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-3')>+ Add Color</button>
+					<button id="remove-colorset-3" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-3')>- Remove</button>
+					<div id="colorset-3-color-1" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-2" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-3" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-4" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-5" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-6" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-7" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-3-color-8" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				</div>
+			</div>
+			<div id="colorset-4">
+				<label for="colorset-4">Colorset 4</label><button type="button" class="btn btn-sm float-right" data-toggle="collapse" data-target="#colorset-4-collapse">Show colors</button>
+				<div id="colorset-4-collapse" class="form-rounded collapse in">
+					<button id="add-colorset-4" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-4')>+ Add Color</button>
+					<button id="remove-colorset-4" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-4')>- Remove</button>
+					<div id="colorset-4-color-1" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-2" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-3" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-4" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-5" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-6" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-7" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-4-color-8" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				</div>
+			</div>
+			<div id="colorset-5">
+				<label for="colorset-5">Colorset 5</label><button type="button" class="btn btn-sm float-right" data-toggle="collapse" data-target="#colorset-5-collapse">Show colors</button>
+					<div id="colorset-5-collapse" class="form-rounded collapse in">
+					<button id="add-colorset-5" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-5')>+ Add Color</button>
+					<button id="remove-colorset-5" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-5')>- Remove</button>
+					<div id="colorset-5-color-1" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-2" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-3" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-4" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-5" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-6" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-7" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+				    <div id="colorset-5-color-8" class="input-group colorpicker-component">
+				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 				</div>
 			</div>
 		</div>
