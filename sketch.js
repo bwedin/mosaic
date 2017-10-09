@@ -11,12 +11,20 @@ var MAX_COLORSETS = 5;
 var NUM_EQ_NODES = 6;
 var activeObject;
 
+var width;
+var height;
+
+var COLORSET_EQ_BOTTOM = 10;
+var COLORSET_EQ_TOP = 140;
+
 var COLORSET_COLOR_1 = "#048ad1";
 var COLORSET_COLOR_2 = "#812050";
 var COLORSET_COLOR_3 = "#8ddc1c";
 var COLORSET_COLOR_4 = "#fd8f2f";
 var COLORSET_COLOR_5 = "#f0e746";
 var COLORSET_ARRAY = [COLORSET_COLOR_1, COLORSET_COLOR_2, COLORSET_COLOR_3, COLORSET_COLOR_4, COLORSET_COLOR_5];
+
+var colorsetObjects = {};
 
 var circleTest;
 var leftBezier;
@@ -27,8 +35,6 @@ var movingCircleArray = [];
 var clickableObjects = [];
 
 $(document).ready(function(){
-
-
 
     // $(function() {
     //     $('#colorset-1-color-1').colorpicker({
@@ -51,6 +57,51 @@ $(document).ready(function(){
     document.getElementById('colorset-5-dot').style.color = COLORSET_COLOR_5;
 
 });
+
+function calculateColorsetProportions(steps) {
+    let stepIncrement = width/steps;
+    let probsByColorset = [];
+    // how to evaluate:
+    for(let c=1; c<=colorsetCount; c++) {
+        colorsetProbs = [];
+        // all curves are already sorted from left to right, start with leftmost
+        curves = colorsetObjects[c].bezier;
+        let activeBezier = 0;
+        for(let i=0; i<steps; i++) {
+            // get pixel values you need to evaluate on
+            // determine which bezier curve applies, then evaluate
+            while(curves[activeBezier].getXEnd()<(i*stepIncrement)) {
+                activeBezier++;
+            }
+            let y = curves[activeBezier].getYFromX(i*stepIncrement)
+            let prob = Math.round(height-COLORSET_EQ_BOTTOM-y);
+            colorsetProbs.push(prob);
+        }
+        probsByColorset.push(colorsetProbs);
+    }
+    // now reduce these to probabilities relative to each other (e.g. convert .9,.45,.9 to .4,.2,.4)
+    for(let i=0; i<steps; i++) {
+        let sumArray = [0];
+        let sum = 0;
+        probsByColorset.forEach(function(array) {
+            sum += array[i];
+            sumArray.push(array[i]+sumArray[sumArray.length-1]);
+        });
+        if(sum>=1) {
+            sumArray = sumArray.map(function(num) {
+                return num/sum;
+            });
+        }
+        else {
+            for(let j=1; j<sumArray.length; j++) {
+                console.log('why?')
+                sumArray[j] = j*(1/(sumArray.length-1));
+            }
+        }
+        console.log(sumArray);
+    }
+
+}
 
 function removeColor(colorsetDiv) {
     $('#add-'+colorsetDiv).prop('disabled', false);
@@ -88,6 +139,10 @@ function removeColorset() {
     $('#colorset-1').collapse('hide');
 
     if(colorsetCount>1) {
+        shownObjects = colorsetObjects[colorsetCount];
+        shownObjects.bezier.forEach(function(obj) { obj.hide();})
+        shownObjects.circle.forEach(function(obj) { obj.hide();})
+
         let removeDiv = '#colorset-' + colorsetCount;
         $(removeDiv).toggle(); 
         colorsetCount--;
@@ -95,6 +150,7 @@ function removeColorset() {
     if(colorsetCount == 1) {
         $('#remove-colorset').prop('disabled', true);
     }
+    calculateColorsetProportions(20);
 }
 
 function addColorset() {
@@ -103,6 +159,9 @@ function addColorset() {
         colorsetCount++;
         let newDiv = '#colorset-' + colorsetCount;
         $(newDiv).toggle();
+        hiddenObjects = colorsetObjects[colorsetCount];
+        hiddenObjects.bezier.forEach(function(obj) { obj.show();})
+        hiddenObjects.circle.forEach(function(obj) { obj.show();})
     }
     if(colorsetCount == MAX_COLORSETS) {
         $('#add-colorset').prop('disabled', true);
@@ -143,31 +202,35 @@ function setup() {
         // bezier array rhymes, maybe?
         // add start, iterate through length of beziers-1, add end
         let bezierArray = [];
+        let circleArray = [];
         c = color(COLORSET_ARRAY[i-1]);
         for(let j=0; j<NUM_EQ_NODES-1; j++) {
-            console.log(j);
-            bezierObj = MovingBezierHorizontal(0,0,canvas.width,0,c);
+            bezierObj = MovingBezierHorizontal(0,0,width,0,c);
             shapesToDraw.push(bezierObj);
             bezierArray.push(bezierObj);
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
         }
-        circleObj =  MovingCircleStartpoint(0,canvas.height-10,10,c,0.1,bezierArray[0]);
+        circleObj =  MovingCircleStartpoint(0,height-10,6,c,bezierArray[0]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
+        circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(canvas.width*((j+1)/5),canvas.height-10,10,c,0.1,bezierArray[j],bezierArray[j+1]);
+            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-10,6,c,bezierArray[j],bezierArray[j+1]);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
+            circleArray.push(circleObj);
             if (i>INIT_COLORSETS) { circleObj.hide(); }
         }
-        circleObj =  MovingCircleEndpoint(canvas.width,canvas.height-10,10,c,0.1,bezierArray[bezierArray.length-1]);
+        circleObj =  MovingCircleEndpoint(width,height-10,6,c,bezierArray[bezierArray.length-1]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
+        circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
+        colorsetObjects[i] = {'bezier': bezierArray, 'circle': circleArray};
     }
 }
 
@@ -175,24 +238,22 @@ function setup() {
 function repositionMovingCircles(oldWidth, oldHeight) {
     // windowWidth
     // windowHeigh
-    let newHeight = canvas.height/2;
-    let newWidth = canvas.width/2;
+    let newHeight = height;
+    let newWidth = width;
     movingCircleArray.forEach( function(obj) {
         if(obj.lock) {
-            console.log('lock?')
             obj.unlock();
             obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
             obj.lock();
         }
         else {
-            console.log('confused')
             obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
         }
     })
 }
 
-function drawTriangle(sideLength, bottomPosX, bottomPosY, xDirection, color, opacity) {
-    fill(color,opacity);
+function drawTriangle(sideLength, bottomPosX, bottomPosY, xDirection, color) {
+    fill(color);
     noStroke();
     // Math.sqrt(3)/2
     xMid = bottomPosX+((sideLength*xDirection)*Math.sqrt(3)/2)
@@ -222,6 +283,19 @@ const gettableXY = (obj) => ({
     getY: () => {
         return obj.yPos;
     },
+});
+
+const gettableBezierXY = (obj) => ({
+    getXStart: () => {
+        return obj.xPosStart;
+    },
+    getXEnd: () => {
+        return obj.xPosEnd;
+    },
+    getYFromX: (x) => {
+        let pct = (x-obj.xPosStart)/(obj.xPosEnd-obj.xPosStart);
+        return bezierPoint(obj.yPosStart, obj.yPosStart, obj.yPosEnd, obj.yPosEnd, pct);
+    }
 });
 
 const moveableXY = (obj) => ({
@@ -303,7 +377,7 @@ const moveableXYEndpointHorizontal = (obj) => ({
 
 const drawableCircle = (obj) => ({
     draw: () => {
-        fill(obj.color,obj.opacity);
+        fill(obj.color);
         noStroke();
         ellipse(obj.xPos, obj.yPos, obj.radius*2, obj.radius*2);
     }
@@ -355,9 +429,9 @@ const hideable = (obj) => ({
     },
 });
 
-const MovingCircle = (xPos,yPos,radius,color,opacity)  => {
+const MovingCircle = (xPos,yPos,radius,color)  => {
     var state = {
-        xPos,yPos,radius,color,opacity,
+        xPos,yPos,radius,color,
         shown: true
     }
     return Object.assign(
@@ -370,9 +444,9 @@ const MovingCircle = (xPos,yPos,radius,color,opacity)  => {
     )
 };
 
-const MovingCircleStartpoint = (xPos,yPos,radius,color,opacity,rightObj)  => {
+const MovingCircleStartpoint = (xPos,yPos,radius,color,rightObj)  => {
     var state = {
-        xPos,yPos,radius,color,opacity,rightObj,
+        xPos,yPos,radius,color,rightObj,
         shown: true,
         lock: true
     }
@@ -387,9 +461,9 @@ const MovingCircleStartpoint = (xPos,yPos,radius,color,opacity,rightObj)  => {
     )
 };
 
-const MovingCircleEndpoint = (xPos,yPos,radius,color,opacity,leftObj)  => {
+const MovingCircleEndpoint = (xPos,yPos,radius,color,leftObj)  => {
     var state = {
-        xPos,yPos,radius,color,opacity,leftObj,
+        xPos,yPos,radius,color,leftObj,
         shown: true,
         lock: true
     }
@@ -404,9 +478,9 @@ const MovingCircleEndpoint = (xPos,yPos,radius,color,opacity,leftObj)  => {
     )
 };
 
-const MovingCircleMidpoint = (xPos,yPos,radius,color,opacity,leftObj,rightObj)  => {
+const MovingCircleMidpoint = (xPos,yPos,radius,color,leftObj,rightObj)  => {
     var state = {
-        xPos,yPos,radius,color,opacity,leftObj,rightObj,
+        xPos,yPos,radius,color,leftObj,rightObj,
         shown: true
     }
     leftObj.setEnd(xPos,yPos);
@@ -430,7 +504,8 @@ const MovingBezierHorizontal = (xPosStart,yPosStart,xPosEnd,yPosEnd,color)  => {
         {},
         moveableStartEndXYHorizontal(state),
         drawableBezierHorizontal(state),
-        hideable(state)
+        hideable(state),
+        gettableBezierXY(state)
     )
 };
 
@@ -481,17 +556,17 @@ function mouseReleased() {
 }
 
 function mouseDragged() {
-    if (mouseY>canvas.height/2-10) {
-        mouseY = canvas.height/2-10;
+    if (mouseY>height-COLORSET_EQ_BOTTOM) {
+        mouseY = height-COLORSET_EQ_BOTTOM;
     }
-    else if (mouseY<canvas.height/2-140) {
-        mouseY = canvas.height/2-140;
+    else if (mouseY<height-COLORSET_EQ_TOP) {
+        mouseY = height-COLORSET_EQ_TOP;
     }
     if (mouseX<0) {
         mouseX = 0;
     }
-    else if (mouseX>canvas.width/2) {
-        mouseX = canvas.width/2;
+    else if (mouseX>width) {
+        mouseX = width;
     }
     if(activeObject) {
         activeObject.setPosition(mouseX,mouseY);
@@ -499,8 +574,8 @@ function mouseDragged() {
 }
 
 function windowResized() {
-    oldHeight = canvas.height/2;
-    oldWidth = canvas.width/2;
+    oldHeight = height;
+    oldWidth = width;
     if(windowWidth<1350) {
         resizeCanvas(700,150+700*(9/16));
     }
@@ -510,13 +585,13 @@ function windowResized() {
     else {
         resizeCanvas(1200,150+1200*(9/16));
     }
-    if(canvas.width/2>oldWidth) {
+    if(width>oldWidth) {
         movingCircleArray.sort(function(a, b) {
             return b.getX() - a.getX();
         });
         repositionMovingCircles(oldWidth,oldHeight);
     }
-    else if(canvas.width/2<oldWidth) {
+    else if(width<oldWidth) {
         movingCircleArray.sort(function(a, b) {
             return a.getX() - b.getX();
         });
@@ -526,7 +601,7 @@ function windowResized() {
 
 // main p5 loop
 function draw() {
-    background(200);
+    background(245);
     shapesToDraw.forEach( function (shape) {
         if(shape.isShown()) {
             shape.draw();
