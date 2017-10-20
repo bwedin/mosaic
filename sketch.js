@@ -3,7 +3,8 @@ var rgbGVal = 0;
 var tuple = [255, 0, 200];
 var shape = "triangle";
 var colorsetCount = 2;
-var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3}
+var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
+var CIRCLE_RADIUS = 6;
 var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
@@ -14,7 +15,7 @@ var activeObject;
 var width;
 var height;
 
-var COLORSET_EQ_BOTTOM = 10;
+var COLORSET_EQ_BOTTOM = 8;
 var COLORSET_EQ_TOP = 140;
 
 var COLORSET_COLOR_1 = "#048ad1";
@@ -210,21 +211,21 @@ function setup() {
             bezierArray.push(bezierObj);
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
         }
-        circleObj =  MovingCircleStartpoint(0,height-10,6,c,bezierArray[0]);
+        circleObj =  MovingCircleStartpoint(0,height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[0]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-10,6,c,bezierArray[j],bezierArray[j+1]);
+            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[j],bezierArray[j+1]);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
             if (i>INIT_COLORSETS) { circleObj.hide(); }
         }
-        circleObj =  MovingCircleEndpoint(width,height-10,6,c,bezierArray[bezierArray.length-1]);
+        circleObj =  MovingCircleEndpoint(width,height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[bezierArray.length-1]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
@@ -599,9 +600,56 @@ function windowResized() {
     }
 }
 
+function drawProportionBox() {
+    let dashedLineLength = 10;
+    let gapX = 20;
+    let fontSize=12;
+    let nudge = 2;
+    let strokeWeightVar = 1;
+    stroke(30);
+    strokeWeight(strokeWeightVar);
+    noFill();
+    // top line segment, 0 space, second line segment
+    line(0,height-COLORSET_EQ_TOP,gapX-dashedLineLength,height-COLORSET_EQ_TOP);
+    line(gapX+dashedLineLength*2,height-COLORSET_EQ_TOP,width-strokeWeightVar,height-COLORSET_EQ_TOP);
+    // bottom line segment, 100 space, second line segment
+    line(0,height-COLORSET_EQ_BOTTOM,gapX-dashedLineLength,height-COLORSET_EQ_BOTTOM);
+    line(gapX+dashedLineLength*2,height-COLORSET_EQ_BOTTOM,width-strokeWeightVar,height-COLORSET_EQ_BOTTOM);
+    // left and right line segments
+    line(0,height-COLORSET_EQ_TOP,0,height-COLORSET_EQ_BOTTOM)
+    line(width-strokeWeightVar,height-COLORSET_EQ_TOP,width-strokeWeightVar,height-COLORSET_EQ_BOTTOM)
+    //25,50,75 - 10 pixels on, 10 pixels off
+    let end = 0;
+    
+    pct25Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.25;
+    pct50Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.50;
+    pct75Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.75;
+    while(end<width) {
+        if(end!=gapX) {
+            line(end,pct25Y,end+dashedLineLength,pct25Y);
+            line(end,pct50Y,end+dashedLineLength,pct50Y);
+            line(end,pct75Y,end+dashedLineLength,pct75Y);
+        }
+        end += dashedLineLength*2;
+    }
+    fill(0)
+    textSize(12);
+    textAlign("left");
+    text("0", gapX-nudge, height-COLORSET_EQ_BOTTOM+fontSize/3);
+    text("25", gapX-nudge, pct25Y+fontSize/3);
+    text("50", gapX-nudge, pct50Y+fontSize/3);
+    text("75", gapX-nudge, pct75Y+fontSize/3);
+    text("100", gapX-nudge, height-COLORSET_EQ_TOP+fontSize/3);
+
+    // rect(0+strokeWeightVar/2,height-COLORSET_EQ_TOP,width-strokeWeightVar,COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM);
+    strokeWeight(1);
+
+}
+
 // main p5 loop
 function draw() {
     background(245);
+    drawProportionBox();
     shapesToDraw.forEach( function (shape) {
         if(shape.isShown()) {
             shape.draw();
