@@ -56,7 +56,11 @@ $(document).ready(function(){
     document.getElementById('colorset-3-dot').style.color = COLORSET_COLOR_3;
     document.getElementById('colorset-4-dot').style.color = COLORSET_COLOR_4;
     document.getElementById('colorset-5-dot').style.color = COLORSET_COLOR_5;
-
+    $('#num-columns').on('input change', function(e) {
+        console.log(e.target.value);
+        $('#num-columns-display').text(e.target.value);
+    });
+    $('#num-columns-display').text($('#num-columns').val());
 });
 
 function calculateColorsetProportions(steps) {
@@ -603,8 +607,8 @@ function windowResized() {
 function drawProportionBox() {
     let dashedLineLength = 10;
     let gapX = 20;
-    let fontSize=12;
-    let nudge = 2;
+    let fontSize=14;
+    let nudge = 4;
     let strokeWeightVar = 1;
     stroke(30);
     strokeWeight(strokeWeightVar);
@@ -641,8 +645,17 @@ function drawProportionBox() {
     text("75", gapX-nudge, pct75Y+fontSize/3);
     text("100", gapX-nudge, height-COLORSET_EQ_TOP+fontSize/3);
 
-    // rect(0+strokeWeightVar/2,height-COLORSET_EQ_TOP,width-strokeWeightVar,COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM);
     strokeWeight(1);
+}
+
+// need to get sliders?
+// function drawTriangles() {
+//     let numColumns
+// }
+
+function drawMain() {
+
+
 
 }
 
@@ -663,5 +676,6 @@ function draw() {
     var second = [85,10];
     bezier(first[0], first[1], second[0]-20, first[1], first[0]+20, second[1], second[0], second[1]);
     bezier(first[0], first[1], first[0], first[1], second[0], second[1], second[0], second[1]);
+    rect(0,0,699,700*9/16)
 
 }
