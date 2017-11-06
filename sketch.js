@@ -22,7 +22,7 @@ var COLORSET_COLOR_1 = "#048ad1";
 var COLORSET_COLOR_2 = "#812050";
 var COLORSET_COLOR_3 = "#8ddc1c";
 var COLORSET_COLOR_4 = "#fd8f2f";
-var COLORSET_COLOR_5 = "#f0e746";
+var COLORSET_COLOR_5 = "#9159de";
 var COLORSET_ARRAY = [COLORSET_COLOR_1, COLORSET_COLOR_2, COLORSET_COLOR_3, COLORSET_COLOR_4, COLORSET_COLOR_5];
 
 var colorsetObjects = {};
@@ -66,11 +66,12 @@ $(document).ready(function(){
 function calculateColorsetProportions(steps) {
     let stepIncrement = width/steps;
     let probsByColorset = [];
+    let sumArrays = [];
     // how to evaluate:
     for(let c=1; c<=colorsetCount; c++) {
-        colorsetProbs = [];
+        let colorsetProbs = [];
         // all curves are already sorted from left to right, start with leftmost
-        curves = colorsetObjects[c].bezier;
+        let curves = colorsetObjects[c].bezier;
         let activeBezier = 0;
         for(let i=0; i<steps; i++) {
             // get pixel values you need to evaluate on
@@ -99,13 +100,12 @@ function calculateColorsetProportions(steps) {
         }
         else {
             for(let j=1; j<sumArray.length; j++) {
-                console.log('why?')
                 sumArray[j] = j*(1/(sumArray.length-1));
             }
         }
-        console.log(sumArray);
+        sumArrays.push(sumArray);
     }
-
+    return sumArrays;
 }
 
 function removeColor(colorsetDiv) {
@@ -582,13 +582,13 @@ function windowResized() {
     oldHeight = height;
     oldWidth = width;
     if(windowWidth<1350) {
-        resizeCanvas(700,150+700*(9/16));
+        resizeCanvas(700,Math.ceil(150+700*(9/16)));
     }
     else if(windowWidth>=1350 && windowWidth<1600) {
-        resizeCanvas(1000,150+1000*(9/16));
+        resizeCanvas(1000,Math.ceil(150+1000*(9/16)));
     }
     else {
-        resizeCanvas(1200,150+1200*(9/16));
+        resizeCanvas(1200,Math.ceil(150+1200*(9/16)));
     }
     if(width>oldWidth) {
         movingCircleArray.sort(function(a, b) {
@@ -653,15 +653,46 @@ function drawProportionBox() {
 //     let numColumns
 // }
 
+// highest level down
+// execute
+// colorset proportions, colorsets, pattern type, number columns, opacity array, width and height
+// use this to make a column, same info, add specified "size" and vertical shift
+// constructor of column makes array for everything using rng+math for locations
+// opacityArray, colorset+color=colorArray, position starts, orientation
+// each shape constructor then given orientation, location, color, opacity
+
+// how do we do this for imperfect tesselates?
+
+function drawTriangleField(numberColumns,alphaValues) {
+    let fieldHeight = Math.ceil(width*(9/16));
+    let columnWidth = width/numberColumns;
+    console.log(columnWidth);
+    if(columnWidth%1!=0) {
+        console.log('extra col');
+        columnWidth = Math.floor(columnWidth);
+        numberColumns++;
+    }
+    else {
+        console.log('all good!')
+    }
+    let colorsetProportions = calculateColorsetProportions(numberColumns);
+
+      // + sidelength*i, orientation=i;
+
+}
+
+
 function drawMain() {
-
-
+  // should update all colorsets etc in memory
+  let numberColumns = $('#num-columns').val();
+  let alphaValues = [0.5,0.8];
+  drawTriangleField(numberColumns,alphaValues);
 
 }
 
 // main p5 loop
 function draw() {
-    background(245);
+    background(255);
     drawProportionBox();
     shapesToDraw.forEach( function (shape) {
         if(shape.isShown()) {
