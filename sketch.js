@@ -141,7 +141,6 @@ function removeColor(colorsetDiv) {
 function addColor(colorsetDiv) {
     $('#remove-'+colorsetDiv).prop('disabled', false);
 	let newColorNum = colorsetColorCount[colorsetDiv] + 1;
-    console.log(newColorNum);
 	if(newColorNum <= MAX_COLORS) {
         colorsetColorCount[colorsetDiv]++;
 		let newDiv = '#' + colorsetDiv + '-color-' + newColorNum;
@@ -424,7 +423,6 @@ const moveableStartEndXYHorizontal = (obj) => ({
     setEnd: (x,y) => {
         obj.yPosEnd = y;
         if(obj.xPosStart>x){
-            console.log('bbb')
             return false;
         }
         else {
@@ -678,14 +676,11 @@ function drawProportionBox() {
 function drawTriangleField(numberColumns,alphaValues) {
     let fieldHeight = Math.ceil(width*(9/16));
     let columnWidth = width/numberColumns;
-    console.log(columnWidth);
     if(columnWidth%1!=0) {
-        console.log('extra col');
         columnWidth = Math.floor(columnWidth);
         numberColumns++;
     }
     else {
-        console.log('all good!')
     }
     let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
     let columnHeight = width*(9/16);
@@ -694,9 +689,13 @@ function drawTriangleField(numberColumns,alphaValues) {
         let xPosL = i*columnWidth;
         let drawColor = findColorRNG(colorsetProportions[i],alphaValues);
         let sideLength = 2*columnWidth/Math.sqrt(3);
-        drawTriangle(sideLength, xPosL, 80, 1, drawColor);
-        drawTriangle(sideLength, xPosL, 120, 1, drawColor);
-        drawTriangle(sideLength, xPosL, 160, 1, drawColor);
+        // drawTriangle(sideLength, xPosL, 80, 1, drawColor);
+        // drawTriangle(sideLength, xPosL, 120, 1, drawColor);
+        // drawTriangle(sideLength, xPosL, 160, 1, drawColor);
+        drawColor = findColorRNG(colorsetProportions[i],alphaValues);
+        drawTriangle(sideLength, xPosL+columnWidth, 290, 0, drawColor);
+        drawTriangle(sideLength, xPosL+columnWidth, 330, 0, drawColor);
+        drawTriangle(sideLength, xPosL+columnWidth, 370, 0, drawColor);
       // Math.sqrt(3)/2)
       //   drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues)
     }
@@ -715,7 +714,6 @@ function updateColorArray() {
         colorsetArray.push($(colorpickerName).colorpicker().data('colorpicker').color.toRGB());
       }
       colorArray[i] = colorsetArray;
-        console.log(colorsetArray);
   }
 
 }
@@ -732,7 +730,7 @@ function drawMain() {
 
 // main p5 loop
 function draw() {
-    // background(255);
+    background(255);
     drawProportionBox();
     shapesToDraw.forEach( function (shape) {
         if(shape.isShown()) {
@@ -749,7 +747,7 @@ function draw() {
     bezier(first[0], first[1], first[0], first[1], second[0], second[1], second[0], second[1]);
     rect(0,0,width-1,width*9/16)
   counter++;
-  if(counter%200==0 && cool) {
+  if(cool) {
     drawMain();
   }
 
