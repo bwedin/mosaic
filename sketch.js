@@ -48,15 +48,12 @@ $(document).ready(function(){
     });
     $('#num-columns-display').text($('#num-columns').val());
 });
-
 // main p5
 function setup() {
 
     var canvas = createCanvas(500, 500);
     windowResized();
     canvas.parent('sketch-holder');
-    // need a string of bezier curves
-
     // hide all ones we don't want
     for(let i=1; i<=MAX_COLORSETS; i++) {
         //adding colorpickers
@@ -79,15 +76,14 @@ function setup() {
             }
         }
 
-        //adding bezier curves/EQ circles to canvas
+        // adding bezier curves/EQ circles to canvas
         // draw all beziers, add to array
-        // bezier array rhymes, maybe?
         // add start, iterate through length of beziers-1, add end
         let bezierArray = [];
         let circleArray = [];
         let c = color(COLORSET_ARRAY[i-1]);
         for(let j=0; j<NUM_EQ_NODES-1; j++) {
-            bezierObj = MovingBezierHorizontal(0,0,width,0,c);
+            let bezierObj = MovingBezierHorizontal(0,0,width,0,c);
             shapesToDraw.push(bezierObj);
             bezierArray.push(bezierObj);
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
@@ -117,7 +113,6 @@ function setup() {
   background(255);
   stroke(0, 0, 0);
   noFill();
-  console.log('cmon');
   rect(0,0,width-1,width*9/16-1);
 }
 function draw() {
@@ -131,7 +126,6 @@ function draw() {
     rect(0,0,width-1,width*9/16-1);
     nextTime = nowTime + refreshRate;
   }
-  // todo bw: what is the point of this?
   // noFill();
   // stroke(0, 0, 0);
   // rect(0,width*9/16,width,height);
@@ -217,9 +211,11 @@ function updateColorArray() {
 function drawMain() {
   // should update all colorsets etc in memory
   let numberColumns = $('#num-columns').val();
-  let alphaValues = [100,200];
+  let alphaValues = [100,150,220];
   updateColorArray();
-  drawTriangleField(numberColumns,alphaValues);
+  if (shape==='triangle') {
+    drawTriangleField(numberColumns, alphaValues);
+  }
 }
 // drawing functions (shape-specific)
 function drawTriangleField(numberColumns,alphaValues) {
@@ -424,6 +420,9 @@ function repositionMovingCircles(oldWidth, oldHeight) {
   })
 }
 function drawProportionBox() {
+  strokeWeight(0);
+  fill(255);
+  rect(0,width*9/16,width,height);
   let dashedLineLength = 10;
   let gapX = 20;
   let fontSize=14;
