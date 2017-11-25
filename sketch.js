@@ -1,3 +1,5 @@
+// todo bw: why does a single color look so buggy? why does square show more opacity range?
+
 // sketch.js
 var shape = "triangle";
 // colorset variables
@@ -209,12 +211,20 @@ function updateColorArray() {
 
 }
 function drawMain() {
+  let shapeType = $("input[name='shape-options']:checked").val();
+  console.log(shapeType);
   // should update all colorsets etc in memory
   let numberColumns = $('#num-columns').val();
   let alphaValues = [100,150,220];
   updateColorArray();
-  if (shape==='triangle') {
+  if (shapeType==='triangle') {
     drawTriangleField(numberColumns, alphaValues);
+  }
+  else if (shapeType==='square') {
+    drawSquareField(numberColumns, alphaValues);
+  }
+  else {
+    drawDiamondField(numberColumns, alphaValues);
   }
 }
 // drawing functions (shape-specific)
@@ -261,6 +271,84 @@ function drawTriangle(sideLength, topPosX, topPosY, xDirection, color) {
   let xLast = topPosX;
   let yLast = topPosY+sideLength;
   triangle(topPosX,topPosY,xMid,yMid,xLast,yLast);
+  return;
+}
+function drawSquareField(numberColumns,alphaValues) {
+  let fieldHeight = Math.ceil(width*(9/16));
+  let columnWidth = width/numberColumns;
+  if(columnWidth%1!=0) {
+    columnWidth = Math.floor(columnWidth);
+    numberColumns = Math.ceil(width/columnWidth);
+    numberColumns++;
+  }
+  else {
+  }
+  let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
+  let columnHeight = width*(9/16);
+  let yPosTop = 0;
+  for(let i=0; i<numberColumns; i++) {
+    let xPosL = i*columnWidth;
+    let yPosTop = 0;
+    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues)
+  }
+  // + sidelength*i, orientation=i;
+}
+function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues) {
+  let sideLength = columnWidth; // todo bw: square change here?
+  // draw squares down to bottom
+  while(yPosTop<=columnHeight) {
+    let drawColor = findColorRNG(colorsetProportions,alphaValues);
+    drawSquare(sideLength, xPosL, yPosTop, drawColor);
+    yPosTop += sideLength;
+  }
+}
+function drawSquare(sideLength, leftPosX, topPosY, color) {
+  fill(color);
+  noStroke();
+  rect(leftPosX,topPosY,leftPosX+sideLength,topPosY+sideLength);
+  return;
+}
+function drawDiamondField(numberColumns,alphaValues) {
+  let fieldHeight = Math.ceil(width*(9/16));
+  let columnWidth = width/numberColumns;
+  if(columnWidth%1!=0) {
+    columnWidth = Math.floor(columnWidth);
+    numberColumns = Math.ceil(width/columnWidth);
+    numberColumns++;
+  }
+  else {
+  }
+  numberColumns = numberColumns*2;
+  let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
+  let columnHeight = width*(9/16);
+  let yPosTop = 0;
+  for(let i=0; i<=numberColumns; i=i+2) {
+    let xPosMid = i*columnWidth/2;
+    let yPosTop = 0;
+    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues);
+    xPosMid += columnWidth/2;
+    yPosTop = yPosTop-(columnWidth/2);
+    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues);
+  }
+  // + sidelength*i, orientation=i;
+}
+function drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions,alphaValues) {
+  let diagonalHalf = columnWidth/2;
+  let yPosMid = yPosTop;
+  // draw triangle pointing right, and triangle above it, facing left
+  while((yPosMid-diagonalHalf)<=columnHeight) {
+    let drawColor = findColorRNG(colorsetProportions,alphaValues);
+    drawDiamond(diagonalHalf, xPosMid, yPosMid, drawColor);
+    yPosMid += diagonalHalf*2;
+  }
+}
+function drawDiamond(diagonalHalf, xPosMid, yPosMid, color) {
+  fill(color);
+  noStroke();
+  quad(xPosMid-diagonalHalf,yPosMid,
+    xPosMid,yPosMid-diagonalHalf,
+    xPosMid+diagonalHalf,yPosMid,
+    xPosMid,yPosMid+diagonalHalf);
   return;
 }
 // p5js event listeners
