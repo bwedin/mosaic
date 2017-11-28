@@ -32,6 +32,7 @@ var START_TIME = new Date() / 1000;
 var refreshRate = 2;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
+var isFrozen = false;
 $(document).ready(function(){
     document.getElementById('colorset-1-dot').style.color = COLORSET_COLOR_1;
     document.getElementById('colorset-2-dot').style.color = COLORSET_COLOR_2;
@@ -52,7 +53,7 @@ $(document).ready(function(){
 });
 // main p5
 function setup() {
-
+    noSmooth();
     var canvas = createCanvas(500, 500);
     windowResized();
     canvas.parent('sketch-holder');
@@ -119,7 +120,7 @@ function setup() {
 }
 function draw() {
   nowTime = new Date() / 1000;
-  if(nowTime>nextTime) {
+  if(nowTime>nextTime && !isFrozen) {
     console.log('hiii')
     background(255);
     drawMain();
@@ -305,7 +306,7 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProport
 function drawSquare(sideLength, leftPosX, topPosY, color) {
   fill(color);
   noStroke();
-  rect(leftPosX,topPosY,leftPosX+sideLength,topPosY+sideLength);
+  rect(leftPosX,topPosY,sideLength,sideLength);
   return;
 }
 function drawDiamondField(numberColumns,alphaValues) {
@@ -408,6 +409,55 @@ function windowResized() {
   }
 }
 // Toolbar functions
+function toggleFreeze() {
+  let $toggleFreeze = $('#toggle-freeze');
+  if($toggleFreeze.hasClass('active')) {
+    $toggleFreeze.removeClass('active');
+    $toggleFreeze.text('Freeze');
+    isFrozen = false;
+  }
+  else {
+    $toggleFreeze.addClass('active');
+    $toggleFreeze.text('Unfreeze');
+    isFrozen = true;
+  }
+  timeRandom();
+}
+function refreshDrawing() {
+  // todo bw: fix the stuff so that colors don't stack
+  nowTime = new Date() / 1000;
+  background(255);
+  drawMain();
+  stroke(0, 0, 0);
+  noFill();
+  rect(0,0,width-1,width*9/16-1);
+  nextTime = nowTime + refreshRate;
+  drawProportionBox();
+}
+// function timeRandom() {
+//   let p5Array = [];
+//   for (let j = 0; j < 5; j++) {
+//     nowTime = new Date() / 1000;
+//     console.log(j);
+//     for (let i = 1; i < 200000000; i++) {
+//       let randNum = random();
+//     }
+//     let finishTime = new Date() / 1000;
+//     p5Array.push(finishTime-nowTime);
+//   }
+//   let jsArray = [];
+//   for (let j = 0; j < 5; j++) {
+//     nowTime = new Date() / 1000;
+//     console.log(j);
+//     for (let i = 1; i < 200000000; i++) {
+//       let randNum = random();
+//     }
+//     let finishTime = new Date() / 1000;
+//     jsArray.push(finishTime-nowTime);
+//   }
+//   console.log(p5Array);
+//   console.log(jsArray);
+// }
 function updateRefreshRate(inputDiv) {
   $('#refresh-warning').hide();
   let $refreshSeconds = $('#refresh-seconds');
@@ -427,6 +477,9 @@ function updateRefreshRate(inputDiv) {
 
   $refreshPerMinute.val(Math.round(60/refreshRate));
   $refreshSeconds.val(refreshRate);
+
+  nowTime = new Date() / 1000;
+  nextTime = nowTime + refreshRate;
 
 }
 function removeColor(colorsetDiv) {
