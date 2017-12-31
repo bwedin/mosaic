@@ -2,11 +2,13 @@
 
 // sketch.js
 var shape = "triangle";
+var shapeFieldReady = false;
 // colorset variables
 var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
 var MAX_COLORSETS = 5;
+var WINDOW_BOTTOM_PADDING = 120;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
@@ -29,7 +31,7 @@ var clickableObjects = [];
 var activeObject;
 // refresh variables
 var START_TIME = new Date() / 1000;
-var refreshRate = 2;
+var refreshRate = 0.5;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
@@ -55,8 +57,8 @@ $(document).ready(function(){
 function setup() {
     noSmooth();
     var canvas = createCanvas(500, 500);
-    windowResized();
     canvas.parent('sketch-holder');
+    windowResized();
     // hide all ones we don't want
     for(let i=1; i<=MAX_COLORSETS; i++) {
         //adding colorpickers
@@ -91,21 +93,21 @@ function setup() {
             bezierArray.push(bezierObj);
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
         }
-        let circleObj =  MovingCircleStartpoint(0,height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[0]);
+        let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[0]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[j],bezierArray[j+1]);
+            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[j],bezierArray[j+1]);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
             if (i>INIT_COLORSETS) { circleObj.hide(); }
         }
-        circleObj =  MovingCircleEndpoint(width,height-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[bezierArray.length-1]);
+        circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[bezierArray.length-1]);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
@@ -117,16 +119,21 @@ function setup() {
   stroke(0, 0, 0);
   noFill();
   rect(0,0,width-1,width*9/16-1);
+  shapeFieldReady = true;
 }
-function draw() {
-  nowTime = new Date() / 1000;
-  if(nowTime>nextTime && !isFrozen) {
-    console.log('hiii')
+function drawShapeField() {
+  if(shapeFieldReady) {
     background(255);
     drawMain();
     stroke(0, 0, 0);
     noFill();
     rect(0,0,width-1,width*9/16-1);
+  }
+}
+function draw() {
+  nowTime = new Date() / 1000;
+  if(nowTime>nextTime && !isFrozen) {
+    drawShapeField();
     nextTime = nowTime + refreshRate;
   }
   // noFill();
@@ -149,7 +156,8 @@ function findColorRNG(proportions, alphas){
       let colorsetNumber = idx;
       let colorChoices = colorArray[colorsetNumber];
       let colorRGB = colorChoices[Math.floor(Math.random()*colorChoices.length)];
-      let alpha = alphas[Math.floor(Math.random()*colorChoices.length)];
+      let alpha = alphas[Math.floor(Math.random()*alphas.length)];
+      // todo bw change this
       return color(colorRGB.r,colorRGB.g,colorRGB.b,alpha);
     }
   }
@@ -171,7 +179,7 @@ function calculateColorsetProportionsShared(steps) {
         activeBezier++;
       }
       let y = curves[activeBezier].getYFromX(i*stepIncrement)
-      let prob = Math.round(height-COLORSET_EQ_BOTTOM-y);
+      let prob = Math.round(height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM-y);
       colorsetProbs.push(prob);
     }
     probsByColorset.push(colorsetProbs);
@@ -212,10 +220,12 @@ function updateColorArray() {
 
 }
 function drawMain() {
+  console.log('main');
   let shapeType = $("input[name='shape-options']:checked").val();
   console.log(shapeType);
   // should update all colorsets etc in memory
   let numberColumns = $('#num-columns').val();
+  // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
   if (shapeType==='triangle') {
@@ -367,11 +377,11 @@ function mouseReleased() {
   activeObject = null;
 }
 function mouseDragged() {
-  if (mouseY>height-COLORSET_EQ_BOTTOM) {
-    mouseY = height-COLORSET_EQ_BOTTOM;
+  if (mouseY>height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM) {
+    mouseY = height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM;
   }
-  else if (mouseY<height-COLORSET_EQ_TOP) {
-    mouseY = height-COLORSET_EQ_TOP;
+  else if (mouseY<height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP) {
+    mouseY = height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP;
   }
   if (mouseX<0) {
     mouseX = 0;
@@ -387,25 +397,29 @@ function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
   if(windowWidth<1350) {
-    resizeCanvas(700,Math.ceil(150+700*(9/16)));
+    proposedWidth = 700;
   }
   else if(windowWidth>=1350 && windowWidth<1600) {
-    resizeCanvas(1000,Math.ceil(150+1000*(9/16)));
+    proposedWidth = 1000;
   }
   else {
-    resizeCanvas(1200,Math.ceil(150+1200*(9/16)));
+    proposedWidth = 1200;
   }
-  if(width>oldWidth) {
+  if(proposedWidth>oldWidth) {
+    resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
     movingCircleArray.sort(function(a, b) {
       return b.getX() - a.getX();
     });
     repositionMovingCircles(oldWidth,oldHeight);
+    drawShapeField();
   }
-  else if(width<oldWidth) {
+  else if(proposedWidth<oldWidth) {
+    resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
     movingCircleArray.sort(function(a, b) {
       return a.getX() - b.getX();
     });
     repositionMovingCircles(oldWidth,oldHeight);
+    drawShapeField();
   }
 }
 // Toolbar functions
@@ -426,11 +440,7 @@ function toggleFreeze() {
 function refreshDrawing() {
   // todo bw: fix the stuff so that colors don't stack
   nowTime = new Date() / 1000;
-  background(255);
-  drawMain();
-  stroke(0, 0, 0);
-  noFill();
-  rect(0,0,width-1,width*9/16-1);
+  drawShapeField();
   nextTime = nowTime + refreshRate;
   drawProportionBox();
 }
@@ -474,6 +484,8 @@ function updateRefreshRate(inputDiv) {
     refreshRate = 0.01;
     $('#refresh-warning').show();
   }
+
+  $('#refresh-seconds-text').text('(every '+refreshRate+' seconds)');
 
   $refreshPerMinute.val(Math.round(60/refreshRate));
   $refreshSeconds.val(refreshRate);
@@ -573,20 +585,20 @@ function drawProportionBox() {
   strokeWeight(strokeWeightVar);
   noFill();
   // top line segment, 0 space, second line segment
-  line(0,height-COLORSET_EQ_TOP,gapX-dashedLineLength,height-COLORSET_EQ_TOP);
-  line(gapX+dashedLineLength*2,height-COLORSET_EQ_TOP,width-strokeWeightVar,height-COLORSET_EQ_TOP);
+  line(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP,gapX-dashedLineLength,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP);
+  line(gapX+dashedLineLength*2,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP,width-strokeWeightVar,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP);
   // bottom line segment, 100 space, second line segment
-  line(0,height-COLORSET_EQ_BOTTOM,gapX-dashedLineLength,height-COLORSET_EQ_BOTTOM);
-  line(gapX+dashedLineLength*2,height-COLORSET_EQ_BOTTOM,width-strokeWeightVar,height-COLORSET_EQ_BOTTOM);
+  line(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,gapX-dashedLineLength,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM);
+  line(gapX+dashedLineLength*2,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,width-strokeWeightVar,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM);
   // left and right line segments
-  line(0,height-COLORSET_EQ_TOP,0,height-COLORSET_EQ_BOTTOM)
-  line(width-strokeWeightVar,height-COLORSET_EQ_TOP,width-strokeWeightVar,height-COLORSET_EQ_BOTTOM)
+  line(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP,0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM)
+  line(width-strokeWeightVar,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP,width-strokeWeightVar,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM)
   //25,50,75 - 10 pixels on, 10 pixels off
   let end = 0;
 
-  let pct25Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.25;
-  let pct50Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.50;
-  let pct75Y = (height-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.75;
+  let pct25Y = (height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.25;
+  let pct50Y = (height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.50;
+  let pct75Y = (height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM)-(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM)*.75;
   while(end<width) {
     if(end!=gapX) {
       line(end,pct25Y,end+dashedLineLength,pct25Y);
@@ -598,11 +610,11 @@ function drawProportionBox() {
   fill(0)
   textSize(12);
   textAlign("left");
-  text("0", gapX-nudge, height-COLORSET_EQ_BOTTOM+fontSize/3);
+  text("0", gapX-nudge, height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM+fontSize/3);
   text("25", gapX-nudge, pct25Y+fontSize/3);
   text("50", gapX-nudge, pct50Y+fontSize/3);
   text("75", gapX-nudge, pct75Y+fontSize/3);
-  text("100", gapX-nudge, height-COLORSET_EQ_TOP+fontSize/3);
+  text("100", gapX-nudge, height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_TOP+fontSize/3);
 
   strokeWeight(1);
 }
@@ -687,12 +699,10 @@ const moveableXYStartpointHorizontal = (obj) => ({
 const moveableXYEndpointHorizontal = (obj) => ({
   setPosition: (x,y) => {
     obj.yPos = y;
-    if(!obj.leftObj.setEnd(x,y)) {
-      obj.leftObj.setEnd(obj.xPos,y)
-    }
-    else if(!obj.lock) {
+    if(!obj.lock) {
       obj.xPos = x;
     }
+    obj.leftObj.setEnd(obj.xPos,obj.yPos);
   },
   hasLock: () => {
     return true;

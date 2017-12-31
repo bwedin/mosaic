@@ -38,6 +38,9 @@
 			<h2>Sationes</h2>
 			<i>Interactive algorithm art</i><br>
 			<hr>
+		<button id="toggle-freeze" type="button" class="btn btn-primary btn-sm margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
+		<button id="refresh-drawing" type="button" class="btn btn-primary btn-sm margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
+		<br>
 		<strong>Pattern</strong>
 		<br>
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
@@ -45,9 +48,9 @@
 		    <input type="radio" name="shape-options" id="option1" value="triangle" autocomplete="off" checked> Tri
 		  </label>
 		  <label class="btn btn-secondary">
-		    <input type="radio" name="shape-options" id="option2" value="square" autocomplete="off">
-		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
-		  </label>
+		    <input type="radio" name="shape-options" id="option2" value="square" autocomplete="off"> Square
+<!-- 		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
+ -->		  </label>
 		  <label class="btn btn-secondary">
 		    <input type="radio" name="shape-options" id="option3" value="diamond" autocomplete="off"> diamond
 		  </label>
@@ -55,10 +58,9 @@
 		<br>
 		<strong>Refresh rate</strong>
 		<br>
-		<span><input id="refresh-seconds" type="number" value="2" min="0">seconds<input id="refresh-per-minute" type="number" value="120" min="1">times per minute</span>
-		<button id="toggle-freeze" type="button" class="btn btn-primary btn-sm" onclick="toggleFreeze()">Freeze</button>
-		<button id="refresh-drawing" type="button" class="btn btn-primary btn-sm" onclick="refreshDrawing()">Refresh</button>
-		<br>
+<!-- 		<input id="refresh-seconds" type="number" class="input-number" value="2" min="0" size="6">seconds
+ -->		<input id="refresh-per-minute" type="number" class="input-number" value="120" min="1" size="6">times per minute<br>
+ 		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<strong>Columns</strong>
 		<br>
 		<input type="range" id="num-columns" list="num-columns-data" step="10">

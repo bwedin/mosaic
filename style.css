@@ -12,6 +12,11 @@ h2 {
 	margin-top:10px;
 }
 
+.alt-text {
+    font-size: 0.75em;
+    color: #898570;
+}
+
 .btn-group {
     border-radius: 5px;
     padding: 5px;
@@ -42,4 +47,12 @@ h2 {
 
 .colorpicker-component {
 	margin-top: 5px;
+}
+
+.input-number {
+    width: 70px;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10px;
 }
