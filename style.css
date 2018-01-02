@@ -1,5 +1,11 @@
 /* style.css */
 
+#sketch-holder {
+  position: sticky;
+  margin-top: 15px;
+  top: 25px;
+}
+
 html, body {
   height: 100%;
 }
@@ -26,14 +32,6 @@ h2 {
     background-color: #cccccc;
 }
 
-/*.sketch-holder {*/
-    /*margin-top:5px;*/
-    /*position: -webkit-sticky;*/
-    /*position: sticky;*/
-    /*top: 15px;*/
-/*}*/
-
-
 .form-rounded {
     border: 1px solid #888888;
     border-radius: 5px;
@@ -55,4 +53,9 @@ h2 {
 
 .margin-bottom-10 {
     margin-bottom: 10px;
+}
+
+.parameters-ui {
+    overflow-y:scroll; 
+    height:400px;"
 }

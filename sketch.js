@@ -1,5 +1,3 @@
-// todo bw: why does a single color look so buggy? why does square show more opacity range?
-
 // sketch.js
 var shape = "triangle";
 var shapeFieldReady = false;
@@ -8,7 +6,7 @@ var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
 var MAX_COLORSETS = 5;
-var WINDOW_BOTTOM_PADDING = 120;
+var WINDOW_BOTTOM_PADDING = 45;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
@@ -31,7 +29,7 @@ var clickableObjects = [];
 var activeObject;
 // refresh variables
 var START_TIME = new Date() / 1000;
-var refreshRate = 0.5;
+var refreshRate = null;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
@@ -51,6 +49,7 @@ $(document).ready(function(){
     $('#refresh-per-minute').on('change', function(e) {
         updateRefreshRate('#refresh-per-minute');
     });
+    updateRefreshRate('#refresh-per-minute');
     $('#num-columns-display').text($('#num-columns').val());
 });
 // main p5
@@ -72,12 +71,12 @@ function setup() {
                 $(colorpickerDiv).toggle();
             }
             else {
-                $(function() {
-                    $(colorpickerDiv).colorpicker({
+                $(colorpickerDiv).colorpicker({
                         format: 'rgb',
-                        color: '#FFFFFF'
-                    });
-                });
+                        color: 'rgb(241.212,30.1235,0)'
+                  }).on('colorpickerDebug', function (e) {
+                    console.log(e.debug.eventName);
+                  });
             }
         }
 
@@ -220,11 +219,12 @@ function updateColorArray() {
 
 }
 function drawMain() {
-  console.log('main');
   let shapeType = $("input[name='shape-options']:checked").val();
-  console.log(shapeType);
   // should update all colorsets etc in memory
   let numberColumns = $('#num-columns').val();
+  if (numberColumns==0) {
+    numberColumns=1;
+  }
   // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
@@ -399,7 +399,7 @@ function windowResized() {
   if(windowWidth<1350) {
     proposedWidth = 700;
   }
-  else if(windowWidth>=1350 && windowWidth<1600) {
+  else if(windowWidth>=1350 && windowWidth<1640) {
     proposedWidth = 1000;
   }
   else {
