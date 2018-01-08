@@ -44,22 +44,25 @@
 		<strong>Pattern</strong>
 		<br>
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
-		  <label class="btn btn-secondary active">
-		    <input type="radio" name="shape-options" id="option1" value="triangle" autocomplete="off" checked> Tri
+			<label class="btn btn-secondary active">
+				<input type="radio" name="shape-options" id="option1" value="diamond" autocomplete="off" checked>
+				<img class="rounded" src="./img/i-diamond.png" alt="Diamond" style="height:30px; width: 30px">
+			</label>
+		  <label class="btn btn-secondary">
+		    <input type="radio" name="shape-options" id="option2" value="triangle" autocomplete="off">
+			  <img class="rounded" src="./img/i-triangle.png" alt="Triangle" style="height:30px; width: 30px">
 		  </label>
 		  <label class="btn btn-secondary">
-		    <input type="radio" name="shape-options" id="option2" value="square" autocomplete="off"> Square
+		    <input type="radio" name="shape-options" id="option3" value="square" autocomplete="off">
+			  <img class="rounded" src="./img/i-square.png" alt="Square" style="height:30px; width: 30px">
 <!-- 		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
- -->		  </label>
-		  <label class="btn btn-secondary">
-		    <input type="radio" name="shape-options" id="option3" value="diamond" autocomplete="off"> diamond
-		  </label>
+ -->		</label>
 		</div>
 		<br>
 		<strong>Refresh rate</strong>
 		<br>
 <!-- 		<input id="refresh-seconds" type="number" class="input-number" value="2" min="0" size="6">seconds
- -->		<input id="refresh-per-minute" type="number" class="input-number" value="30" min="1" size="6">times per minute<br>
+ -->		<input id="refresh-per-minute" type="number" class="input-number" value="60" min="1" size="6">times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<strong>Columns</strong>
 		<br>
@@ -95,26 +98,44 @@
  -->
 
 			<div id="colorset-1">
-				<label for="colorset-1"><span id="colorset-1-dot">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-1-collapse">Show colors</button>
+				<label for="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-1-collapse">Show colors</button>
 				<div id="colorset-1-collapse" class="form-rounded collapse in">
-					<button id="add-colorset-1" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-1')>+ Add Color</button>
-					<button id="remove-colorset-1" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-1')>- Remove</button>
-					<div id="colorset-1-color-1" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-2" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-3" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-4" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-5" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-6" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-7" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-				    <div id="colorset-1-color-8" class="input-group colorpicker-component">
-				    <input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
+						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-1-colors">Colors</a>
+						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-1-opacity">Opacity</a>
+					</ul>
+
+					<div class="tab-content">
+						<div id="colorset-1-colors" class="tab-pane active">
+							<button id="add-colorset-1" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-1')>+ Add Color</button>
+							<button id="remove-colorset-1" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-1')>- Remove</button>
+							<div id="colorset-1-color-1" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-2" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-3" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-4" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-5" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-6" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-7" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<div id="colorset-1-color-8" class="input-group colorpicker-component">
+								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+						</div>
+						<div id="colorset-1-opacity" class="tab-pane fade">
+								<input type="checkbox" name="interest" value="128" checked>
+								<label class="checkbox-label opacity-05">50%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
+								<input type="checkbox" name="interest" value="175" checked>
+								<label class="checkbox-label opacity-07">70%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
+								<input type="checkbox" name="interest" value="255">
+								<label class="checkbox-label opacity-10">100%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label>
+							<!--<div font-size="1.25em"><span class="colorset-1 opacity-05">&#9724;</span> 50%</div>-->
+						</div>
+					</div>
 				</div>
 			</div>
 			<div id="colorset-2">

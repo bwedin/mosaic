@@ -55,6 +55,30 @@ h2 {
     margin-bottom: 10px;
 }
 
+.colorset-1 {
+    color: #000000;
+}
+
+.opacity-05 {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* For IE8 and earlier */
+}
+
+.opacity-07 {
+    opacity: 0.7;
+    filter: alpha(opacity=70); /* For IE8 and earlier */
+}
+
+.opacity-10 {
+    opacity: 1.0;
+    filter: alpha(opacity=100); /* For IE8 and earlier */
+}
+
+.opacity-box {
+    position: absolute;
+    left: 100px;
+}
+
 .parameters-ui {
     overflow-y:scroll; 
     height:400px;"

@@ -1,5 +1,7 @@
+// todo bw: have a few different presets, randomly pick between the 7-8?
+
 // sketch.js
-var shape = "triangle";
+var shape = "diamond";
 var shapeFieldReady = false;
 // colorset variables
 var INIT_COLORS = 3;
@@ -10,13 +12,22 @@ var WINDOW_BOTTOM_PADDING = 45;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
-var COLORSET_COLOR_1 = "#048ad1";
-var COLORSET_COLOR_2 = "#812050";
+var COLORSET_COLOR_1 = "#812050";
+var COLORSET_COLOR_2 = "#048ad1" ;
 var COLORSET_COLOR_3 = "#8ddc1c";
-var COLORSET_COLOR_4 = "#fd8f2f";
-var COLORSET_COLOR_5 = "#9159de";
+var COLORSET_COLOR_4 = "#9159de";
+var COLORSET_COLOR_5 = "#fd8f2f";
 var COLORSET_ARRAY = [COLORSET_COLOR_1, COLORSET_COLOR_2, COLORSET_COLOR_3, COLORSET_COLOR_4, COLORSET_COLOR_5];
 var colorsetObjects = {};
+// some default colors
+var fallColorset = ["rgb(227,64,27)", "rgb(235,182,38)", "rgb(246,238,0)", "rgb(76,39,10)",
+  "rgb(227,174,140)", "rgb(151,92,48)", "rgb(156,26,84)", "rgb(228,105,129)"];
+var winterColorset = ["rgb(50,49,238)", "rgb(77,17,148)", "rgb(71,111,216)", "rgb(119,209,253)",
+  "rgb(13,53,63)", "rgb(89,250,234)", "rgb(22,146,148)", "rgb(92,108,131)"];
+var springColorset = ["rgb(221,61,202)", "rgb(169,104,210)", "rgb(252,194,251)", "rgb(88,37,105)",
+  "rgb(191,214,250)", "rgb(246,86,139)", "rgb(242,145,128)", "rgb(97,8,232)"];
+var summerColorset = ["rgb(11,83,19)", "rgb(42,150,86)", "rgb(87,226,76)", "rgb(195,239,178)",
+  "rgb(11,19,6)", "rgb(200,242,81)", "rgb(53,224,169)", "rgb(134,151,100)"];
 // shape drawing (proportion box)
 var shapesToDraw = [];
 // proportion box variables
@@ -34,11 +45,16 @@ var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
 $(document).ready(function(){
-    document.getElementById('colorset-1-dot').style.color = COLORSET_COLOR_1;
-    document.getElementById('colorset-2-dot').style.color = COLORSET_COLOR_2;
-    document.getElementById('colorset-3-dot').style.color = COLORSET_COLOR_3;
-    document.getElementById('colorset-4-dot').style.color = COLORSET_COLOR_4;
-    document.getElementById('colorset-5-dot').style.color = COLORSET_COLOR_5;
+    let elements = null;
+    elements = document.getElementsByClassName('colorset-1');
+    console.log(elements);
+    for(let i=0;i<elements.length;i++){
+      elements[i].style.color = COLORSET_COLOR_1;
+    };
+    document.getElementById('colorset-2').style.color = COLORSET_COLOR_2;
+    document.getElementById('colorset-3').style.color = COLORSET_COLOR_3;
+    document.getElementById('colorset-4').style.color = COLORSET_COLOR_4;
+    document.getElementById('colorset-5').style.color = COLORSET_COLOR_5;
     $('#num-columns').on('input change', function(e) {
         console.log(e.target.value);
         $('#num-columns-display').text(e.target.value);
@@ -52,6 +68,70 @@ $(document).ready(function(){
     updateRefreshRate('#refresh-per-minute');
     $('#num-columns-display').text($('#num-columns').val());
 });
+function setColors(colorset,name,isRandom) {
+  let colorsToUse = null;
+  if (name==='fall') {
+    colorsToUse = fallColorset;
+  }
+  else if (name==='winter') {
+    colorsToUse = winterColorset;
+  }
+  else if (name==='spring') {
+    colorsToUse = springColorset;
+  }
+  else {
+    colorsToUse = summerColorset;
+  }
+
+  if(isRandom) {
+    colorsToUse = colorsToUse.shuffle();
+  }
+  colorsToUse = colorsToUse.slice();
+  for(var i=1; i<=MAX_COLORS; i++) {
+    let colorpickerDiv = '#'+colorset+'-color-'+i;
+    $(colorpickerDiv).colorpicker().data('colorpicker').setValue(colorsToUse[i-1]);
+  }
+}
+function getYPosFromPercent(pct) {
+  pct=pct/100;
+  // find bottom position (0%), then offset an additional amount by (colorset eq width)*pct
+  return height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM-pct*(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM);
+}
+function getXPosFromPercent(pct) {
+  pct=pct/100;
+  // find bottom position (0%), then offset an additional amount by (colorset eq width)*pct
+  return width*pct;
+}
+function setColorsetProportions(colorsetNum,type) {
+  let coordinateArray = null;
+  if(type==='leftHalf') {
+    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
+  }
+  else {
+    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,10],[100*3/5,90],[100*4/5,95],[100,100]];
+  }
+  let circles = colorsetObjects[colorsetNum].circle;
+  circles.forEach(function(circle,idx) {
+    circle.setPosition(getXPosFromPercent(coordinateArray[idx][0]),getYPosFromPercent(coordinateArray[idx][1]));
+  });
+  // obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
+}
+function setupStartView() {
+  //Sun & Ice - https://www.youtube.com/watch?v=tlEinFS01lk
+  setColors('colorset-1','fall',false);
+  setColors('colorset-2','winter',false);
+  setColors('colorset-3','summer',false);
+  setColors('colorset-4','spring',false);
+  setColorsetProportions(1,'leftHalf');
+  setColorsetProportions(2,'rightHalf');
+
+  $('[name=interest]:checked').each(function(i){
+    console.log($(this).val());
+  });
+}
+// function showPreset(id) {
+//     'rgb(,,)'
+// }
 // main p5
 function setup() {
     noSmooth();
@@ -73,9 +153,7 @@ function setup() {
             else {
                 $(colorpickerDiv).colorpicker({
                         format: 'rgb',
-                        color: 'rgb(241.212,30.1235,0)'
-                  }).on('colorpickerDebug', function (e) {
-                    console.log(e.debug.eventName);
+                        color: 'rgb(255,255,254)'
                   });
             }
         }
@@ -119,6 +197,7 @@ function setup() {
   noFill();
   rect(0,0,width-1,width*9/16-1);
   shapeFieldReady = true;
+  setupStartView();
 }
 function drawShapeField() {
   if(shapeFieldReady) {
@@ -228,6 +307,7 @@ function drawMain() {
   // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
+  console.log(shapeType)
   if (shapeType==='triangle') {
     drawTriangleField(numberColumns, alphaValues);
   }
@@ -515,7 +595,7 @@ function addColor(colorsetDiv) {
     $(newDiv).toggle();
     $(newDiv).colorpicker({
       format: 'rgb',
-      color: '#FFFFFF'
+      color: '#FFFFFE'
     });
   }
   if(colorsetColorCount[colorsetDiv] == MAX_COLORS) {
