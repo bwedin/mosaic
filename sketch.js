@@ -298,7 +298,7 @@ function updateColorArray() {
     let alphaName = colorsetName+'-opacity';
     let singleAlphaArray = [];
     // todo bw not just colorset-1;
-    $('[name=colorset-1-opacity]:checked').each(function(i){
+    $('[name='+alphaName+']:checked').each(function(i){
       singleAlphaArray.push($(this).val());
       console.log($(this).val());
     });
