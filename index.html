@@ -98,7 +98,7 @@
  -->
 
 			<div id="colorset-1">
-				<label for="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-1-collapse">Show colors</button>
+				<label for="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-1-collapse">Adjust</button>
 				<div id="colorset-1-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-1-colors">Colors</a>
@@ -127,11 +127,17 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
 						<div id="colorset-1-opacity" class="tab-pane fade">
-								<input type="checkbox" name="interest" value="128" checked>
+								<input type="checkbox" name="colorset-1-opacity" value="80" >
+								<label class="checkbox-label opacity-03">30%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
+								<input type="checkbox" name="colorset-1-opacity" value="128">
 								<label class="checkbox-label opacity-05">50%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="interest" value="175" checked>
+								<input type="checkbox" name="colorset-1-opacity" value="155" checked>
+								<label class="checkbox-label opacity-06">60%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
+								<input type="checkbox" name="colorset-1-opacity" value="175" checked>
 								<label class="checkbox-label opacity-07">70%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="interest" value="255">
+								<input type="checkbox" name="colorset-1-opacity" value="240" checked>
+								<label class="checkbox-label opacity-09">90%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
+								<input type="checkbox" name="colorset-1-opacity" value="255">
 								<label class="checkbox-label opacity-10">100%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label>
 							<!--<div font-size="1.25em"><span class="colorset-1 opacity-05">&#9724;</span> 50%</div>-->
 						</div>
@@ -139,7 +145,7 @@
 				</div>
 			</div>
 			<div id="colorset-2">
-				<label for="colorset-2"><span id="colorset-2-dot">&#9679;</span> Colorset 2</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-2-collapse">Show colors</button>
+				<label for="colorset-2"><span id="colorset-2-dot">&#9679;</span> Colorset 2</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-2-collapse">Adjust</button>
 					<div id="colorset-2-collapse" class="form-rounded collapse in">
 					<button id="add-colorset-2" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-2')>+ Add Color</button>
 					<button id="remove-colorset-2" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-2')>- Remove</button>
@@ -162,7 +168,7 @@
 				</div>
 			</div>
 			<div id="colorset-3">
-				<label for="colorset-3"><span id="colorset-3-dot">&#9679;</span> Colorset 3</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-3-collapse">Show colors</button>
+				<label for="colorset-3"><span id="colorset-3-dot">&#9679;</span> Colorset 3</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-3-collapse">Adjust</button>
 				<div id="colorset-3-collapse" class="form-rounded collapse in">
 					<button id="add-colorset-3" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-3')>+ Add Color</button>
 					<button id="remove-colorset-3" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-3')>- Remove</button>
@@ -185,7 +191,7 @@
 				</div>
 			</div>
 			<div id="colorset-4">
-				<label for="colorset-4"><span id="colorset-4-dot">&#9679;</span> Colorset 4</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-4-collapse">Show colors</button>
+				<label for="colorset-4"><span id="colorset-4-dot">&#9679;</span> Colorset 4</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-4-collapse">Adjust</button>
 				<div id="colorset-4-collapse" class="form-rounded collapse in">
 					<button id="add-colorset-4" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-4')>+ Add Color</button>
 					<button id="remove-colorset-4" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-4')>- Remove</button>
@@ -208,7 +214,7 @@
 				</div>
 			</div>
 			<div id="colorset-5">
-				<label for="colorset-5"><span id="colorset-5-dot">&#9679;</span> Colorset 5</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-5-collapse">Show colors</button>
+				<label for="colorset-5"><span id="colorset-5-dot">&#9679;</span> Colorset 5</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-5-collapse">Adjust</button>
 					<div id="colorset-5-collapse" class="form-rounded collapse in">
 					<button id="add-colorset-5" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-5')>+ Add Color</button>
 					<button id="remove-colorset-5" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-5')>- Remove</button>

@@ -12,6 +12,7 @@ var WINDOW_BOTTOM_PADDING = 45;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
+var alphaArray = {};
 var COLORSET_COLOR_1 = "#812050";
 var COLORSET_COLOR_2 = "#048ad1" ;
 var COLORSET_COLOR_3 = "#8ddc1c";
@@ -124,10 +125,6 @@ function setupStartView() {
   setColors('colorset-4','spring',false);
   setColorsetProportions(1,'leftHalf');
   setColorsetProportions(2,'rightHalf');
-
-  $('[name=interest]:checked').each(function(i){
-    console.log($(this).val());
-  });
 }
 // function showPreset(id) {
 //     'rgb(,,)'
@@ -234,7 +231,11 @@ function findColorRNG(proportions, alphas){
       let colorsetNumber = idx;
       let colorChoices = colorArray[colorsetNumber];
       let colorRGB = colorChoices[Math.floor(Math.random()*colorChoices.length)];
-      let alpha = alphas[Math.floor(Math.random()*alphas.length)];
+      let alphaChoices = alphaArray[colorsetNumber];
+      // todo bw also change this
+      // alphaChoices = alphas
+      let alpha = Number(alphaChoices[Math.floor(Math.random()*alphaChoices.length)]);
+      // console.log(alpha);
       // todo bw change this
       return color(colorRGB.r,colorRGB.g,colorRGB.b,alpha);
     }
@@ -294,8 +295,15 @@ function updateColorArray() {
       colorsetArray.push($(colorpickerName).colorpicker().data('colorpicker').color.toRGB());
     }
     colorArray[i] = colorsetArray;
+    let alphaName = colorsetName+'-opacity';
+    let singleAlphaArray = [];
+    // todo bw not just colorset-1;
+    $('[name=colorset-1-opacity]:checked').each(function(i){
+      singleAlphaArray.push($(this).val());
+      console.log($(this).val());
+    });
+    alphaArray[i] = singleAlphaArray;
   }
-
 }
 function drawMain() {
   let shapeType = $("input[name='shape-options']:checked").val();
