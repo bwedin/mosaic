@@ -1,6 +1,7 @@
 // todo bw: have a few different presets, randomly pick between the 7-8?
 
 // sketch.js
+var fullCanvas = null;
 var shape = "diamond";
 var shapeFieldReady = false;
 // colorset variables
@@ -38,10 +39,12 @@ var CIRCLE_RADIUS = 6;
 var NUM_EQ_NODES = 6;
 var movingCircleArray = [];
 var clickableObjects = [];
+var colorTiles = {};
 var activeObject;
 // refresh variables
 var START_TIME = new Date() / 1000;
 var refreshRate = null;
+var historyFraction = 0.75;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
@@ -52,13 +55,16 @@ $(document).ready(function(){
     for(let i=0;i<elements.length;i++){
       elements[i].style.color = COLORSET_COLOR_1;
     };
-    document.getElementById('colorset-2').style.color = COLORSET_COLOR_2;
+    document.getElementById('colorset-1').style.color = COLORSET_COLOR_1;
+    // document.getElementById('colorset-2').style.color = COLORSET_COLOR_2;
     document.getElementById('colorset-3').style.color = COLORSET_COLOR_3;
     document.getElementById('colorset-4').style.color = COLORSET_COLOR_4;
     document.getElementById('colorset-5').style.color = COLORSET_COLOR_5;
     $('#num-columns').on('input change', function(e) {
-        console.log(e.target.value);
         $('#num-columns-display').text(e.target.value);
+    });
+    $('#smoothing').on('input change', function(e) {
+      updateSmoothing();
     });
     $('#refresh-seconds').on('change', function(e) {
       updateRefreshRate('#refresh-seconds');
@@ -66,6 +72,7 @@ $(document).ready(function(){
     $('#refresh-per-minute').on('change', function(e) {
         updateRefreshRate('#refresh-per-minute');
     });
+    updateSmoothing();
     updateRefreshRate('#refresh-per-minute');
     $('#num-columns-display').text($('#num-columns').val());
 });
@@ -132,8 +139,8 @@ function setupStartView() {
 // main p5
 function setup() {
     noSmooth();
-    var canvas = createCanvas(500, 500);
-    canvas.parent('sketch-holder');
+    fullCanvas = createCanvas(500, 500);
+    fullCanvas.parent('sketch-holder');
     windowResized();
     // hide all ones we don't want
     for(let i=1; i<=MAX_COLORSETS; i++) {
@@ -192,7 +199,6 @@ function setup() {
   background(255);
   stroke(0, 0, 0);
   noFill();
-  rect(0,0,width-1,width*9/16-1);
   shapeFieldReady = true;
   setupStartView();
 }
@@ -202,7 +208,6 @@ function drawShapeField() {
     drawMain();
     stroke(0, 0, 0);
     noFill();
-    rect(0,0,width-1,width*9/16-1);
   }
 }
 function draw() {
@@ -219,8 +224,7 @@ function draw() {
     if(shape.isShown()) {
       shape.draw();
     }
-  })
-  shape = $('#shape-toggle input:radio:checked').val();
+  });
 }
 // drawing functions (misc)
 function findColorRNG(proportions, alphas){
@@ -237,7 +241,7 @@ function findColorRNG(proportions, alphas){
       let alpha = Number(alphaChoices[Math.floor(Math.random()*alphaChoices.length)]);
       // console.log(alpha);
       // todo bw change this
-      return color(colorRGB.r,colorRGB.g,colorRGB.b,alpha);
+      return [colorRGB.r,colorRGB.g,colorRGB.b,alpha];
     }
   }
 }
@@ -300,13 +304,19 @@ function updateColorArray() {
     // todo bw not just colorset-1;
     $('[name='+alphaName+']:checked').each(function(i){
       singleAlphaArray.push($(this).val());
-      console.log($(this).val());
     });
+    if(singleAlphaArray.length===0) {
+      singleAlphaArray = [255];
+    }
     alphaArray[i] = singleAlphaArray;
   }
 }
-function drawMain() {
-  let shapeType = $("input[name='shape-options']:checked").val();
+function drawMain() {  
+  shapeType = $('#shape-toggle input:radio:checked').val();
+  if(shapeType!=shape) {
+    colorTiles = {};
+    shape = shapeType;
+  }
   // should update all colorsets etc in memory
   let numberColumns = $('#num-columns').val();
   if (numberColumns==0) {
@@ -315,11 +325,10 @@ function drawMain() {
   // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
-  console.log(shapeType)
-  if (shapeType==='triangle') {
+  if (shape==='triangle') {
     drawTriangleField(numberColumns, alphaValues);
   }
-  else if (shapeType==='square') {
+  else if (shape==='square') {
     drawSquareField(numberColumns, alphaValues);
   }
   else {
@@ -415,8 +424,6 @@ function drawDiamondField(numberColumns,alphaValues) {
     numberColumns = Math.ceil(width/columnWidth);
     numberColumns++;
   }
-  else {
-  }
   numberColumns = numberColumns*2;
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
   let columnHeight = width*(9/16);
@@ -441,8 +448,31 @@ function drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProp
     yPosMid += diagonalHalf*2;
   }
 }
-function drawDiamond(diagonalHalf, xPosMid, yPosMid, color) {
-  fill(color);
+function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor) {
+  if(historyFraction>0) {
+    if(!colorTiles[xPosMid]){
+      colorTiles[xPosMid] = {};
+    }
+    if(!colorTiles[xPosMid][yPosMid]){
+      colorTiles[xPosMid][yPosMid] = rngColor;
+      drawColor = color(rngColor);
+    }
+    else {
+      let newFraction = 1-historyFraction;
+      oldColor = colorTiles[xPosMid][yPosMid];
+      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
+        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
+        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
+        255];
+      colorTiles[xPosMid][yPosMid] = newColor;
+      drawColor = color(newColor);
+    }
+  }
+  else {
+    drawColor = color(rngColor);
+  }
+
+  fill(drawColor);
   noStroke();
   quad(xPosMid-diagonalHalf,yPosMid,
     xPosMid,yPosMid-diagonalHalf,
@@ -481,6 +511,16 @@ function mouseDragged() {
     activeObject.setPosition(mouseX,mouseY);
   }
 }
+function forceResize(proposedWidth) {
+  let oldHeight = height;
+  let oldWidth = width;
+  resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
+  movingCircleArray.sort(function(a, b) {
+    return b.getX() - a.getX();
+  });
+  repositionMovingCircles(oldWidth,oldHeight);
+  drawShapeField();
+}
 function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
@@ -510,6 +550,31 @@ function windowResized() {
     drawShapeField();
   }
 }
+function executeSave() {
+  forceResize(4800);
+  saveFieldToDisk(4800,'mosaic.png');
+  windowResized();
+}
+function saveFieldToDisk(proposedWidth, fname) {
+  // ughhhh okay
+  let saveWidth = proposedWidth;
+  let saveHeight = saveWidth*(9/16);
+  var img = createImage(saveWidth, saveHeight);
+  // ughhhh okay
+  let numChunks = 1;
+  let sourceWidthChunk = width/numChunks;
+  let sourceHeightChunk = (width*9/16)/numChunks;
+  for(let i=0; i<numChunks; i++) {
+    for(let j=0; j<numChunks; j++) {
+      let sourceX = i*sourceWidthChunk;
+      let sourceY = j*sourceHeightChunk;
+      let destX = i*saveWidth/numChunks;
+      let destY = j*saveHeight/numChunks;
+      img.copy(fullCanvas, sourceX, sourceY, sourceWidthChunk, sourceHeightChunk, destX, destY, saveWidth/numChunks, saveHeight/numChunks);
+    }
+  }
+  save(img, fname);
+}
 // Toolbar functions
 function toggleFreeze() {
   let $toggleFreeze = $('#toggle-freeze');
@@ -523,10 +588,8 @@ function toggleFreeze() {
     $toggleFreeze.text('Unfreeze');
     isFrozen = true;
   }
-  timeRandom();
 }
 function refreshDrawing() {
-  // todo bw: fix the stuff so that colors don't stack
   nowTime = new Date() / 1000;
   drawShapeField();
   nextTime = nowTime + refreshRate;
@@ -556,6 +619,17 @@ function refreshDrawing() {
 //   console.log(p5Array);
 //   console.log(jsArray);
 // }
+function updateSmoothing() {
+  let val = $('#smoothing').val();
+  $('#smoothing-display').text(val);
+  val++;
+  if(val===1) {
+    historyFraction = 0;
+  }
+  else {
+    historyFraction = 1-1/val;
+  }
+}
 function updateRefreshRate(inputDiv) {
   $('#refresh-warning').hide();
   let $refreshSeconds = $('#refresh-seconds');

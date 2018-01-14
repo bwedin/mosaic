@@ -40,6 +40,7 @@
 			<hr>
 		<button id="toggle-freeze" type="button" class="btn btn-primary btn-sm margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
 		<button id="refresh-drawing" type="button" class="btn btn-primary btn-sm margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
+		<button id="save-image" type="button" class="btn btn-primary btn-sm margin-bottom-10" onclick="executeSave()">Save Image</button>
 		<br>
 		<strong>Pattern</strong>
 		<br>
@@ -82,6 +83,24 @@
 		</datalist>
 		<span id="num-columns-display"></span>
 		<br>
+		<strong>Smoothing</strong>
+		<br>
+		<input type="range" id="smoothing" list="smoothing-data" step="1" min="0" max="10" value="3">
+		<datalist id="smoothing-data">
+		  <option value="0">
+		  <option value="1">
+		  <option value="2">
+		  <option value="3">
+		  <option value="4">
+		  <option value="5">
+		  <option value="6">
+		  <option value="7">
+		  <option value="8">
+		  <option value="9">
+		  <option value="10">
+		</datalist>
+		<span id="smoothing-display"></span>
+		<br>
 		<strong>Color</strong>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColorset()>+ Add Colorset</button>
@@ -97,8 +116,8 @@
 				      </div>
  -->
 
-			<div id="colorset-1">
-				<label for="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-1-collapse">Adjust</button>
+			<div>
+				<a href="#" data-toggle="collapse" data-target="#colorset-1-collapse" id="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</a>
 				<div id="colorset-1-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-1-colors">Colors</a>
@@ -144,8 +163,8 @@
 					</div>
 				</div>
 			</div>
-			<div id="colorset-2">
-				<label for="colorset-2"><span class="colorset-2">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-2-collapse">Adjust</button>
+			<div>
+				<a href="#" data-toggle="collapse" data-target="#colorset-2-collapse" class="colorset-2"><span>&#9679;</span> Colorset 2</a>
 				<div id="colorset-2-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-2-colors">Colors</a>
@@ -192,7 +211,7 @@
 				</div>
 			</div>
 			<div id="colorset-3">
-				<label for="colorset-3"><span class="colorset-3">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-3-collapse">Adjust</button>
+				<label for="colorset-3"><span class="colorset-3">&#9679;</span> Colorset 3</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-3-collapse">Adjust</button>
 				<div id="colorset-3-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-3-colors">Colors</a>
@@ -239,7 +258,7 @@
 				</div>
 			</div>
 			<div id="colorset-4">
-				<label for="colorset-4"><span class="colorset-4">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-4-collapse">Adjust</button>
+				<label for="colorset-4"><span class="colorset-4">&#9679;</span> Colorset 4</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-4-collapse">Adjust</button>
 				<div id="colorset-4-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-4-colors">Colors</a>
@@ -286,7 +305,7 @@
 				</div>
 			</div>
 			<div id="colorset-5">
-				<label for="colorset-5"><span class="colorset-5">&#9679;</span> Colorset 1</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-5-collapse">Adjust</button>
+				<label for="colorset-5"><span class="colorset-5">&#9679;</span> Colorset 5</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-5-collapse">Adjust</button>
 				<div id="colorset-5-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-5-colors">Colors</a>
