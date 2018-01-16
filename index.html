@@ -63,11 +63,11 @@
 		<strong>Refresh rate</strong>
 		<br>
 <!-- 		<input id="refresh-seconds" type="number" class="input-number" value="2" min="0" size="6">seconds
- -->		<input id="refresh-per-minute" type="number" class="input-number" value="60" min="1" size="6">times per minute<br>
+ -->		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<strong>Columns</strong>
 		<br>
-		<input type="range" id="num-columns" list="num-columns-data" step="10">
+		<input type="range" id="num-columns" list="num-columns-data" step="10" value="60">
 		<datalist id="num-columns-data">
 		  <option value="0" label="0">
 		  <option value="10">
@@ -146,7 +146,8 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
 						<div id="colorset-1-opacity" class="tab-pane fade">
-								<input type="checkbox" name="colorset-1-opacity" value="80" >
+								<span name="opacity-lock">To edit colorset opacity, set <strong>Smoothing</strong> to 0.<br></span>
+								<input style="margin-top:25px" type="checkbox" name="colorset-1-opacity" value="80" >
 								<label class="checkbox-label opacity-03">30%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
 								<input type="checkbox" name="colorset-1-opacity" value="128">
 								<label class="checkbox-label opacity-05">50%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>

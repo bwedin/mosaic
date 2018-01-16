@@ -370,8 +370,31 @@ function drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetPropo
   let drawColor = findColorRNG(colorsetProportions,alphaValues);
   drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor);
 }
-function drawTriangle(sideLength, topPosX, topPosY, xDirection, color) {
-  fill(color);
+function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor) {
+    if(historyFraction>0) {
+    if(!colorTiles[topPosX]){
+      colorTiles[topPosX] = {};
+    }
+    if(!colorTiles[topPosX][topPosY]){
+      colorTiles[topPosX][topPosY] = rngColor;
+      drawColor = color(rngColor);
+    }
+    else {
+      let newFraction = 1-historyFraction;
+      oldColor = colorTiles[topPosX][topPosY];
+      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
+        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
+        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
+        255];
+      colorTiles[topPosX][topPosY] = newColor;
+      drawColor = color(newColor);
+    }
+  }
+  else {
+    drawColor = color(rngColor);
+  }
+
+  fill(drawColor);
   noStroke();
   // Math.sqrt(3)/2
   let xMid = topPosX+((sideLength*xDirection)*Math.sqrt(3)/2);
@@ -410,8 +433,30 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProport
     yPosTop += sideLength;
   }
 }
-function drawSquare(sideLength, leftPosX, topPosY, color) {
-  fill(color);
+function drawSquare(sideLength, leftPosX, topPosY, rngColor) {
+  if(historyFraction>0) {
+    if(!colorTiles[leftPosX]){
+      colorTiles[leftPosX] = {};
+    }
+    if(!colorTiles[leftPosX][topPosY]){
+      colorTiles[leftPosX][topPosY] = rngColor;
+      drawColor = color(rngColor);
+    }
+    else {
+      let newFraction = 1-historyFraction;
+      oldColor = colorTiles[leftPosX][topPosY];
+      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
+        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
+        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
+        255];
+      colorTiles[leftPosX][topPosY] = newColor;
+      drawColor = color(newColor);
+    }
+  }
+  else {
+    drawColor = color(rngColor);
+  }
+  fill(drawColor);
   noStroke();
   rect(leftPosX,topPosY,sideLength,sideLength);
   return;
@@ -625,9 +670,13 @@ function updateSmoothing() {
   val++;
   if(val===1) {
     historyFraction = 0;
+    $( ":checkbox" ).removeAttr("disabled");
+    $('[name="opacity-lock"]').hide();
   }
   else {
     historyFraction = 1-1/val;
+    $( ":checkbox" ).attr("disabled", true);
+    $('[name="opacity-lock"]').show();
   }
 }
 function updateRefreshRate(inputDiv) {
