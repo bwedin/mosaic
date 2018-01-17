@@ -3,23 +3,24 @@
 // sketch.js
 var fullCanvas = null;
 var shape = "diamond";
+var columnVal = 60;
 var shapeFieldReady = false;
 // colorset variables
 var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
 var MAX_COLORSETS = 5;
-var WINDOW_BOTTOM_PADDING = 45;
+var WINDOW_BOTTOM_PADDING = 10;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
 var alphaArray = {};
-var COLORSET_COLOR_1 = "#812050";
-var COLORSET_COLOR_2 = "#048ad1" ;
-var COLORSET_COLOR_3 = "#8ddc1c";
-var COLORSET_COLOR_4 = "#9159de";
-var COLORSET_COLOR_5 = "#fd8f2f";
-var COLORSET_ARRAY = [COLORSET_COLOR_1, COLORSET_COLOR_2, COLORSET_COLOR_3, COLORSET_COLOR_4, COLORSET_COLOR_5];
+var colorset_color_1 = "#812050";
+var colorset_color_2 = "#048ad1" ;
+var colorset_color_3 = "#8ddc1c";
+var colorset_color_4 = "#9159de";
+var colorset_color_5 = "#fd8f2f";
+var colorset_array = [colorset_color_1, colorset_color_2, colorset_color_3, colorset_color_4, colorset_color_5];
 var colorsetObjects = {};
 // some default colors
 var fallColorset = ["rgb(227,64,27)", "rgb(235,182,38)", "rgb(246,238,0)", "rgb(76,39,10)",
@@ -50,16 +51,14 @@ var nowTime = START_TIME;
 var isFrozen = false;
 $(document).ready(function(){
     let elements = null;
-    elements = document.getElementsByClassName('colorset-1');
-    console.log(elements);
-    for(let i=0;i<elements.length;i++){
-      elements[i].style.color = COLORSET_COLOR_1;
-    };
-    document.getElementById('colorset-1').style.color = COLORSET_COLOR_1;
-    // document.getElementById('colorset-2').style.color = COLORSET_COLOR_2;
-    document.getElementById('colorset-3').style.color = COLORSET_COLOR_3;
-    document.getElementById('colorset-4').style.color = COLORSET_COLOR_4;
-    document.getElementById('colorset-5').style.color = COLORSET_COLOR_5;
+    // for(let i=0;i<elements.length;i++){
+    //   elements[i].style.color = colorset_color_1;
+    // };
+    // document.getElementById('colorset-1').style.color = colorset_color_1;
+    // document.getElementById('colorset-2').style.color = colorset_color_2;
+    // document.getElementById('colorset-3').style.color = colorset_color_3;
+    // document.getElementById('colorset-4').style.color = colorset_color_4;
+    // document.getElementById('colorset-5').style.color = colorset_color_5;
     $('#num-columns').on('input change', function(e) {
         $('#num-columns-display').text(e.target.value);
     });
@@ -142,6 +141,11 @@ function setup() {
     fullCanvas = createCanvas(500, 500);
     fullCanvas.parent('sketch-holder');
     windowResized();
+    $('.colorset-1').css('color',colorset_color_1);
+    $('.colorset-2').css('color',colorset_color_2);
+    $('.colorset-3').css('color',colorset_color_3);
+    $('.colorset-4').css('color',colorset_color_4);
+    $('.colorset-5').css('color',colorset_color_5);
     // hide all ones we don't want
     for(let i=1; i<=MAX_COLORSETS; i++) {
         //adding colorpickers
@@ -167,28 +171,28 @@ function setup() {
         // add start, iterate through length of beziers-1, add end
         let bezierArray = [];
         let circleArray = [];
-        let c = color(COLORSET_ARRAY[i-1]);
+        let c = color(colorset_array[i-1]);
         for(let j=0; j<NUM_EQ_NODES-1; j++) {
             let bezierObj = MovingBezierHorizontal(0,0,width,0,c);
             shapesToDraw.push(bezierObj);
             bezierArray.push(bezierObj);
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
         }
-        let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[0]);
+        let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[0],i);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[j],bezierArray[j+1]);
+            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[j],bezierArray[j+1],i);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
             if (i>INIT_COLORSETS) { circleObj.hide(); }
         }
-        circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[bezierArray.length-1]);
+        circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,c,bezierArray[bezierArray.length-1],i);
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
@@ -318,21 +322,25 @@ function drawMain() {
     shape = shapeType;
   }
   // should update all colorsets etc in memory
-  let numberColumns = $('#num-columns').val();
-  if (numberColumns==0) {
-    numberColumns=1;
+  let val = $('#num-columns').val();
+  if (val==0) {
+    val=1;
+  }
+  if(val!=columnVal) {
+    // colorTiles = {};
+    columnVal = val;
   }
   // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
   if (shape==='triangle') {
-    drawTriangleField(numberColumns, alphaValues);
+    drawTriangleField(columnVal, alphaValues);
   }
   else if (shape==='square') {
-    drawSquareField(numberColumns, alphaValues);
+    drawSquareField(columnVal, alphaValues);
   }
   else {
-    drawDiamondField(numberColumns, alphaValues);
+    drawDiamondField(columnVal, alphaValues);
   }
 }
 // drawing functions (shape-specific)
@@ -566,8 +574,8 @@ function windowResized() {
   drawShapeField();
 }
 function executeSave() {
-  forceResize(4800);
-  saveFieldToDisk(4800,'mosaic.png');
+  forceResize(3000);
+  saveFieldToDisk(3000,'mosaic.png');
   windowResized();
 }
 function saveFieldToDisk(proposedWidth, fname) {
@@ -898,6 +906,9 @@ const drawableCircle = (obj) => ({
     fill(obj.color);
     noStroke();
     ellipse(obj.xPos, obj.yPos, obj.radius*2, obj.radius*2);
+    fill(color(255,255,255,255));
+    textSize(obj.radius*1.5);
+    text(obj.text, obj.xPos-obj.radius/2, obj.yPos+obj.radius/2);
   }
 });
 const drawableBezierHorizontal = (obj) => ({
@@ -941,9 +952,9 @@ const hideable = (obj) => ({
     obj.shown = false;
   },
 });
-const MovingCircle = (xPos,yPos,radius,color)  => {
+const MovingCircle = (xPos,yPos,radius,color,text)  => {
   var state = {
-    xPos,yPos,radius,color,
+    xPos,yPos,radius,color,text,
     shown: true
   }
   return Object.assign(
@@ -955,9 +966,9 @@ const MovingCircle = (xPos,yPos,radius,color)  => {
     hideable(state)
   )
 };
-const MovingCircleStartpoint = (xPos,yPos,radius,color,rightObj)  => {
+const MovingCircleStartpoint = (xPos,yPos,radius,color,rightObj,text)  => {
   var state = {
-    xPos,yPos,radius,color,rightObj,
+    xPos,yPos,radius,color,rightObj,text,
     shown: true,
     lock: true
   }
@@ -971,9 +982,9 @@ const MovingCircleStartpoint = (xPos,yPos,radius,color,rightObj)  => {
     hideable(state)
   )
 };
-const MovingCircleEndpoint = (xPos,yPos,radius,color,leftObj)  => {
+const MovingCircleEndpoint = (xPos,yPos,radius,color,leftObj,text)  => {
   var state = {
-    xPos,yPos,radius,color,leftObj,
+    xPos,yPos,radius,color,leftObj,text,
     shown: true,
     lock: true
   }
@@ -987,9 +998,9 @@ const MovingCircleEndpoint = (xPos,yPos,radius,color,leftObj)  => {
     hideable(state)
   )
 };
-const MovingCircleMidpoint = (xPos,yPos,radius,color,leftObj,rightObj)  => {
+const MovingCircleMidpoint = (xPos,yPos,radius,color,leftObj,rightObj,text)  => {
   var state = {
-    xPos,yPos,radius,color,leftObj,rightObj,
+    xPos,yPos,radius,color,leftObj,rightObj,text,
     shown: true
   }
   leftObj.setEnd(xPos,yPos);
