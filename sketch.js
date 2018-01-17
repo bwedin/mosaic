@@ -352,48 +352,30 @@ function drawTriangleField(numberColumns,alphaValues) {
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
     let yPosTop = 0;
-    drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues)
+    drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues,numberColumns,i)
   }
   // + sidelength*i, orientation=i;
 }
-function drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues) {
+function drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues,numColumns,columnKey) {
   let sideLength = 2*columnWidth/Math.sqrt(3);
+  let i = 0;
   // draw triangle pointing right, and triangle above it, facing left
   while(yPosTop<=columnHeight) {
+    i++;
     let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawTriangle(sideLength, xPosL, yPosTop, 1, drawColor);
+    drawTriangle(sideLength, xPosL, yPosTop, 1, drawColor, [numColumns,columnKey,i]);
     drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor);
+    i++
+    drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor, [numColumns,columnKey,i]);
     yPosTop += sideLength;
   }
+  i++;
   // one more for good measure
   let drawColor = findColorRNG(colorsetProportions,alphaValues);
-  drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor);
+  drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor,[numColumns,columnKey,i]);
 }
-function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor) {
-    if(historyFraction>0) {
-    if(!colorTiles[topPosX]){
-      colorTiles[topPosX] = {};
-    }
-    if(!colorTiles[topPosX][topPosY]){
-      colorTiles[topPosX][topPosY] = rngColor;
-      drawColor = color(rngColor);
-    }
-    else {
-      let newFraction = 1-historyFraction;
-      oldColor = colorTiles[topPosX][topPosY];
-      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
-        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
-        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
-        255];
-      colorTiles[topPosX][topPosY] = newColor;
-      drawColor = color(newColor);
-    }
-  }
-  else {
-    drawColor = color(rngColor);
-  }
-
+function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor, tileKey) {
+  drawColor = getNewColor(rngColor,historyFraction,tileKey);
   fill(drawColor);
   noStroke();
   // Math.sqrt(3)/2
@@ -420,42 +402,23 @@ function drawSquareField(numberColumns,alphaValues) {
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
     let yPosTop = 0;
-    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues)
+    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues,numberColumns,i);
   }
   // + sidelength*i, orientation=i;
 }
-function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues) {
+function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues,numColumns,columnKey) {
   let sideLength = columnWidth; // todo bw: square change here?
+  let i = 0;
   // draw squares down to bottom
   while(yPosTop<=columnHeight) {
+    i++;
     let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawSquare(sideLength, xPosL, yPosTop, drawColor);
+    drawSquare(sideLength, xPosL, yPosTop, drawColor,[numColumns,columnKey,i]);
     yPosTop += sideLength;
   }
 }
-function drawSquare(sideLength, leftPosX, topPosY, rngColor) {
-  if(historyFraction>0) {
-    if(!colorTiles[leftPosX]){
-      colorTiles[leftPosX] = {};
-    }
-    if(!colorTiles[leftPosX][topPosY]){
-      colorTiles[leftPosX][topPosY] = rngColor;
-      drawColor = color(rngColor);
-    }
-    else {
-      let newFraction = 1-historyFraction;
-      oldColor = colorTiles[leftPosX][topPosY];
-      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
-        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
-        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
-        255];
-      colorTiles[leftPosX][topPosY] = newColor;
-      drawColor = color(newColor);
-    }
-  }
-  else {
-    drawColor = color(rngColor);
-  }
+function drawSquare(sideLength, leftPosX, topPosY, rngColor, tileKey) {
+  drawColor = getNewColor(rngColor,historyFraction,tileKey);
   fill(drawColor);
   noStroke();
   rect(leftPosX,topPosY,sideLength,sideLength);
@@ -473,50 +436,31 @@ function drawDiamondField(numberColumns,alphaValues) {
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
   let columnHeight = width*(9/16);
   let yPosTop = 0;
+  // todo: make column key: unique identifier will be numberColumns, columnId, rowId)
   for(let i=0; i<=numberColumns; i=i+2) {
     let xPosMid = i*columnWidth/2;
     let yPosTop = 0;
-    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues);
+    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues,numberColumns,i);
     xPosMid += columnWidth/2;
     yPosTop = yPosTop-(columnWidth/2);
-    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues);
+    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues,numberColumns,i+1);
   }
   // + sidelength*i, orientation=i;
 }
-function drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions,alphaValues) {
+function drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions,alphaValues,numColumns,columnKey) {
   let diagonalHalf = columnWidth/2;
   let yPosMid = yPosTop;
+  let i = 0;
   // draw triangle pointing right, and triangle above it, facing left
   while((yPosMid-diagonalHalf)<=columnHeight) {
+    i++;
     let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawDiamond(diagonalHalf, xPosMid, yPosMid, drawColor);
+    drawDiamond(diagonalHalf, xPosMid, yPosMid, drawColor,[numColumns,columnKey,i]);
     yPosMid += diagonalHalf*2;
   }
 }
-function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor) {
-  if(historyFraction>0) {
-    if(!colorTiles[xPosMid]){
-      colorTiles[xPosMid] = {};
-    }
-    if(!colorTiles[xPosMid][yPosMid]){
-      colorTiles[xPosMid][yPosMid] = rngColor;
-      drawColor = color(rngColor);
-    }
-    else {
-      let newFraction = 1-historyFraction;
-      oldColor = colorTiles[xPosMid][yPosMid];
-      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
-        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
-        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
-        255];
-      colorTiles[xPosMid][yPosMid] = newColor;
-      drawColor = color(newColor);
-    }
-  }
-  else {
-    drawColor = color(rngColor);
-  }
-
+function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor, tileKey) {
+  drawColor = getNewColor(rngColor,historyFraction,tileKey);
   fill(drawColor);
   noStroke();
   quad(xPosMid-diagonalHalf,yPosMid,
@@ -524,6 +468,33 @@ function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor) {
     xPosMid+diagonalHalf,yPosMid,
     xPosMid,yPosMid+diagonalHalf);
   return;
+}
+function getNewColor(rngColor, historyFraction, tileKey) {
+  if(historyFraction>0) {
+    if(!colorTiles[tileKey[0]]){
+      colorTiles[tileKey[0]] = {};
+    }
+    if(!colorTiles[tileKey[0]][tileKey[1]]){
+      colorTiles[tileKey[0]][tileKey[1]] = {};
+    }
+    if(!colorTiles[tileKey[0]][tileKey[1]][tileKey[2]]){
+      colorTiles[tileKey[0]][tileKey[1]][tileKey[2]] = rngColor;
+      return color(rngColor);
+    }
+    else {
+      let newFraction = 1-historyFraction;
+      oldColor = colorTiles[tileKey[0]][tileKey[1]][tileKey[2]];
+      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
+        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
+        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
+        255];
+      colorTiles[tileKey[0]][tileKey[1]][tileKey[2]] = newColor;
+      return color(newColor);
+    }
+  }
+  else {
+    return color(rngColor);
+  }
 }
 // p5js event listeners
 function mousePressed() {
@@ -559,11 +530,12 @@ function mouseDragged() {
 function forceResize(proposedWidth) {
   let oldHeight = height;
   let oldWidth = width;
-  resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
+  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING)
   movingCircleArray.sort(function(a, b) {
     return b.getX() - a.getX();
   });
-  repositionMovingCircles(oldWidth,oldHeight);
+  repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
+  resizeCanvas(proposedWidth,proposedHeight);
   drawShapeField();
 }
 function windowResized() {
@@ -578,22 +550,20 @@ function windowResized() {
   else {
     proposedWidth = 1200;
   }
+  proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
   if(proposedWidth>oldWidth) {
-    resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
     movingCircleArray.sort(function(a, b) {
       return b.getX() - a.getX();
     });
-    repositionMovingCircles(oldWidth,oldHeight);
-    drawShapeField();
   }
   else if(proposedWidth<oldWidth) {
-    resizeCanvas(proposedWidth,Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING));
     movingCircleArray.sort(function(a, b) {
       return a.getX() - b.getX();
     });
-    repositionMovingCircles(oldWidth,oldHeight);
-    drawShapeField();
   }
+  repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
+  resizeCanvas(proposedWidth,proposedHeight);
+  drawShapeField();
 }
 function executeSave() {
   forceResize(4800);
@@ -767,11 +737,9 @@ function addColorset() {
   }
 }
 // Proportion box drawing/UI
-function repositionMovingCircles(oldWidth, oldHeight) {
+function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
   // windowWidth
   // windowHeigh
-  let newHeight = height;
-  let newWidth = width;
   movingCircleArray.forEach( function(obj) {
     if(obj.lock) {
       obj.unlock();
