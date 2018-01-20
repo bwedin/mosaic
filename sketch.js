@@ -336,12 +336,21 @@ function updateColorArray() {
       bKey = bKey*0.5
     }
 
+    let rKeyDark = Math.round(rKey*0.8/colorCount).toString(16).padStart(2, '0');
+    let gKeyDark = Math.round(gKey*0.8/colorCount).toString(16).padStart(2, '0');
+    let bKeyDark = Math.round(bKey*0.8/colorCount).toString(16).padStart(2, '0');
+    let newDarkColorsetColor = '#' + rKeyDark + gKeyDark + bKeyDark;
+
     rKey = Math.round(rKey/colorCount).toString(16).padStart(2, '0');
     gKey = Math.round(gKey/colorCount).toString(16).padStart(2, '0');
     bKey = Math.round(bKey/colorCount).toString(16).padStart(2, '0');
     let newColorsetColor = '#' + rKey + gKey + bKey;
     colorsetColorKey[i] = newColorsetColor;
     $('.' + colorsetName).css('color',newColorsetColor);
+    $('.background-' + colorsetName).css('background-color',newColorsetColor);
+
+    // todo bw add a colorset clicked class instead
+    $(' .expanded .background-' + colorsetName).css('background-color',newDarkColorsetColor);
   }
 }
 function drawMain() {
@@ -794,6 +803,18 @@ function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
       obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
     }
   })
+}
+function toggleColorset(colorsetName) {
+  $('#colorset-1-collapse').toggle(600);
+  if($('#colorset-1-toggle').hasClass('expanded')){
+    console.log('hide!');
+    $('#colorset-1-toggle').removeClass('expanded');
+  }
+  else {
+    console.log('show');
+    $('#colorset-1-toggle').addClass('expanded');
+  }
+  console.log('hello');
 }
 function drawProportionBox() {
   strokeWeight(0);

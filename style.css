@@ -47,6 +47,10 @@ h2 {
 	margin-top: 5px;
 }
 
+.colorset-button {
+    color: white;
+}
+
 .initially-hidden {
     display: none;
     font-size: .75em;
