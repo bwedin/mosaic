@@ -32,6 +32,8 @@ var springColorset = ["rgb(221,61,202)", "rgb(169,104,210)", "rgb(252,194,251)",
   "rgb(191,214,250)", "rgb(246,86,139)", "rgb(242,145,128)", "rgb(97,8,232)"];
 var summerColorset = ["rgb(11,83,19)", "rgb(42,150,86)", "rgb(87,226,76)", "rgb(195,239,178)",
   "rgb(11,19,6)", "rgb(200,242,81)", "rgb(53,224,169)", "rgb(134,151,100)"];
+var colorsetPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset};
+var chosenColors = [];
 // shape drawing (proportion box)
 var shapesToDraw = [];
 // proportion box variables
@@ -50,6 +52,7 @@ var historyFraction = 0.75;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
+var checkboxHtml = '<i class="fa fa-check" aria-hidden="true"></i>';
 $(document).ready(function(){
     let elements = null;
     // for(let i=0;i<elements.length;i++){
@@ -75,21 +78,34 @@ $(document).ready(function(){
     updateSmoothing();
     updateRefreshRate('#refresh-per-minute');
     $('#num-columns-display').text($('#num-columns').val());
+    $(document).bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
+      var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
+      if(!state) {
+        $('#sidebar').fadeIn('fast');
+        $('#sketch-holder-holder').removeClass('fixed-top');
+        $('#sketch-holder-holder').addClass('margin-top-15');
+      }
+    });
 });
-function setColors(colorset,name,isRandom) {
-  let colorsToUse = null;
-  if (name==='fall') {
-    colorsToUse = fallColorset;
+function setColors(colorset,colors) {
+  let colorCount = colorsetColorCount[colorset];
+  let colorCountDiff = colors.length-colorCount;
+  for(let i=0; i>colorCountDiff; i--) {
+    removeColor(colorset);
   }
-  else if (name==='winter') {
-    colorsToUse = winterColorset;
+  for(let i=0; i<colorCountDiff; i++) {
+    addColor(colorset);
   }
-  else if (name==='spring') {
-    colorsToUse = springColorset;
-  }
-  else {
-    colorsToUse = summerColorset;
-  }
+  colors.forEach(function(colorName,idx) {
+    let i = idx+1;
+    let colorpickerDiv = '#'+colorset+'-color-'+i;
+    $(colorpickerDiv).colorpicker().data('colorpicker').setValue(colorName);
+  });
+  toggleColorset(colorset);
+  drawMain();
+}
+function setColorsSetup(colorset,name,isRandom) {
+  let colorsToUse = colorsetPresets[name];
 
   if(isRandom) {
     colorsToUse = colorsToUse.shuffle();
@@ -126,10 +142,11 @@ function setColorsetProportions(colorsetNum,type) {
 }
 function setupStartView() {
   //Sun & Ice - https://www.youtube.com/watch?v=tlEinFS01lk
-  setColors('colorset-1','fall',false);
-  setColors('colorset-2','winter',false);
-  setColors('colorset-3','summer',false);
-  setColors('colorset-4','spring',false);
+  let seasonArray = shuffle(['fall','winter','summer','spring']);
+  setColorsSetup('colorset-1',seasonArray[0],false);
+  setColorsSetup('colorset-2',seasonArray[1],false);
+  setColorsSetup('colorset-3',seasonArray[2],false);
+  setColorsSetup('colorset-4',seasonArray[3],false);
   setColorsetProportions(1,'leftHalf');
   setColorsetProportions(2,'rightHalf');
 }
@@ -209,6 +226,7 @@ function setup() {
   noFill();
   shapeFieldReady = true;
   setupStartView();
+  setupPresets();
 }
 function drawShapeField() {
   if(shapeFieldReady) {
@@ -227,12 +245,14 @@ function draw() {
   // noFill();
   // stroke(0, 0, 0);
   // rect(0,width*9/16,width,height);
-  drawProportionBox();
-  shapesToDraw.forEach( function (shape) {
-    if(shape.isShown()) {
-      shape.draw();
-    }
-  });
+  if(!fullscreen()) {
+    drawProportionBox();
+    shapesToDraw.forEach( function (shape) {
+      if(shape.isShown()) {
+        shape.draw();
+      }
+    });
+  }
 }
 // drawing functions (misc)
 function findColorRNG(proportions, alphas){
@@ -396,6 +416,9 @@ function drawTriangleField(numberColumns,alphaValues) {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
+  if(fullscreen()) {
+    columnHeight = windowHeight;
+  }
   let yPosTop = 0;
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
@@ -446,6 +469,9 @@ function drawSquareField(numberColumns,alphaValues) {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
+  if(fullscreen()) {
+    columnHeight = windowHeight;
+  }
   let yPosTop = 0;
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
@@ -483,6 +509,9 @@ function drawDiamondField(numberColumns,alphaValues) {
   numberColumns = numberColumns*2;
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
   let columnHeight = width*(9/16);
+  if(fullscreen()) {
+    columnHeight = windowHeight;
+  }
   let yPosTop = 0;
   // todo: make column key: unique identifier will be numberColumns, columnId, rowId)
   for(let i=0; i<=numberColumns; i=i+2) {
@@ -589,6 +618,7 @@ function forceResize(proposedWidth) {
 function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
+  let proposedWidth = null;
   if(windowWidth<1350) {
     proposedWidth = 700;
   }
@@ -598,7 +628,11 @@ function windowResized() {
   else {
     proposedWidth = 1200;
   }
-  proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
+  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
+  if(fullscreen()) {
+    proposedWidth=windowWidth;
+    proposedHeight = windowHeight;
+  }
   if(proposedWidth>oldWidth) {
     movingCircleArray.sort(function(a, b) {
       return b.getX() - a.getX();
@@ -640,17 +674,18 @@ function saveFieldToDisk(proposedWidth, fname) {
 }
 // Toolbar functions
 function toggleFreeze() {
-  let $toggleFreeze = $('#toggle-freeze');
-  if($toggleFreeze.hasClass('active')) {
-    $toggleFreeze.removeClass('active');
-    $toggleFreeze.text('Freeze');
-    isFrozen = false;
-  }
-  else {
-    $toggleFreeze.addClass('active');
-    $toggleFreeze.text('Unfreeze');
-    isFrozen = true;
-  }
+  makeFullScreen();
+  // let $toggleFreeze = $('#toggle-freeze');
+  // if($toggleFreeze.hasClass('active')) {
+  //   $toggleFreeze.removeClass('active');
+  //   $toggleFreeze.text('Freeze');
+  //   isFrozen = false;
+  // }
+  // else {
+  //   $toggleFreeze.addClass('active');
+  //   $toggleFreeze.text('Unfreeze');
+  //   isFrozen = true;
+  // }
 }
 function refreshDrawing() {
   nowTime = new Date() / 1000;
@@ -763,7 +798,6 @@ function removeColorset() {
   $('#add-colorset').prop('disabled', false);
 
   if(colorsetCount>1) {
-    console.log('2')
     let shownObjects = colorsetObjects[colorsetCount];
     shownObjects.bezier.forEach(function(obj) { obj.hide();})
     shownObjects.circle.forEach(function(obj) { obj.hide();})
@@ -775,7 +809,12 @@ function removeColorset() {
   if(colorsetCount == 1) {
     $('#remove-colorset').prop('disabled', true);
   }
-  let proportions = calculateColorsetProportionsShared(20);
+}
+function makeFullScreen() {
+  $('#sidebar').fadeOut('fast');
+  fullscreen(1);
+  $('#sketch-holder-holder').addClass('fixed-top');
+  $('#sketch-holder-holder').removeClass('margin-top-15');
 }
 function addColorset() {
   $('#remove-colorset').prop('disabled', false);
@@ -790,6 +829,7 @@ function addColorset() {
   if(colorsetCount == MAX_COLORSETS) {
     $('#add-colorset').prop('disabled', true);
   }
+  updateColorArray();
 }
 // Proportion box drawing/UI
 function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
@@ -806,22 +846,126 @@ function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
     }
   })
 }
+function setupPresets() {
+  let $tableHtml = $('');
+  for(let key in colorsetPresets) {
+    let buttonsHtml = '';
+    colorsetPresets[key].forEach(function(colorName) {
+      buttonsHtml = buttonsHtml + '<button class="btn-icon" data-color="' + colorName +
+      '" onclick="togglePreset('+ "'" + colorName + "'" + ')" ></button>';
+    })
+    let $newHtml = $('<tr class="table-color-preset">' +
+    '<td class="width-40"><h5 class="padding-top-5">"' + key + '"</h5>' +
+    '<a href="javascript:" class="select-all-link" onclick="selectAllColors' +
+    "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>');
+    $newHtml.appendTo('#color-preset-table');
+    colorsetPresets[key].forEach(function(colorName) {
+      // rgb(----)
+      let colorSelector = "[data-color='" + colorName + "']";
+      let rgbStrings = colorName.slice(4,-1).split(',');
+      if( (parseInt(rgbStrings[0])+parseInt(rgbStrings[1])+parseInt(rgbStrings[2])) > 420) {
+        $(colorSelector).css('color','black');
+      }
+      else {
+        $(colorSelector).css('color','white');
+      }
+      $(colorSelector).css('background-color',colorName);
+    })
+  }
+  $('#color-preset-table').append($tableHtml);
+}
+function showPresets(colorset) {
+  clearPresetColors();
+  $('#confirm-choose-presets').prop("disabled",true);
+  let titleText = 'Colorset ' + colorset.split('-')[1] + ' (Max colors=' + MAX_COLORS + ')';
+  $('#preset-title').text(titleText);
+  $('#default-ui-controls').fadeOut(400, function() {
+    $('#color-preset-picker').fadeIn(500);
+  });
+  $('#confirm-choose-presets').off('click');
+  $('#confirm-choose-presets').on('click', function() {
+    setColors(colorset,chosenColors);
+    hidePresets();
+  })
+}
+function hidePresets() {
+  $('#color-preset-picker').fadeOut(400, function() {
+    $('#default-ui-controls').fadeIn(500);
+  });
+}
+function clearPresetColors() {
+  chosenColors.forEach(function(colorName) {
+    removePresetColor(colorName);
+  });
+  $('#clear-preset-colors').blur();
+}
+function selectAllColors(key) {
+  $('.select-all-link').blur();
+  chosenColors.forEach(function(colorName) {
+    removePresetColor(colorName);
+  });
+  colorsetPresets[key].forEach(function(colorName) {
+    // rgb(----)
+    choosePresetColor(colorName);
+  });
+}
+// todo bw: debug
+function choosePresetColor(colorName) {
+  if(chosenColors.indexOf(colorName)<0) {
+    chosenColors.push(colorName);
+    let colorSelector = "[data-color='" + colorName + "']";
+    $(colorSelector).html(checkboxHtml);
+    $(colorSelector).addClass('checked');
+    if (chosenColors.length > MAX_COLORS) {
+      removePresetColor(chosenColors.shift());
+    }
+  }
+  if(chosenColors.length>0) {
+    $('#confirm-choose-presets').prop("disabled",false);
+  }
+}
+function removePresetColor(colorName) {
+  let colorSelector = "[data-color='" + colorName + "']";
+  $(colorSelector).html('');
+  $(colorSelector).removeClass('checked');
+  let idx = chosenColors.indexOf(colorName);
+  if(idx!=-1) {
+    if(idx==0) {
+      chosenColors = chosenColors.slice(1);
+    }
+    else if(idx==chosenColors.length-1) {
+      chosenColors = chosenColors.slice(0,-1);
+    }
+    else {
+      chosenColors = chosenColors.slice(0,idx).concat(chosenColors.slice(idx+1));
+    }
+  }
+  if(chosenColors.length==0) {
+    $('#confirm-choose-presets').prop("disabled",true);
+  }
+}
+function togglePreset(colorName) {
+  if(chosenColors.indexOf(colorName)<0){
+    choosePresetColor(colorName);
+  }
+  else {
+    removePresetColor(colorName);
+  }
+// <i class="fa fa-check" aria-hidden="true"></i>
+}
 function toggleColorset(colorsetName) {
   $('#' + colorsetName + '-collapse').toggle(600);
   let colorsetToggleSelector = '#' + colorsetName + '-toggle';
   if($(colorsetToggleSelector).hasClass('expanded')){
-    console.log('hide!');
     $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-down');
     $(colorsetToggleSelector + ' .fa').addClass('fa-angle-right');
     $(colorsetToggleSelector).removeClass('expanded');
   }
   else {
-    console.log('show');
     $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-right');
     $(colorsetToggleSelector + ' .fa').addClass('fa-angle-down');
     $(colorsetToggleSelector).addClass('expanded');
   }
-  console.log('hello');
 }
 function drawProportionBox() {
   strokeWeight(0);
