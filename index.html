@@ -6,7 +6,7 @@
     <link href="lib/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 
-	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
@@ -34,7 +34,7 @@
     	</div>
 
 
-		<div class="col-lg-3">
+		<div class="col-lg-3 noselect">
 			<h2>Sationes</h2>
 			<i>Interactive algorithm art</i><br>
 			<hr>
@@ -63,7 +63,7 @@
 		<strong>Refresh rate</strong>
 		<br>
 <!-- 		<input id="refresh-seconds" type="number" class="input-number" value="2" min="0" size="6">seconds
- -->		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">times per minute<br>
+ -->		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<strong>Columns</strong>
 		<br>
@@ -101,7 +101,7 @@
 		</datalist>
 		<span id="smoothing-display"></span>
 		<br>
-		<strong>Color</strong>
+		<strong>Color </strong><i id="opacity-enabled" class="initially-hidden">Opacity controls enabled! (See colorset)</i>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColorset()>+ Add Colorset</button>
 				<button id="remove-colorset" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColorset()>- Remove</button><br>
@@ -120,12 +120,12 @@
 				<a href="#" data-toggle="collapse" data-target="#colorset-1-collapse" id="colorset-1" class="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</a>
 				<div id="colorset-1-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-1-colors">Colors</a>
+						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-1-colors">Colors</a>
 						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-1-opacity">Opacity</a>
 					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-1-colors" class="tab-pane active">
+						<div id="colorset-1-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-1" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-1')>+ Add Color</button>
 							<button id="remove-colorset-1" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-1')>- Remove</button>
 							<div id="colorset-1-color-1" class="input-group colorpicker-component">
@@ -145,8 +145,7 @@
 							<div id="colorset-1-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
-						<div id="colorset-1-opacity" class="tab-pane fade">
-								<span name="opacity-lock">To edit colorset opacity, set <strong>Smoothing</strong> to 0.<br></span>
+						<div id="colorset-1-opacity" class="tab-pane fade opacity-controls">
 								<input style="margin-top:25px" type="checkbox" name="colorset-1-opacity" value="80" >
 								<label class="checkbox-label opacity-03">30%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
 								<input type="checkbox" name="colorset-1-opacity" value="128">
@@ -168,12 +167,12 @@
 				<a href="#" data-toggle="collapse" data-target="#colorset-2-collapse" id="colorset-2" class="colorset-2"><span>&#9679;</span> Colorset 2</a>
 				<div id="colorset-2-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-2-colors">Colors</a>
+						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-2-colors">Colors</a>
 						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-2-opacity">Opacity</a>
 					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-2-colors" class="tab-pane active">
+						<div id="colorset-2-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-2" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-2')>+ Add Color</button>
 							<button id="remove-colorset-2" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-2')>- Remove</button>
 							<div id="colorset-2-color-1" class="input-group colorpicker-component">
@@ -193,7 +192,7 @@
 							<div id="colorset-2-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
-						<div id="colorset-2-opacity" class="tab-pane fade">
+						<div id="colorset-2-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-2-opacity" value="80" >
 							<label class="checkbox-label opacity-03">30%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
 							<input type="checkbox" name="colorset-2-opacity" value="128">
@@ -215,12 +214,12 @@
 				<label for="colorset-3"><span class="colorset-3">&#9679;</span> Colorset 3</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-3-collapse">Adjust</button>
 				<div id="colorset-3-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-3-colors">Colors</a>
+						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-3-colors">Colors</a>
 						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-3-opacity">Opacity</a>
 					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-3-colors" class="tab-pane active">
+						<div id="colorset-3-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-3" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-3')>+ Add Color</button>
 							<button id="remove-colorset-3" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-3')>- Remove</button>
 							<div id="colorset-3-color-1" class="input-group colorpicker-component">
@@ -240,7 +239,7 @@
 							<div id="colorset-3-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
-						<div id="colorset-3-opacity" class="tab-pane fade">
+						<div id="colorset-3-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-3-opacity" value="80" >
 							<label class="checkbox-label opacity-03">30%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
 							<input type="checkbox" name="colorset-3-opacity" value="128">
@@ -262,12 +261,12 @@
 				<label for="colorset-4"><span class="colorset-4">&#9679;</span> Colorset 4</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-4-collapse">Adjust</button>
 				<div id="colorset-4-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-4-colors">Colors</a>
+						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-4-colors">Colors</a>
 						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-4-opacity">Opacity</a>
 					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-4-colors" class="tab-pane active">
+						<div id="colorset-4-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-4" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-4')>+ Add Color</button>
 							<button id="remove-colorset-4" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-4')>- Remove</button>
 							<div id="colorset-4-color-1" class="input-group colorpicker-component">
@@ -287,7 +286,7 @@
 							<div id="colorset-4-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
-						<div id="colorset-4-opacity" class="tab-pane fade">
+						<div id="colorset-4-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-4-opacity" value="80" >
 							<label class="checkbox-label opacity-03">30%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
 							<input type="checkbox" name="colorset-4-opacity" value="128">
@@ -309,12 +308,12 @@
 				<label for="colorset-5"><span class="colorset-5">&#9679;</span> Colorset 5</label><button type="button" class="btn btn-sm float-right btn-show-colors" data-toggle="collapse" data-target="#colorset-5-collapse">Adjust</button>
 				<div id="colorset-5-collapse" class="form-rounded collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" data-toggle="pill" href="#colorset-5-colors">Colors</a>
+						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-5-colors">Colors</a>
 						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-5-opacity">Opacity</a>
 					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-5-colors" class="tab-pane active">
+						<div id="colorset-5-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-5" type="button" class="btn btn-primary btn-sm btn-add-color" onclick=addColor('colorset-5')>+ Add Color</button>
 							<button id="remove-colorset-5" type="button" class="btn btn-danger btn-sm btn-add-color float-right" onclick=removeColor('colorset-5')>- Remove</button>
 							<div id="colorset-5-color-1" class="input-group colorpicker-component">
@@ -334,7 +333,7 @@
 							<div id="colorset-5-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 						</div>
-						<div id="colorset-5-opacity" class="tab-pane fade">
+						<div id="colorset-5-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-5-opacity" value="80" >
 							<label class="checkbox-label opacity-03">30%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
 							<input type="checkbox" name="colorset-5-opacity" value="128">
@@ -354,6 +353,7 @@
 			</div>
 		</div>
 		<br>
+			<div style="height:900px"></div>
 		</div>
 	</div>
 	</div>

@@ -47,6 +47,11 @@ h2 {
 	margin-top: 5px;
 }
 
+.initially-hidden {
+    display: none;
+    font-size: .75em;
+}
+
 .input-number {
     width: 70px;
 }
