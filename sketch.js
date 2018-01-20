@@ -348,7 +348,7 @@ function updateColorArray() {
     colorsetColorKey[i] = newColorsetColor;
     $('.' + colorsetName).css('color',newColorsetColor);
 
-    // todo bw make these behave more like outline boxes??
+    // todo bw make these behave more like outline boxes?? or an expanding div that contains the text itself
     $('.background-' + colorsetName).css('background-color',newColorsetColor);
 
     // todo bw add a colorset clicked class instead
