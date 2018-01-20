@@ -43,12 +43,36 @@ h2 {
 	margin-bottom: 5px;
 }
 
+.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
+    color: #33a6cc;
+    border-color: #33a6cc;
+}
+.btn-primary.outline:active, .btn-primary.outline.active {
+    border-color: #007299;
+    color: #007299;
+    box-shadow: none;
+}
+
+.btn-danger {
+
+}
+
 .colorpicker-component {
 	margin-top: 5px;
 }
 
 .colorset-button {
     color: white;
+    border-radius: 25px;
+    outline: none;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.expanded {
+    outline: none !important;
+    -webkit-box-shadow: 0 !important;
+    box-shadow: 0 !important;
 }
 
 .initially-hidden {

@@ -336,9 +336,9 @@ function updateColorArray() {
       bKey = bKey*0.5
     }
 
-    let rKeyDark = Math.round(rKey*0.8/colorCount).toString(16).padStart(2, '0');
-    let gKeyDark = Math.round(gKey*0.8/colorCount).toString(16).padStart(2, '0');
-    let bKeyDark = Math.round(bKey*0.8/colorCount).toString(16).padStart(2, '0');
+    let rKeyDark = Math.round(rKey*0.9/colorCount).toString(16).padStart(2, '0');
+    let gKeyDark = Math.round(gKey*0.9/colorCount).toString(16).padStart(2, '0');
+    let bKeyDark = Math.round(bKey*0.9/colorCount).toString(16).padStart(2, '0');
     let newDarkColorsetColor = '#' + rKeyDark + gKeyDark + bKeyDark;
 
     rKey = Math.round(rKey/colorCount).toString(16).padStart(2, '0');
@@ -347,10 +347,12 @@ function updateColorArray() {
     let newColorsetColor = '#' + rKey + gKey + bKey;
     colorsetColorKey[i] = newColorsetColor;
     $('.' + colorsetName).css('color',newColorsetColor);
+
+    // todo bw make these behave more like outline boxes??
     $('.background-' + colorsetName).css('background-color',newColorsetColor);
 
     // todo bw add a colorset clicked class instead
-    $(' .expanded .background-' + colorsetName).css('background-color',newDarkColorsetColor);
+    $(' .expanded.background-' + colorsetName).css('background-color',newDarkColorsetColor);
   }
 }
 function drawMain() {
@@ -759,9 +761,9 @@ function addColor(colorsetDiv) {
 }
 function removeColorset() {
   $('#add-colorset').prop('disabled', false);
-  $('#colorset-1').collapse('hide');
 
   if(colorsetCount>1) {
+    console.log('2')
     let shownObjects = colorsetObjects[colorsetCount];
     shownObjects.bezier.forEach(function(obj) { obj.hide();})
     shownObjects.circle.forEach(function(obj) { obj.hide();})
@@ -805,14 +807,19 @@ function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
   })
 }
 function toggleColorset(colorsetName) {
-  $('#colorset-1-collapse').toggle(600);
-  if($('#colorset-1-toggle').hasClass('expanded')){
+  $('#' + colorsetName + '-collapse').toggle(600);
+  let colorsetToggleSelector = '#' + colorsetName + '-toggle';
+  if($(colorsetToggleSelector).hasClass('expanded')){
     console.log('hide!');
-    $('#colorset-1-toggle').removeClass('expanded');
+    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-down');
+    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-right');
+    $(colorsetToggleSelector).removeClass('expanded');
   }
   else {
     console.log('show');
-    $('#colorset-1-toggle').addClass('expanded');
+    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-right');
+    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-down');
+    $(colorsetToggleSelector).addClass('expanded');
   }
   console.log('hello');
 }
