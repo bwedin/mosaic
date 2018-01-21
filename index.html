@@ -11,7 +11,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
 
     <script src="lib/colorpicker/js/bootstrap-colorpicker.js"></script>
 
@@ -39,6 +39,8 @@
 		<div id="sidebar" class="col-lg-offset-9 col-lg-3 noselect">
 			<h2>Mosaic</h2>
 			<i>Interactive algorithm art</i><br>
+			<button id="save-image" type="button" class="btn btn-outline-primary btn-sm margin-top-10" onclick="makeFullScreen()">Fullscreen</button>
+			<button id="save-image" type="button" class="btn btn-outline-primary btn-sm margin-top-10" onclick="executeSave()">Save Image</button>
 			<hr>
 		<!--<div id="full-preset-picker" class="form-rounded">-->
 			<!--<strong>Presets</strong>-->
@@ -58,7 +60,6 @@
 		<div id="default-ui-controls">
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
-		<button id="save-image" type="button" class="btn btn-outline-primary btn-sm margin-bottom-10" onclick="executeSave()">Save Image</button>
 		<br>
 		<strong>Pattern</strong>
 		<br>

@@ -674,18 +674,17 @@ function saveFieldToDisk(proposedWidth, fname) {
 }
 // Toolbar functions
 function toggleFreeze() {
-  makeFullScreen();
-  // let $toggleFreeze = $('#toggle-freeze');
-  // if($toggleFreeze.hasClass('active')) {
-  //   $toggleFreeze.removeClass('active');
-  //   $toggleFreeze.text('Freeze');
-  //   isFrozen = false;
-  // }
-  // else {
-  //   $toggleFreeze.addClass('active');
-  //   $toggleFreeze.text('Unfreeze');
-  //   isFrozen = true;
-  // }
+  let $toggleFreeze = $('#toggle-freeze');
+  if($toggleFreeze.hasClass('active')) {
+    $toggleFreeze.removeClass('active');
+    $toggleFreeze.text('Freeze');
+    isFrozen = false;
+  }
+  else {
+    $toggleFreeze.addClass('active');
+    $toggleFreeze.text('Unfreeze');
+    isFrozen = true;
+  }
 }
 function refreshDrawing() {
   nowTime = new Date() / 1000;
