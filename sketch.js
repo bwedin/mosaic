@@ -648,8 +648,12 @@ function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
   let proposedWidth = null;
-  if(windowWidth<1375) {
+  // min 1000
+  if(windowWidth<1200) {
     proposedWidth = 700;
+  }
+  else if(windowWidth<1375) {
+    proposedWidth = 850;
   }
   else if(windowWidth>=1375 && windowWidth<1640) {
     proposedWidth = 1000;
