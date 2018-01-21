@@ -135,8 +135,12 @@ function getXPosFromPercent(pct) {
 }
 function setColorsetProportions(colorsetNum,type) {
   let coordinateArray = null;
+  // thirds, fourths, increaseEdge, decreaseEdge, sinWave, -sinWave, cosWave, -cosWave
   if(type==='leftHalf') {
     coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
+  }
+  else if(type=='rightHalf') {
+    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,10],[100*3/5,90],[100*4/5,95],[100,100]];
   }
   else if(type==='rightEdgeDescent') {
     coordinateArray = [[0,100],[100*1/5,100],[100*3/10,99],[100*7/10,90],[100*9/10,25],[100,1]];
@@ -144,10 +148,33 @@ function setColorsetProportions(colorsetNum,type) {
   else if(type==='rightEdgeAscent') {
     coordinateArray = [[0,0],[100*1/5,0],[100*3/10,1],[100*7/10,10],[100*9/10,75],[100,99]];
   }
-  else {
-    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,10],[100*3/5,90],[100*4/5,95],[100,100]];
+  else if(type==='edges') {
+    coordinateArray = [[0,100],[100*1/20,100],[100*1/8,0],[100*9/10,0],[100*19/20,100],[100,100]];
+  }
+  else if(type==='middleThird') {
+    coordinateArray = [[0,0],[100*1/4,0],[100*4/10,100],[100*6/10,100],[100*3/4,0],[100,0]];
+  }
+  else if(type==='firstQuarter') {
+    coordinateArray = [[0,100],[12,100],[32,0],[100*3/5,0],[100*4/5,0],[100,0]];
+  }
+  else if(type==='secondQuarter') {
+    coordinateArray = [[0,0],[12,0],[32,100],[100*4/10,100],[100*6/10,0],[100,0]];
+  }
+  else if(type==='thirdQuarter') {
+    coordinateArray = [[0,0],[100*4/10,0],[100*6/10,100],[68,100],[88,0],[100,0]];
+  }
+  else if(type==='fourthQuarter') {
+    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,0],[68,0],[88,100],[100,100]];
+  }
+  else if(type==='base10') {
+    coordinateArray = [[0,10],[100*1/5,10],[100*2/5,10],[100*3/5,10],[100*4/5,10],[100,10]];
   }
   let circles = colorsetObjects[colorsetNum].circle;
+  circles = circles.reverse();
+  circles.forEach(function(circle) {
+    circle.setPosition(getXPosFromPercent(100),getYPosFromPercent(0));
+  });
+  circles = circles.reverse();
   circles.forEach(function(circle,idx) {
     circle.setPosition(getXPosFromPercent(coordinateArray[idx][0]),getYPosFromPercent(coordinateArray[idx][1]));
   });
@@ -162,19 +189,110 @@ function setupStartView() {
   setColorsSetup('colorset-4',seasonArray[3],false);
   setColorsetProportions(1,'leftHalf');
   setColorsetProportions(2,'rightHalf');
+  setColorsetProportions(3,'middleThird');
+  setColorsetProportions(4,'edges');
+}
+function setNumColorsets(num) {
+  while(colorsetCount>num) {
+    removeColorset();
+  }
+  while(colorsetCount<num) {
+    addColorset();
+  }
+}
+function setNumColorsetColors(colorset,num) {
+  while(colorsetColorCount[colorset]>num) {
+    removeColor(colorset);
+  }
+  while(colorsetColorCount[colorset]>num) {
+    addColor(colorset);
+  }
+}
+function setNumColumns(num) {
+  $('#num-columns').val(num);
+  columnVal = num;
+}
+function setShape(shapeName) {
+  let shapeType = $('#shape-toggle input:radio:checked').val();
+  if(shapeType!=shapeName) {
+    colorTiles = {};
+    $('#shape-toggle input:radio:checked').val(shapeName);
+    shape = shapeName;
+  }
+}
+function setSmoothing(num) {
+  $('#smoothing').val(num);
+  updateSmoothing();
+}
+function setRefreshRate(num) {
+  $('#refresh-per-minute').val(num);
+  updateRefreshRate();
 }
 function setupPresetView(name) {
   if(name==='sun-and-ice') {
-
+    setShape('diamond');
+    setRefreshRate(512);
+    setNumColumns(90);
+    setSmoothing(6);
+    setNumColorsets(2);
+    setColors('colorset-1',fallColorset);
+    setNumColorsetColors('colorset-1',3);
+    setColorsetProportions(1,'leftHalf');
+    setColors('colorset-2',winterColorset);
+    setNumColorsetColors('colorset-2',3);
+    setColorsetProportions(2,'rightHalf');
   }
   else if(name==='ghost-machine') {
-
+    setShape('diamond');
+    setRefreshRate(500);
+    setNumColumns(60);
+    setSmoothing(1);
+    setNumColorsets(2);
+    setColors('colorset-1',grayscaleColorset);
+    setNumColorsetColors('colorset-1',3);
+    setColorsetProportions(1,'rightEdgeDescent');
+    setColors('colorset-2',brightColorset);
+    setNumColorsetColors('colorset-2',3);
+    setColorsetProportions(2,'rightEdgeAscent');
   }
   else if(name==='vivaldi') {
-
+    setShape('triangle');
+    setRefreshRate(500);
+    setNumColumns(60);
+    setSmoothing(3);
+    setNumColorsets(4);
+    setColors('colorset-1',winterColorset);
+    setNumColorsetColors('colorset-1',8);
+    setColorsetProportions(1,'firstQuarter');
+    setColors('colorset-2',springColorset);
+    setColorsetProportions(2,'secondQuarter');
+    setColors('colorset-3',summerColorset);
+    setColorsetProportions(3,'thirdQuarter');
+    setColors('colorset-4',fallColorset);
+    setColorsetProportions(4,'fourthQuarter');
   }
-  else {
-
+  else if (name==='color-party') {
+    setShape('square');
+    setRefreshRate(128);
+    setNumColumns(80);
+    setSmoothing(0);
+    setNumColorsets(5);
+    setColors('colorset-1',brightColorset);
+    setNumColorsetColors('colorset-1',8);
+    setColorsetProportions(1,'base10');
+    setColors('colorset-2',springColorset);
+    setColorsetProportions(2,'base10');
+    setColors('colorset-3',winterColorset);
+    setColorsetProportions(3,'base10');
+    setColors('colorset-4',summerColorset);
+    setColorsetProportions(4,'base10');
+    setColors('colorset-5',fallColorset);
+    setColorsetProportions(5,'base10');
+    $('input:checkbox').prop('checked', 0);
+    $('[data-percent="100"]:checkbox').prop('checked', 'true');
+    $('[data-percent="90"]:checkbox').prop('checked', 'true');
+    $('[data-percent="70"]:checkbox').prop('checked', 'true');
+    $('[data-percent="60"]:checkbox').prop('checked', 'true');
   }
 }
 // function showPreset(id) {
@@ -415,10 +533,7 @@ function drawMain() {
   if (val==0) {
     val=1;
   }
-  if(val!=columnVal) {
-    // colorTiles = {};
-    columnVal = val;
-  }
+  columnVal = val;
   // numberColumns = 1;
   let alphaValues = [100,150,220];
   updateColorArray();
@@ -750,34 +865,6 @@ function refreshDrawing() {
   nextTime = nowTime + refreshRate;
   drawProportionBox();
 }
-// function timeRandom() {
-//   let p5Array = [];
-//   for (let j = 0; j < 5; j++) {
-//     nowTime = new Date() / 1000;
-//     console.log(j);
-//     for (let i = 1; i < 200000000; i++) {
-//       let randNum = random();
-//     }
-//     let finishTime = new Date() / 1000;
-//     p5Array.push(finishTime-nowTime);
-//   }
-//   let jsArray = [];
-//   for (let j = 0; j < 5; j++) {
-//     nowTime = new Date() / 1000;
-//     console.log(j);
-//     for (let i = 1; i < 200000000; i++) {
-//       let randNum = random();
-//     }
-//     let finishTime = new Date() / 1000;
-//     jsArray.push(finishTime-nowTime);
-//   }
-//   console.log(p5Array);
-//   console.log(jsArray);
-// }
-function setSmoothing(num) {
-  $('#smoothing').val(num);
-  updateSmoothing();
-}
 function updateSmoothing() {
   let val = $('#smoothing').val();
   $('#smoothing-display').text(val);
@@ -800,31 +887,16 @@ function updateSmoothing() {
     $('.nav-tabs').hide(400);
   }
 }
-function updateRefreshRate(inputDiv) {
-  $('#refresh-warning').hide();
-  let $refreshSeconds = $('#refresh-seconds');
+function updateRefreshRate() {
   let $refreshPerMinute = $('#refresh-per-minute');
-  let refreshRateTemp;
-  if(inputDiv=='#refresh-per-minute') {
-    //todo bw: handle edge case, refresh per minute as zero, or add freeze button and manual refresh?
-    refreshRate = 60/$refreshPerMinute.val();
-  } else {
-    refreshRate = $refreshSeconds.val();
-  }
-
+  refreshRate = 60/$refreshPerMinute.val();
   if(refreshRate<0.01) {
     refreshRate = 0.01;
-    $('#refresh-warning').show();
   }
-
   $('#refresh-seconds-text').text('(every '+refreshRate+' seconds)');
-
   $refreshPerMinute.val(Math.round(60/refreshRate));
-  $refreshSeconds.val(refreshRate);
-
   nowTime = new Date() / 1000;
   nextTime = nowTime + refreshRate;
-
 }
 function removeColor(colorsetDiv) {
   $('#add-'+colorsetDiv).prop('disabled', false);
@@ -1115,11 +1187,17 @@ const moveableXY = (obj) => ({
 const moveableXYMidpointHorizontal = (obj) => ({
   setPosition: (x,y) => {
     obj.yPos = y;
+    if(x===630) {
+      console.log('630!');
+    }
     if(!obj.leftObj.setEnd(x,y) || !obj.rightObj.setStart(x,y)) {
+      console.log(!obj.leftObj.setEnd(x,y));
+      console.log(!obj.rightObj.setStart(x,y));
       obj.leftObj.setEnd(obj.xPos,obj.yPos);
       obj.rightObj.setStart(obj.xPos,obj.yPos);
     }
     else {
+      console.log('no problem')
       obj.xPos = x;
     }
   },
