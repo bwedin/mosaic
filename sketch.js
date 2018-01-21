@@ -32,7 +32,14 @@ var springColorset = ["rgb(221,61,202)", "rgb(169,104,210)", "rgb(252,194,251)",
   "rgb(191,214,250)", "rgb(246,86,139)", "rgb(242,145,128)", "rgb(97,8,232)"];
 var summerColorset = ["rgb(11,83,19)", "rgb(42,150,86)", "rgb(87,226,76)", "rgb(195,239,178)",
   "rgb(11,19,6)", "rgb(200,242,81)", "rgb(53,224,169)", "rgb(134,151,100)"];
-var colorsetPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset};
+var brightColorset = ["rgb(231,0,100)","rgb(0,163,255)","rgb(255,197,0)"];
+var grayscaleColorset = ["rgb(0,0,1)","rgb(67,67,68)","rgb(133,133,134)"];
+var colorsetPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset,
+        'bright': brightColorset, 'grayscale': grayscaleColorset};
+var randomPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset,
+        };
+// thirds, fourths, increaseEdge, decreaseEdge, sinWave, -sinWave, cosWave, -cosWave
+var randomOrientations = ['leftHalf','rightHalf']
 var chosenColors = [];
 // shape drawing (proportion box)
 var shapesToDraw = [];
@@ -83,7 +90,7 @@ $(document).ready(function(){
       if(!state) {
         $('#sidebar').fadeIn('fast');
         $('#sketch-holder-holder').removeClass('fixed-top');
-        $('#sketch-holder-holder').addClass('margin-top-15');
+        $('#sketch-holder-holder').addClass('sticky-top');
       }
     });
 });
@@ -131,6 +138,12 @@ function setColorsetProportions(colorsetNum,type) {
   if(type==='leftHalf') {
     coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
   }
+  else if(type==='rightEdgeDescent') {
+    coordinateArray = [[0,100],[100*1/5,100],[100*3/10,99],[100*7/10,90],[100*9/10,25],[100,1]];
+  }
+  else if(type==='rightEdgeAscent') {
+    coordinateArray = [[0,0],[100*1/5,0],[100*3/10,1],[100*7/10,10],[100*9/10,75],[100,99]];
+  }
   else {
     coordinateArray = [[0,0],[100*1/5,0],[100*2/5,10],[100*3/5,90],[100*4/5,95],[100,100]];
   }
@@ -149,6 +162,20 @@ function setupStartView() {
   setColorsSetup('colorset-4',seasonArray[3],false);
   setColorsetProportions(1,'leftHalf');
   setColorsetProportions(2,'rightHalf');
+}
+function setupPresetView(name) {
+  if(name==='sun-and-ice') {
+
+  }
+  else if(name==='ghost-machine') {
+
+  }
+  else if(name==='vivaldi') {
+
+  }
+  else {
+
+  }
 }
 // function showPreset(id) {
 //     'rgb(,,)'
@@ -173,18 +200,20 @@ function setup() {
         }
         for (let j=1; j<=MAX_COLORS; j++) {
             let colorpickerDiv = '#colorset-' + i + '-color-' + j;
+            $(colorpickerDiv).colorpicker({
+              format: 'rgb',
+              color: 'rgb(255,255,254)'
+            })
+            .on('hidePicker', function(e, colorpickerDiv) {
+              let rgb = e.color.toRGB();
+              if (rgb.r==rgb.g && rgb.g==rgb.b) {
+                rgb.b++;
+                let newColor = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
+                $('#'+e.target.id).colorpicker().data('colorpicker').setValue(newColor);
+              }
+            });
             if (j>INIT_COLORS) {
-                $(colorpickerDiv).colorpicker({
-                  format: 'rgb',
-                  color: 'rgb(255,255,254)'
-                });
-                $(colorpickerDiv).toggle();
-            }
-            else {
-                $(colorpickerDiv).colorpicker({
-                        format: 'rgb',
-                        color: 'rgb(255,255,254)'
-                });
+              $(colorpickerDiv).toggle();
             }
         }
 
@@ -619,10 +648,10 @@ function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
   let proposedWidth = null;
-  if(windowWidth<1350) {
+  if(windowWidth<1375) {
     proposedWidth = 700;
   }
-  else if(windowWidth>=1350 && windowWidth<1640) {
+  else if(windowWidth>=1375 && windowWidth<1640) {
     proposedWidth = 1000;
   }
   else {
@@ -630,24 +659,32 @@ function windowResized() {
   }
   let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
   if(fullscreen()) {
-    proposedWidth=windowWidth;
+    proposedWidth= windowWidth;
     proposedHeight = windowHeight;
+    console.log('window: ', windowHeight);
+    console.log(oldWidth);
   }
-  if(proposedWidth>oldWidth) {
+  if(proposedWidth==oldWidth && !fullscreen()) {
+    console.log('return???')
+    return;
+  }
+  else if(proposedWidth>oldWidth) {
     movingCircleArray.sort(function(a, b) {
       return b.getX() - a.getX();
     });
   }
-  else if(proposedWidth<oldWidth) {
+  if(proposedWidth<oldWidth) {
     movingCircleArray.sort(function(a, b) {
       return a.getX() - b.getX();
     });
   }
+  console.log('resizeCanvas');
   repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
   resizeCanvas(proposedWidth,proposedHeight);
   drawShapeField();
 }
 function executeSave() {
+  $('#save-image').blur();
   forceResize(3000);
   saveFieldToDisk(3000,'mosaic.png');
   windowResized();
@@ -685,6 +722,23 @@ function toggleFreeze() {
     $toggleFreeze.text('Unfreeze');
     isFrozen = true;
   }
+  $toggleFreeze.blur();
+}
+function toggleAutoMosaic() {
+  let $toggleAutoMosaic = $('#toggle-auto-mosaic');
+  if($toggleAutoMosaic.hasClass('active')) {
+    $toggleAutoMosaic.removeClass('active');
+    let isOnAuto = false;
+    $( "#auto-mosaic-enabled" ).fadeOut( "fast", function() {
+    });
+  }
+  else {
+    $toggleAutoMosaic.addClass('active');
+    let isOnAuto = true;
+    $( "#auto-mosaic-enabled" ).fadeIn( "slow", function() {
+    });
+  }
+  $toggleAutoMosaic.blur();
 }
 function refreshDrawing() {
   nowTime = new Date() / 1000;
@@ -716,6 +770,10 @@ function refreshDrawing() {
 //   console.log(p5Array);
 //   console.log(jsArray);
 // }
+function setSmoothing(num) {
+  $('#smoothing').val(num);
+  updateSmoothing();
+}
 function updateSmoothing() {
   let val = $('#smoothing').val();
   $('#smoothing-display').text(val);
@@ -810,10 +868,10 @@ function removeColorset() {
   }
 }
 function makeFullScreen() {
-  $('#sidebar').fadeOut('fast');
+  $('#sidebar').fadeOut('slow');
   fullscreen(1);
   $('#sketch-holder-holder').addClass('fixed-top');
-  $('#sketch-holder-holder').removeClass('margin-top-15');
+  $('#sketch-holder-holder').removeClass('sticky-top');
 }
 function addColorset() {
   $('#remove-colorset').prop('disabled', false);
@@ -854,7 +912,7 @@ function setupPresets() {
       '" onclick="togglePreset('+ "'" + colorName + "'" + ')" ></button>';
     })
     let $newHtml = $('<tr class="table-color-preset">' +
-    '<td class="width-40"><h5 class="padding-top-5">"' + key + '"</h5>' +
+    '<td class="width-40"><h5 class="padding-top-5">' + key + '</h5>' +
     '<a href="javascript:" class="select-all-link" onclick="selectAllColors' +
     "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>');
     $newHtml.appendTo('#color-preset-table');
@@ -955,14 +1013,15 @@ function togglePreset(colorName) {
 function toggleColorset(colorsetName) {
   $('#' + colorsetName + '-collapse').toggle(600);
   let colorsetToggleSelector = '#' + colorsetName + '-toggle';
+  $(colorsetToggleSelector).blur();
   if($(colorsetToggleSelector).hasClass('expanded')){
-    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-down');
-    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-right');
+    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-up');
+    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-down');
     $(colorsetToggleSelector).removeClass('expanded');
   }
   else {
-    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-right');
-    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-down');
+    $(colorsetToggleSelector + ' .fa').removeClass('fa-angle-down');
+    $(colorsetToggleSelector + ' .fa').addClass('fa-angle-up');
     $(colorsetToggleSelector).addClass('expanded');
   }
 }

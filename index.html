@@ -31,16 +31,21 @@
 
 	<div class="row">
 		<div class="col-lg-9">
-			<div id="sketch-holder-holder" class="margin-top-15">
+			<div id="sketch-holder-holder" class="sticky-top">
 				<div id="sketch-holder"></div>
 			</div>
     	</div>
 
 		<div id="sidebar" class="col-lg-offset-9 col-lg-3 noselect">
 			<h2>Mosaic</h2>
-			<i>Interactive algorithm art</i><br>
-			<button id="save-image" type="button" class="btn btn-outline-primary btn-sm margin-top-10" onclick="makeFullScreen()">Fullscreen</button>
-			<button id="save-image" type="button" class="btn btn-outline-primary btn-sm margin-top-10" onclick="executeSave()">Save Image</button>
+			<i>Interactive algorithm art</i>
+			<br>
+			<button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
+			<button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="executeSave()">Save Image</button>
+			<button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button>
+			<br>
+			<span class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden">Automatically changing colors/proportions every 15 sec</i></span>
+			<br>
 			<hr>
 		<!--<div id="full-preset-picker" class="form-rounded">-->
 			<!--<strong>Presets</strong>-->
@@ -58,9 +63,6 @@
 			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
 		</div>
 		<div id="default-ui-controls">
-		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
-		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
-		<br>
 		<strong>Pattern</strong>
 		<br>
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
@@ -84,6 +86,9 @@
 <!-- 		<input id="refresh-seconds" type="number" class="input-number" value="2" min="0" size="6">seconds
  -->		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
+		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
+		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
+		<br>
 		<strong>Columns</strong>
 		<br>
 		<input type="range" id="num-columns" list="num-columns-data" step="10" value="60">
@@ -136,7 +141,8 @@
  -->
 
 			<div id="colorset-1" class="colorset-1">
-				<button class="btn btn-sm colorset-button background-colorset-1" id="colorset-1-toggle" onclick="toggleColorset('colorset-1')"><span>&#9679;</span>&nbsp;Colorset 1</button><br>
+				<button class="btn btn-sm colorset-button background-colorset-1" id="colorset-1-toggle" onclick="toggleColorset('colorset-1')">Colorset 1
+					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<!--<a href="#" data-toggle="collapse" data-target="#colorset-1-collapse" id="colorset-1" class="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</a>-->
 				<div id="colorset-1-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
@@ -186,8 +192,8 @@
 				</div>
 			</div>
 			<div id="colorset-2" class="colorset-2">
-				<button class="btn btn-sm colorset-button background-colorset-2" id="colorset-2-toggle" onclick="toggleColorset('colorset-2')"><span>&#9679;</span>&nbsp;Colorset 2</button><br>
-				<!--<a href="#" data-toggle="collapse" data-target="#colorset-2-collapse" id="colorset-2" class="colorset-2"><span>&#9679;</span> Colorset 2</a>-->
+				<button class="btn btn-sm colorset-button background-colorset-2" id="colorset-2-toggle" onclick="toggleColorset('colorset-2')">Colorset 2
+					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-2-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-2-colors">Colors</a>
@@ -235,7 +241,8 @@
 				</div>
 			</div>
 			<div id="colorset-3" class="colorset-3">
-				<button class="btn btn-sm colorset-button background-colorset-3" id="colorset-3-toggle" onclick="toggleColorset('colorset-3')"><span>&#9679;</span>&nbsp;Colorset 3</button><br>
+				<button class="btn btn-sm colorset-button background-colorset-3" id="colorset-3-toggle" onclick="toggleColorset('colorset-3')">Colorset 3
+					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-3-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-3-colors">Colors</a>
@@ -282,7 +289,8 @@
 				</div>
 			</div>
 			<div id="colorset-4" class="colorset-4">
-				<button class="btn btn-sm colorset-button background-colorset-4" id="colorset-4-toggle" onclick="toggleColorset('colorset-4')"><span>&#9679;</span>&nbsp;Colorset 4</button><br>
+				<button class="btn btn-sm colorset-button background-colorset-4" id="colorset-4-toggle" onclick="toggleColorset('colorset-4')">Colorset 4
+					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-4-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-4-colors">Colors</a>
@@ -330,7 +338,8 @@
 				</div>
 			</div>
 			<div id="colorset-5" class="colorset-5">
-				<button class="btn btn-sm colorset-button background-colorset-5" id="colorset-5-toggle" onclick="toggleColorset('colorset-5')"><span>&#9679;</span>&nbsp;Colorset 5</button><br>
+				<button class="btn btn-sm colorset-button background-colorset-5" id="colorset-5-toggle" onclick="toggleColorset('colorset-5')">Colorset 5
+					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-5-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
 						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-5-colors">Colors</a>

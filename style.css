@@ -1,11 +1,15 @@
 /* style.css */
 
-#sketch-holder {
-  position: sticky;
+#sketch-holder-holder {
 }
 
 html, body {
   height: 100%;
+}
+
+hr {
+    -webkit-margin-before: 0.4em;
+    -webkit-margin-after: 0.4em;
 }
 
 body {
@@ -41,9 +45,18 @@ h2 {
     padding: 10px;
 }
 
+.fa.fa-angle-down {
+    font-weight: bold;
+}
+
+.fa.fa-angle-up {
+    font-weight: bold;
+}
+
 .form-rounded-less {
-    border: 1px solid #888888;
-    border-radius: 2px;
+    border: solid #888888;
+    border-width: 0 1px 1px 1px;
+    border-radius: 0 0 4px 4px;
     margin-top: 0;
     margin-bottom: 10px;
     padding: 10px;
@@ -51,20 +64,6 @@ h2 {
 
 .btn-show-color-presets {
     margin-top: 10px;
-}
-
-.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
-    color: #33a6cc;
-    border-color: #33a6cc;
-}
-.btn-primary.outline:active, .btn-primary.outline.active {
-    border-color: #007299;
-    color: #007299;
-    box-shadow: none;
-}
-
-.btn-sm {
-    border-radius: 25px;
 }
 
 .btn-icon {
@@ -87,14 +86,17 @@ h2 {
 }
 
 .colorset-button {
+    width: 100%;
+    text-align: left;
     color: white;
-    border-radius: 0px;
     outline: none;
+    padding: 5px 8px 5px 10px;
     margin-top: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 0px;
 }
 
 .expanded {
+    border-radius: 4px 4px 0 0;
     outline: none !important;
     -webkit-box-shadow: 0 !important;
     box-shadow: 0 !important;
@@ -117,8 +119,16 @@ h2 {
     margin-bottom: 10px;
 }
 
+.margin-bottom-15 {
+    margin-bottom: 35px;
+}
+
 .margin-bottom-25 {
     margin-bottom: 25px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
 }
 
 .margin-top-10 {
@@ -127,6 +137,11 @@ h2 {
 
 .margin-top-15 {
     margin-top: 10px;
+}
+
+.test-things {
+    padding-top:5px;
+    padding:0;
 }
 
 .noselect {
@@ -201,6 +216,12 @@ h2 {
     padding-right: 90px;
 }
 
+.sticky-top {
+    position: sticky;
+    top: 15px;
+    margin-top: 15px;
+}
+
 .table-full {
     width: 100%;
 }
@@ -215,4 +236,6 @@ h2 {
 
 .width-40 {
     width:40%;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
