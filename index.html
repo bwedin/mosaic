@@ -47,16 +47,19 @@
 			<span class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden">Automatically changing colors/proportions every 15 sec</i></span>
 			<br>
 			<hr>
-		<!--<div id="full-preset-picker" class="form-rounded">-->
-			<!--<strong>Presets</strong>-->
-			<!--<hr>-->
-		<!--</div>-->
+		<div id="full-preset-picker" class="preset-picker form-rounded">
+			<strong class="font-size-1-25">Presets</strong>
+			<hr>
+			<table id="full-preset-table" class="table-full">
+				<tr class="table-color-preset"></tr>
+			</table>
+			<button id="cancel-full-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hideFullPresets()">Cancel</button>
+		</div>
 		<div id="color-preset-picker" class="preset-picker form-rounded">
 			<strong id="preset-title">Colorset 1 (Max colors=8)</strong>
 			<hr>
 			<table id="color-preset-table" class="table-full">
-				<tr class="table-color-preset">
-				</tr>
+				<tr class="table-color-preset"></tr>
 			</table>
 			<button id="cancel-choose-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hidePresets()">Cancel</button>
 			<button id="confirm-choose-presets" class="btn btn-rounded btn-outline-success float-right margin-top-10 margin-bottom-5">Set colors</button><br>
@@ -386,8 +389,8 @@
 				</div>
 			</div>
 		</div>
-		<br>
-			<div style="height:900px"></div>
+		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-top-10 margin-bottom-15" onclick="showFullPresets()">Show Presets</button>
+		<br><div style="height:900px"></div>
 		</div>
 		</div>
 	</div>
