@@ -918,7 +918,6 @@ function generateAutoMosaic() {
     'remove-colors','change-colors','change-proportions',
     'change-refresh-smoothing','change-columns','change-shape'];
   autoOptions = autoOptions.concat(autoOptions,['choose-preset']);
-  autoOptions = ['change-shape'];
 
   let chosenOption = chooseRandom(autoOptions);
 
@@ -978,7 +977,13 @@ function generateAutoMosaic() {
     setNumColumns(chosenColumns);
   }
   else if(chosenOption==='change-refresh-smoothing') {
-    let refreshOptions = [[0,60],[1,128],[2,256],[2,512],[3,800],[4,1000],[5,1200],[7,1600]];
+    let refreshOptions = [];
+    if(historyFraction>0.25) {
+      refreshOptions = [[3,800],[4,1000],[5,1000],[6,1200],[7,1400]];
+    }
+    else {
+      refreshOptions = [[0,60],[1,128],[2,256],[2,512]];
+    }
     let newRefreshSmooth = chooseRandom(refreshOptions);
     setSmoothing(newRefreshSmooth[0]);
     setRefreshRate(newRefreshSmooth[1]);
