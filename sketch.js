@@ -37,13 +37,15 @@ var brightColorset = ["rgb(231,0,100)","rgb(0,163,255)","rgb(255,197,0)"];
 var grayscaleColorset = ["rgb(0,0,1)","rgb(67,67,68)","rgb(133,133,134)"];
 var colorsetPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset,
         'bright': brightColorset, 'grayscale': grayscaleColorset};
+var proportionOptions = ['leftHalf','rightHalf','rightEdgeDescent','rightEdgeAscent',
+  'middleThird','firstQuarter','secondQuarter','thirdQuarter','fourthQuarter',
+  'base90','cos','negCos'];
 var colorsetKeys = Object.keys(colorsetPresets);
 var allColors = [];
 colorsetKeys.forEach(function(key) {
   allColors = allColors.concat(colorsetPresets[key]);
 });
 // thirds, fourths, increaseEdge, decreaseEdge, sinWave, -sinWave, cosWave, -cosWave
-var randomOrientations = ['leftHalf','rightHalf']
 var chosenColors = [];
 // shape drawing (proportion box)
 var shapesToDraw = [];
@@ -176,6 +178,12 @@ function setColorsetProportions(colorsetNum,type) {
   else if(type==='base90') {
     coordinateArray = [[0,90],[100*1/5,90],[100*2/5,90],[100*3/5,90],[100*4/5,90],[100,90]];
   }
+  else if(type==='cos') {
+    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
+  }
+  else if(type==='negCos') {
+    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
+  }
   else {
     return;
   }
@@ -240,6 +248,10 @@ function setRefreshRate(num) {
   $('#refresh-per-minute').val(num);
   updateRefreshRate();
 }
+function setupPresetViewButton(name) {
+  setupPresetView(name);
+  hideFullPresets();
+}
 function setupPresetView(name) {
   if(name==='sun-and-ice') {
     setShape('diamond');
@@ -285,7 +297,7 @@ function setupPresetView(name) {
   }
   else if (name==='color-party') {
     setShape('square');
-    setRefreshRate(128);
+    setRefreshRate(90);
     setNumColumns(80);
     setSmoothing(0);
     setNumColorsets(5);
@@ -402,7 +414,6 @@ function draw() {
     nextTime = nowTime + refreshRate;
   }
   if(isAutoMosaic && nowTime>nextAutoMosaic && !isFrozen) {
-    console.log('made it!');
     nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE;
     generateAutoMosaic();
   }
@@ -873,11 +884,42 @@ function toggleAutoMosaic() {
   }
   $toggleAutoMosaic.blur();
 }
+function arrayToRGB(array) {
+  let newArray = [];
+  array.forEach(function(obj) {
+    let newStr = 'rgb(' + obj.r + ',' + obj.g + ',' + obj.b + ')';
+    newArray.push(newStr);
+  })
+  return newArray;
+}
+function generateNewColors(numNewColors) {
+  if(Math.random()>0.5) {
+    // add colors from some colorset
+    let presetChoice = chooseRandom(colorsetKeys);
+    let presetColorset = colorsetPresets[presetChoice];
+    presetColorset = shuffle(presetColorset);
+    while(presetColorset<numNewColors) {
+      presetColorset.push(chooseRandom(allColors));
+    }
+    presetColorset = presetColorset.slice(0,numNewColors);
+    return presetColorset;
+  }
+  else {
+    // add random colors
+    let newColors = [];
+    for(let j=0; j<numNewColors; j++) {
+      newColors.push(chooseRandom(allColors));
+    }
+    return newColors;
+  }
+}
 function generateAutoMosaic() {
   let autoOptions = ['add-colorset','remove-colorset','add-colors',
     'remove-colors','change-colors','change-proportions',
-    'change-smoothing','change-refresh-rate','change-columns'];
+    'change-refresh-smoothing','change-columns','change-shape'];
   autoOptions = autoOptions.concat(autoOptions,['choose-preset']);
+  autoOptions = ['change-shape'];
+
   let chosenOption = chooseRandom(autoOptions);
 
   // fixing uninteresting cases
@@ -891,41 +933,115 @@ function generateAutoMosaic() {
     chosenOption='add-colorset';
   }
 
-  // if(true) {
-  //   addColorset();
-  //   let colorsetName = 'colorset-' + colorsetCount;
-  //   let chosen = colorsetKeys[Math.floor(Math.random()*colorsetKeys.length)];
-  //   setColors(colorsetName,colorsetPresets[chosen]);
-  //   setNumColorsetColors(colorsetName,Math.ceil(Math.random()*MAX_COLORS));
-  // }
-  if(chosenOption==='choose-preset') {
+  if(columnVal===1) {
+    let chosenColumns = columnVal;
+    while(chosenColumns===columnVal) {
+      chosenColumns = Math.round(Math.random()*10)*10;
+    }
+    setNumColumns(chosenColumns);
+  };
+
+  if(chosenOption==='add-colorset') {
+    addColorset();
+    let colorsetName = 'colorset-' + colorsetCount;
+    let newColors = generateNewColors(Math.round(Math.random()*MAX_COLORS));
+    setColors(colorsetName,newColors);
+    setColorsetProportions(colorsetCount,chooseRandom(proportionOptions))
+  }
+  else if(chosenOption==='change-shape') {
+    let shapeType = $('#shape-toggle input:radio:checked').val();
+    let proposedShape = shapeType;
+    let shapeOptions = ['triangle','diamond','square'];
+    while(proposedShape===shapeType) {
+      proposedShape = chooseRandom(shapeOptions);
+    }
+    setShape(proposedShape);
+  }
+  else if(chosenOption==='change-proportions') {
+    let changeColorset = Math.ceil(Math.random()*colorsetCount);
+    setColorsetProportions(changeColorset,chooseRandom(proportionOptions))
+    // randomly change one colorset, also half chance to change the others
+    for(let i=1; i<=colorsetCount; i++) {
+      if(Math.random()>0.5) {
+        setColorsetProportions(i,chooseRandom(proportionOptions))
+      }
+    }
+  }
+  else if(chosenOption==='choose-preset') {
     setupPresetView(chooseRandom(fullPresets));
   }
   else if(chosenOption==='change-columns') {
     let chosenColumns = columnVal;
     while(chosenColumns===columnVal) {
-      Math.round(Math.random()*10)*10;
+      chosenColumns = Math.round(Math.random()*10)*10;
     }
     setNumColumns(chosenColumns);
   }
-  else if(chosenOption==='change-refresh-rate') {
-    let refreshOptions = ['60','90','128','256','512','800','1200','1600'];
-    if(historyFraction===0) {
-      refreshOptions = refreshOptions.slice(0,3);
-    }
-    else if(historyFraction===0.5) {
-      refreshOptions = refreshOptions.slice(0,5);
-    }
-    else {
-      refreshOptions = refreshOptions.slice(3);
-    }
-    setRefreshRate(chooseRandom(refreshOptions));
-  }
-  else if(chosenOption==='change-smoothing') {
-    setSmoothing(Math.round(Math.random()*10));
+  else if(chosenOption==='change-refresh-smoothing') {
+    let refreshOptions = [[0,60],[1,128],[2,256],[2,512],[3,800],[4,1000],[5,1200],[7,1600]];
+    let newRefreshSmooth = chooseRandom(refreshOptions);
+    setSmoothing(newRefreshSmooth[0]);
+    setRefreshRate(newRefreshSmooth[1]);
   }
   else if(chosenOption=='remove-colorset') {
     removeColorset();
+  }
+  else if(chosenOption==='change-proportions') {
+
+  }
+  else if(chosenOption==='change-colors') {
+    let changeColorset = Math.ceil(Math.random()*colorsetCount);
+    let key = 'colorset-'+changeColorset;
+    let numNewColors = colorsetColorCount[key];
+    let newColors = generateNewColors(numNewColors);
+    setColors(key,newColors);
+    // randomly change one colorset, also half chance to change the others
+    for(let i=1; i<=colorsetCount; i++) {
+      let key = 'colorset-'+i;
+      if(Math.random()>0.5) {
+        let newColors = generateNewColors(colorsetColorCount[key]);
+        setColors(key,newColors);
+      }
+    }
+  }
+  else if(chosenOption==='remove-colors') {
+    // halves colors
+    for(let i=1; i<=colorsetCount; i++) {
+      let key = 'colorset-'+i;
+      let countBefore = colorsetColorCount[key];
+      let countNew = Math.ceil(Math.random()*countBefore);
+      setNumColorsetColors(key,countNew);
+    }
+  }
+  else if(chosenOption==='add-colors') {
+    for(let i=1; i<=colorsetCount; i++) {
+      let key = 'colorset-'+i;
+      let countBefore = colorsetColorCount[key];
+      if(countBefore===MAX_COLORS) { countBefore--; }
+      let countNew = countBefore+1+Math.round(Math.random()*(MAX_COLORS-1-countBefore));
+      let colorChoice = Math.random();
+      let newColors = arrayToRGB(shuffle(colorArray[i]));
+      if(colorChoice<0.5) {
+        // add colors from some colorset
+        let presetChoice = chooseRandom(colorsetKeys);
+        let presetColorset = colorsetPresets[presetChoice];
+        presetColorset = shuffle(presetColorset);
+        while(presetColorset.length<(countNew-countBefore)) {
+          presetColorset.push(chooseRandom(allColors));
+        }
+        while(newColors.length<countNew) {
+          newColors.push(presetColorset.shift());
+        }
+        setColors(key,newColors);
+      }
+      else {
+        // add random colors
+        while(newColors.length<countNew) {
+          newColors.push(chooseRandom(allColors));
+        }
+        setColors(key,newColors);
+      }
+    }
   }
   else {
     console.log('pass')
@@ -1060,7 +1176,7 @@ function setupPresets() {
     let $tableRow = $('<tr class="table-color-preset">' +
       '<td class="full-preset"><img style="width:50%; overflow: auto;" class="margin-left-5 rounded float-right" src="./img/' + preset + '.png" alt="' + preset +
       '"><h5 class="margin-top-15">' + preset + '</h5>' +
-      '<button class="btn btn-rounded btn-sm btn-outline-success" class="select-all-link" onclick="setupPresetView' +
+      '<button class="btn btn-rounded btn-sm btn-outline-success" class="select-all-link" onclick="setupPresetViewButton' +
       "('" + preset + "')" + '">Go</button>' +
       '</td></tr>');
     $tableRow.appendTo('#full-preset-table');
@@ -1072,10 +1188,11 @@ function setupPresets() {
       buttonsHtml = buttonsHtml + '<button class="btn-icon" data-color="' + colorName +
       '" onclick="togglePreset('+ "'" + colorName + "'" + ')" ></button>';
     })
-    let $newHtml = $('<tr class="table-color-preset">' +
+    let $newHtml = $('<tr>' +
     '<td class="width-40"><h5 class="padding-top-5">' + key + '</h5>' +
     '<a href="javascript:" class="select-all-link" onclick="selectAllColors' +
-    "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>');
+    "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>' +
+    '<tr class="table-color-preset"><td></td><td></td></tr>');
     $newHtml.appendTo('#color-preset-table');
     colorsetPresets[key].forEach(function(colorName) {
       // rgb(----)
@@ -1291,12 +1408,7 @@ const moveableXY = (obj) => ({
 const moveableXYMidpointHorizontal = (obj) => ({
   setPosition: (x,y) => {
     obj.yPos = y;
-    if(x===630) {
-      console.log('630!');
-    }
     if(!obj.leftObj.setEnd(x,y) || !obj.rightObj.setStart(x,y)) {
-      console.log(!obj.leftObj.setEnd(x,y));
-      console.log(!obj.rightObj.setStart(x,y));
       obj.leftObj.setEnd(obj.xPos,obj.yPos);
       obj.rightObj.setStart(obj.xPos,obj.yPos);
     }
