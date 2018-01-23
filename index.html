@@ -28,7 +28,7 @@
     	</div>
 	</div> -->
 	<div class="container-fluid">
-	<div id="mobile-header" class="text-center">
+	<div id="mobile-header" class="text-center initially-hidden">
 	<h1 class="margin-top-10">Hi! Welcome to the mobile version of Mosaic.</h1>
 	<p class='font-size-1-5'>Check out some of the features above/underneath the view and play around for a bit.<br>
 	If you're interested in seeing more, check out this page on a non-mobile device.<br></p>
@@ -48,14 +48,14 @@
 
 		<div id="sidebar" class="col-lg-offset-9 col-lg-3 noselect">
 		<div id="sidebar-title">
-			<h2>Mosaic?</h2>
+			<h2>Mosaic</h2>
 			<i>Interactive algorithm art</i>
 			<br>
 			<button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
 			<button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="executeSave()">Save Image</button>
 			<button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button>
 			<br>
-			<span class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden">Automatically changing view every 15 sec</i></span>
+			<span class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 15 sec</i></span>
 		</div>
 		<br>
 		<hr>
@@ -139,7 +139,7 @@
 		</datalist>
 		<span id="smoothing-display"></span>
 		<br>
-		<strong>Color </strong><i id="opacity-enabled" class="initially-hidden">Opacity controls enabled! (See colorset)</i>
+		<strong>Color </strong><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Colorset</button>
 				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
@@ -400,8 +400,10 @@
 					</div>
 				</div>
 			</div>
+			<button id="change-colors" type="button" class="btn btn-sm btn-outline-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Randomize Colors</button>
 		</div>
 		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-top-10 margin-bottom-15" onclick="showFullPresets()">Show Presets</button>
+		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-left-10 margin-top-10 margin-bottom-15" onclick="randomizeView()">Randomize View</button>
 		<br><div style="height:900px"></div>
 		</div>
 		</div>
