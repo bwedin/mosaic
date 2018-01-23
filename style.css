@@ -111,6 +111,10 @@ h2 {
     font-size: 1.25em;
 }
 
+.font-size-2 {
+    font-size: 2em;
+}
+
 .initially-hidden {
     display: none;
     font-size: .75em;

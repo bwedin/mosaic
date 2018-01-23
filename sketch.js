@@ -404,7 +404,11 @@ function setup() {
     $('#sidebar-title').fadeOut();
     forceResize
     $('.btn-sm').addClass('btn-lg');
+    $('.btn-lg').css('width','30%');
     $('.btn-sm').removeClass('btn-sm');
+    $('.margin-top-15 h5').replaceWith(function () {
+    return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
+    });
   }
 }
 function drawShapeField() {
@@ -581,9 +585,6 @@ function drawMain() {
     if(columnVal>40) {
       setNumColumns(40);
     }
-    if(shapeType==='diamond' && columnVal>30) {
-      setNumColumns(30);
-    }
     if(refreshRate<1/1000) {
       setRefreshRate(1000);
     }
@@ -614,7 +615,7 @@ function drawTriangleField(numberColumns,alphaValues) {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
-  if(fullscreen()) {
+  if(fullscreen() || isMobile()) {
     columnHeight = windowHeight;
   }
   let yPosTop = 0;
