@@ -412,11 +412,6 @@ function drawShapeField() {
     stroke(0, 0, 0);
     noFill();
   }
-  if(isMobile()) {
-    noStroke();
-    fill(255);
-    rect(0,width*9/16,width,height);
-  }
 }
 function isMobile() {
   var check = false;
@@ -580,8 +575,9 @@ function drawMain() {
   }
   columnVal = val;
   if(isMobile()) {
-    if(columnVal>60) {
-      setNumColumns(60);
+    console.log(columnVal);
+    if(columnVal>40) {
+      setNumColumns(40);
     }
     if(refreshRate<1/1000) {
       setRefreshRate(1000);
