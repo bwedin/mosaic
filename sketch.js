@@ -403,6 +403,8 @@ function setup() {
     showFullPresets();
     $('#sidebar-title').fadeOut();
     forceResize
+    $('.btn-sm').addClass('btn-lg');
+    $('.btn-sm').removeClass('btn-sm');
   }
 }
 function drawShapeField() {
