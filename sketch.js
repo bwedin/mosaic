@@ -579,6 +579,9 @@ function drawMain() {
     if(columnVal>40) {
       setNumColumns(40);
     }
+    if(shapeType==='diamond' && columnVal>30) {
+      setNumColumns(30);
+    }
     if(refreshRate<1/1000) {
       setRefreshRate(1000);
     }
@@ -609,7 +612,7 @@ function drawTriangleField(numberColumns,alphaValues) {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
-  if(fullscreen() || isMobile()) {
+  if(fullscreen()) {
     columnHeight = windowHeight;
   }
   let yPosTop = 0;
@@ -1249,9 +1252,11 @@ function showFullPresets() {
   });
 }
 function hideFullPresets() {
-  $('#full-preset-picker').fadeOut(400, function() {
-    $('#default-ui-controls').fadeIn(500);
-  });
+  if(!isMobile()){
+    $('#full-preset-picker').fadeOut(400, function() {
+      $('#default-ui-controls').fadeIn(500);
+    });
+  }
 }
 function showPresets(colorset) {
   clearPresetColors();
