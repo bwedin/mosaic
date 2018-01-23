@@ -401,10 +401,12 @@ function setup() {
   setupPresets();
   if(isMobile()) {
     showFullPresets();
+    $('#mobile-header').show();
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
     $('#cancel-full-presets').hide();
+    $('.full-preset-link').css('width','30%');
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
