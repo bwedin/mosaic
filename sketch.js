@@ -406,9 +406,9 @@ function setup() {
     $('.btn-sm').addClass('btn-lg');
     $('.btn-lg').css('width','30%');
     $('.btn-sm').removeClass('btn-sm');
-    $('.margin-top-15 h5').replaceWith(function () {
-    return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
-    });
+    // $('.margin-top-15 h5').replaceWith(function () {
+    // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
+    // });
   }
 }
 function drawShapeField() {
@@ -581,10 +581,10 @@ function drawMain() {
   }
   columnVal = val;
   if(isMobile()) {
-    if(columnVal>60) {
+    if(columnVal>60 && shapeType==='square') {
       setNumColumns(60);
     }
-    else if(shapeType==='diamond' && columnVal>40) {
+    else if((shapeType==='diamond' || shapeType==='triangle') && columnVal>40) {
       setNumColumns(40);
     }
     if(refreshRate<1/1000) {
@@ -900,6 +900,23 @@ function toggleFreeze() {
   }
   $toggleFreeze.blur();
 }
+function toggleAutoMosaicMobile() {
+  let $toggleAutoMosaic = $('#m-toggle-auto-mosaic');
+  if($toggleAutoMosaic.hasClass('active')) {
+    $toggleAutoMosaic.removeClass('active');
+    isAutoMosaic = false;
+    $( "#m-auto-mosaic-enabled" ).fadeOut( "fast", function() {
+    });
+  }
+  else {
+    $toggleAutoMosaic.addClass('active');
+    isAutoMosaic = true;
+    $( "#m-auto-mosaic-enabled" ).fadeIn( "slow", function() {
+    });
+    nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE/2;
+  }
+  $toggleAutoMosaic.blur();
+}
 function toggleAutoMosaic() {
   let $toggleAutoMosaic = $('#toggle-auto-mosaic');
   if($toggleAutoMosaic.hasClass('active')) {
@@ -953,7 +970,25 @@ function generateAutoMosaic() {
   autoOptions = autoOptions.concat(autoOptions,['choose-preset']);
 
   let chosenOption = chooseRandom(autoOptions);
-
+  executeAutoMosaic(chosenOption)
+}
+function randomizeView() {
+  let autoOptions = ['remove-colors','add-colors','change-colors','change-proportions',
+    'change-refresh-smoothing','change-columns','change-shape'];
+  newColorsetCount = Math.ceil(Math.random()*5);
+  while(colorsetCount<newColorsetCount) {
+    autoOptions.push('add-colorset');
+    newColorsetCount--;
+  }
+  while(colorsetCount<newColorsetCount) {
+    autoOptions.push('remove-colorset');
+    newColorsetCount++;
+  }
+  autoOptions.forEach(function(name) {
+    executeAutoMosaic(name);
+  });  
+}
+function executeAutoMosaic(chosenOption) {
   // fixing uninteresting cases
   if(chosenOption==='add-colorset' && colorsetCount==MAX_COLORSETS) {
     chosenOption='remove-colorset';
@@ -1213,8 +1248,8 @@ function setupPresets() {
   fullPresets.forEach(function(preset, idx) {
     let $tableRow = $('<tr class="table-color-preset">' +
       '<td class="full-preset"><img style="width:50%; overflow: auto;" class="margin-left-5 rounded float-right" src="./img/' + preset + '.png" alt="' + preset +
-      '"><h5 class="margin-top-15">' + preset + '</h5>' +
-      '<button class="btn btn-rounded btn-sm btn-outline-success" class="select-all-link" onclick="setupPresetViewButton' +
+      '"><span class="font-size-1-25 strong-font margin-top-15">' + preset + '</span><br>' +
+      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15" class="select-all-link" onclick="setupPresetViewButton' +
       "('" + preset + "')" + '">Go</button>' +
       '</td></tr>');
     $tableRow.appendTo('#full-preset-table');
@@ -1227,7 +1262,7 @@ function setupPresets() {
       '" onclick="togglePreset('+ "'" + colorName + "'" + ')" ></button>';
     })
     let $newHtml = $('<tr>' +
-    '<td class="width-40"><h5 class="padding-top-5">' + key + '</h5>' +
+    '<td class="width-40"><span class="font-size-1-25 strong-font padding-top-5">' + key + '</span><br>' +
     '<a href="javascript:" class="select-all-link" onclick="selectAllColors' +
     "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>' +
     '<tr class="table-color-preset"><td></td><td></td></tr>');
