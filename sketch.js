@@ -751,6 +751,10 @@ function getNewColor(rngColor, historyFraction, tileKey) {
     return color(rngColor);
   }
 }
+window.addEventListener('touchstart', function() {
+  // the user touched the screen!
+  generateAutoMosaic();
+});
 // p5js event listeners
 function mousePressed() {
   generateAutoMosaic();
