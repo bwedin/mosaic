@@ -753,6 +753,7 @@ function getNewColor(rngColor, historyFraction, tileKey) {
 }
 // p5js event listeners
 function mousePressed() {
+  generateAutoMosaic();
   // Check if mouse is inside the circle
   clickableObjects.forEach( function(obj) {
     if(obj.isMouseInside() && obj.isShown()) {
