@@ -413,6 +413,7 @@ function draw() {
     drawShapeField();
     nextTime = nowTime + refreshRate;
   }
+  $('#auto-mosaic-enabled').text(windowWidth);
   if(isAutoMosaic && nowTime>nextAutoMosaic && !isFrozen) {
     nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE;
     generateAutoMosaic();
@@ -756,8 +757,10 @@ function mousePressed() {
   })
   return;
 }
-function mouseReleased() {
-  activeObject = null;
+function mouseClicked() {
+  if (mouseX<width && mouseX>0 && mouseY>0 && mouseY<height && isAutoMosaic) {
+    generateAutoMosaic();
+  }
 }
 function mouseDragged() {
   if (mouseY>height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM) {
