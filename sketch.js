@@ -404,6 +404,7 @@ function setup() {
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
+    $('#cancel-full-presets').hide();
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
