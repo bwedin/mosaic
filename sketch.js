@@ -404,7 +404,7 @@ function setup() {
     $('#sidebar-title').fadeOut();
     forceResize
     $('.btn-sm').addClass('btn-lg');
-    $('.btn-lg').css('width','30%');
+    $('.btn-lg').css('width','45%');
     $('.btn-sm').removeClass('btn-sm');
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";

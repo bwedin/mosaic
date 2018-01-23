@@ -28,15 +28,17 @@
     	</div>
 	</div> -->
 	<div class="container-fluid">
-	<h1>Hi! Welcome to the mobile version of Mosaic.</h1>
-	<p class='font-size-1-5'>See some of the features above/underneath the view and play around for a bit.<br>
+	<div id="mobile-header" class="text-center">
+	<h1 class="margin-top-10">Hi! Welcome to the mobile version of Mosaic.</h1>
+	<p class='font-size-1-5'>Check out some of the features above/underneath the view and play around for a bit.<br>
 	If you're interested in seeing more, check out this page on a non-mobile device.<br></p>
 <!-- 	// todo bw: make a "randomize view button", a "change colors" button-->	
-<button id="m-change-colors" type="button" class="btn btn-sm btn-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Change Colors</button>
- <button id="m-randomize" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="randomizeView()">Randomize View</button>
-  <button id="m-mutate" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="generateAutoMosaic()">Permute View</button><br>
-	<button id="m-toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaicMobile()">Auto-Mosaic</button><br>
+	<button id="m-change-colors" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Change Colors</button>
+ 	<button id="m-randomize" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="randomizeView()">Randomize View</button><br>
+  	<button id="m-mutate" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="generateAutoMosaic()">Permute View</button>
+	<button id="m-toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-left-10 margin-bottom-5" onclick="toggleAutoMosaicMobile()">Auto-Mosaic</button><br>
 	<span class="test-things"><i id="m-auto-mosaic-enabled" class="initially-hidden-1-25">Automatically changing view every 15 sec</i></span>
+	</div>
 	<div class="row">
 		<div class="col-lg-9">
 			<div id="sketch-holder-holder" class="sticky-top">
