@@ -590,11 +590,9 @@ function drawMain() {
     else if((shapeType==='diamond' || shapeType==='triangle') && columnVal>40) {
       setNumColumns(40);
     }
-    if(refreshRate<1/1000) {
+    if()
+    if(refreshRate!=1/1000) {
       setRefreshRate(1000);
-    }
-    else if(refreshRate>1/200) {
-      setRefreshRate(500)
     }
 
   }
