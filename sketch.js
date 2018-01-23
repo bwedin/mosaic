@@ -406,9 +406,9 @@ function setup() {
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
     $('#cancel-full-presets').hide();
-    $('.full-preset-link').css('width','30%');
-    $('.full-preset-link').addClass('btn-success');
-    $('.full-preset-link').removeClass('btn-outline-success');
+    $('.btn-outline-success').css('width','30%');
+    $('.btn-outline-success').addClass('btn-success');
+    $('.btn-outline-success').removeClass('btn-outline-success');
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
@@ -1261,7 +1261,7 @@ function setupPresets() {
     let $tableRow = $('<tr class="table-color-preset">' +
       '<td class="full-preset"><img style="width:50%; overflow: auto;" class="margin-left-5 rounded float-right" src="./img/' + preset + '.png" alt="' + preset +
       '"><span class="font-size-1-25 strong-font margin-top-15">' + preset + '</span><br>' +
-      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15" class="full-preset-link" onclick="setupPresetViewButton' +
+      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15 full-preset-link" onclick="setupPresetViewButton' +
       "('" + preset + "')" + '">Go</button>' +
       '</td></tr>');
     $tableRow.appendTo('#full-preset-table');
