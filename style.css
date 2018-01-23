@@ -29,12 +29,28 @@ h2 {
     padding: 5px;
 }
 
+#m-toggle-auto-mosaic {
+    border-color: #ffbb33;
+    color: #ffbb33;
+    background-color: white;
+}
+
+#m-toggle-auto-mosaic.active {
+    border-color: #ffbb33;
+    background-color: #ffbb33;
+    color: white;
+}
+
 .btn-lg {
     font-size: 2em;
     padding-top: 11px;
     padding-bottom: 11px;
     width:45%;
     vertical-align: middle;
+}
+
+.btn-lg-toggle {
+
 }
 
 .btn-rounded {

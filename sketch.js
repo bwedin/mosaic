@@ -407,6 +407,8 @@ function setup() {
     $('.btn-sm').removeClass('btn-sm');
     $('#cancel-full-presets').hide();
     $('.full-preset-link').css('width','30%');
+    $('.full-preset-link').addClass('btn-success');
+    $('.full-preset-link').removeClass('btn-outline-success');
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
@@ -594,6 +596,7 @@ function drawMain() {
     else if(refreshRate>1/200) {
       setRefreshRate(500)
     }
+
   }
   // numberColumns = 1;
   let alphaValues = [100,150,220];
@@ -917,6 +920,7 @@ function toggleAutoMosaicMobile() {
     isAutoMosaic = true;
     $( "#m-auto-mosaic-enabled" ).fadeIn( "slow", function() {
     });
+    
     nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE/2;
   }
   $toggleAutoMosaic.blur();
