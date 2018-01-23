@@ -1249,7 +1249,7 @@ function setupPresets() {
     let $tableRow = $('<tr class="table-color-preset">' +
       '<td class="full-preset"><img style="width:50%; overflow: auto;" class="margin-left-5 rounded float-right" src="./img/' + preset + '.png" alt="' + preset +
       '"><span class="font-size-1-25 strong-font margin-top-15">' + preset + '</span><br>' +
-      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15" class="select-all-link" onclick="setupPresetViewButton' +
+      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15" class="full-preset-link" onclick="setupPresetViewButton' +
       "('" + preset + "')" + '">Go</button>' +
       '</td></tr>');
     $tableRow.appendTo('#full-preset-table');
@@ -1287,10 +1287,14 @@ function showFullPresets() {
   });
 }
 function hideFullPresets() {
+  $('.full-preset-link').blur();
   if(!isMobile()){
     $('#full-preset-picker').fadeOut(400, function() {
       $('#default-ui-controls').fadeIn(500);
     });
+  }
+  else {
+    jQuery('html,body').animate({scrollTop:0},0);
   }
 }
 function showPresets(colorset) {
