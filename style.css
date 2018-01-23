@@ -31,8 +31,10 @@ h2 {
 
 .btn-lg {
     font-size: 2em;
-    height: 50px;
+    padding-top: 11px;
+    padding-bottom: 11px;
     width:45%;
+    vertical-align: middle;
 }
 
 .btn-rounded {
