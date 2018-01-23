@@ -581,12 +581,11 @@ function drawMain() {
   }
   columnVal = val;
   if(isMobile()) {
-    console.log(columnVal);
-    if(columnVal>40) {
-      setNumColumns(40);
+    if(columnVal>60) {
+      setNumColumns(60);
     }
-    else if(shapeType==='diamond' && columnVal>30) {
-      setNumColumns(30);
+    else if(shapeType==='diamond' && columnVal>40) {
+      setNumColumns(40);
     }
     if(refreshRate<1/1000) {
       setRefreshRate(1000);
@@ -619,7 +618,7 @@ function drawTriangleField(numberColumns,alphaValues) {
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
   if(fullscreen() || isMobile()) {
-    columnHeight = windowHeight;
+    columnHeight = height;
   }
   let yPosTop = 0;
   for(let i=0; i<numberColumns; i++) {
@@ -672,7 +671,7 @@ function drawSquareField(numberColumns,alphaValues) {
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
   let columnHeight = width*(9/16);
   if(fullscreen() || isMobile()) {
-    columnHeight = windowHeight;
+    columnHeight = height;
   }
   let yPosTop = 0;
   for(let i=0; i<numberColumns; i++) {
@@ -712,7 +711,7 @@ function drawDiamondField(numberColumns,alphaValues) {
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
   let columnHeight = width*(9/16);
   if(fullscreen() || isMobile()) {
-    columnHeight = windowHeight;
+    columnHeight = height;
   }
   let yPosTop = 0;
   // todo: make column key: unique identifier will be numberColumns, columnId, rowId)
@@ -844,10 +843,17 @@ function windowResized() {
     proposedWidth = 1200;
   }
   let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
-  if(fullscreen() || isMobile()) {
+  if(fullscreen()) {
     proposedWidth= windowWidth;
     proposedHeight = windowHeight;
   }
+
+  if(isMobile()) {
+    proposedWidth= windowWidth;
+    proposedHeight = windowWidth;
+  }
+
+
   if(proposedWidth==oldWidth && !fullscreen()) {
     return;
   }
