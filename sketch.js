@@ -813,18 +813,6 @@ function forceResize(proposedWidth) {
   resizeCanvas(proposedWidth,proposedHeight);
   drawShapeField();
 }
-function forceResizeMobile() {
-  let oldHeight = height;
-  let oldWidth = width;
-  let proposedWidth = windowWidth;
-  let proposedHeight = windowHeight;
-  movingCircleArray.sort(function(a, b) {
-    return b.getX() - a.getX();
-  });
-  repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
-  resizeCanvas(proposedWidth,proposedHeight);
-  drawShapeField();
-}
 function windowResized() {
   let oldHeight = height;
   let oldWidth = width;
