@@ -585,6 +585,9 @@ function drawMain() {
     if(columnVal>40) {
       setNumColumns(40);
     }
+    else if(shapeType==='diamond' && columnVal>30) {
+      setNumColumns(30);
+    }
     if(refreshRate<1/1000) {
       setRefreshRate(1000);
     }
