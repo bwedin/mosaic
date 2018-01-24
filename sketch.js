@@ -67,6 +67,7 @@ var nowTime = START_TIME;
 var isFrozen = false;
 var isAutoMosaic = false;
 var AUTO_MOSAIC_RATE = 10;
+var MOBILE_WIDTH_OFFSET = 20;
 var nextAutoMosaic = START_TIME+AUTO_MOSAIC_RATE;
 var checkboxHtml = '<i class="fa fa-check" aria-hidden="true"></i>';
 $(document).ready(function(){
@@ -99,7 +100,8 @@ $(document).ready(function(){
       if(!state) {
         $('#sidebar').fadeIn('fast');
         $('#sketch-holder-holder').removeClass('fixed-top');
-        $('#sketch-holder-holder').addClass('sticky-top');
+        $('#sketch-holder-holder').css('position','relative');
+        $('#sketch-holder-holder').css('left','-'+MOBILE_WIDTH_OFFSET);
       }
     });
 });
@@ -409,6 +411,8 @@ function setup() {
     $('.btn-outline-success').css('width','30%');
     $('.btn-outline-success').addClass('btn-success');
     $('.btn-outline-success').removeClass('btn-outline-success');
+    $('#sketch-holder-holder').addClass('fixed-top');
+    $('#sketch-holder-holder').removeClass('sticky-top');
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
@@ -848,7 +852,7 @@ function windowResized() {
   }
 
   if(isMobile()) {
-    proposedWidth= windowWidth;
+    proposedWidth= windowWidth+MOBILE_WIDTH_OFFSET*2;
     proposedHeight = windowWidth;
   }
 
