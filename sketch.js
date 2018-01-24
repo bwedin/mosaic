@@ -401,7 +401,9 @@ function setup() {
   setupPresets();
   if(isMobile()) {
     showFullPresets();
-    $('#mobile-header').show();
+    $('#mobile-header').fadeIn('3000',function() {
+      mobileResize();
+    });
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
@@ -414,7 +416,6 @@ function setup() {
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
-    mobileResize();
   }
 }
 function drawShapeField() {
