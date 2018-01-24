@@ -284,8 +284,10 @@ h2 {
     padding-right: 90px;
 }
 
-.mobile-sketch {
+.relative-top-mobile {
     position: relative;
+    top: 30px;
+    left: -15px;
 }
 
 .sticky-top {
