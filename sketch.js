@@ -414,6 +414,7 @@ function setup() {
     // $('.margin-top-15 h5').replaceWith(function () {
     // return "<h3 class='margin-top-15'>" + $(this).text() + "</h3>";
     // });
+    mobileResize();
   }
 }
 function drawShapeField() {
@@ -565,10 +566,7 @@ function updateColorArray() {
     colorsetColorKey[i] = newColorsetColor;
     $('.' + colorsetName).css('color',newColorsetColor);
 
-    // todo bw make these behave more like outline boxes?? or an expanding div that contains the text itself
     $('.background-' + colorsetName).css('background-color',newColorsetColor);
-
-    // todo bw add a colorset clicked class instead
     $(' .expanded.background-' + colorsetName).css('background-color',newDarkColorsetColor);
   }
 }
@@ -817,10 +815,31 @@ function mouseDragged() {
 function forceResize(proposedWidth) {
   let oldHeight = height;
   let oldWidth = width;
-  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING)
+  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
   movingCircleArray.sort(function(a, b) {
     return b.getX() - a.getX();
   });
+  repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
+  resizeCanvas(proposedWidth,proposedHeight);
+  drawShapeField();
+}
+function mobileResize() {
+  proposedWidth= windowWidth;
+  proposedHeight = windowWidth;
+
+  if(proposedWidth==oldWidth && !fullscreen()) {
+    return;
+  }
+  else if(proposedWidth>oldWidth) {
+    movingCircleArray.sort(function(a, b) {
+      return b.getX() - a.getX();
+    });
+  }
+  if(proposedWidth<oldWidth) {
+    movingCircleArray.sort(function(a, b) {
+      return a.getX() - b.getX();
+    });
+  }
   repositionMovingCircles(oldWidth,oldHeight,proposedWidth,proposedHeight);
   resizeCanvas(proposedWidth,proposedHeight);
   drawShapeField();
@@ -849,6 +868,7 @@ function windowResized() {
   }
 
   if(isMobile()) {
+    return;
     proposedWidth= windowWidth;
     proposedHeight = windowWidth;
   }
