@@ -288,6 +288,7 @@ h2 {
     position: relative;
     top: 30px;
     left: -15px;
+    margin-bottom: 15px;
 }
 
 .sticky-top {
