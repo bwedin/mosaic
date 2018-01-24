@@ -825,13 +825,12 @@ function forceResize(proposedWidth) {
   drawShapeField();
 }
 function mobileResize() {
-  proposedWidth= windowWidth;
-  proposedHeight = windowWidth;
+  let oldHeight = height;
+  let oldWidth = width;
+  let proposedWidth= windowWidth;
+  let proposedHeight = windowWidth;
 
-  if(proposedWidth==oldWidth && !fullscreen()) {
-    return;
-  }
-  else if(proposedWidth>oldWidth) {
+  if(proposedWidth>oldWidth) {
     movingCircleArray.sort(function(a, b) {
       return b.getX() - a.getX();
     });
