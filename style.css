@@ -13,10 +13,12 @@ hr {
 }
 
 body {
+    font-family: "Avenir Next";
 }
 
 h2 {
-	margin-top:10px;
+    font-weight: 600;
+	margin-top:25px;
 }
 
 .alt-text {
@@ -278,10 +280,15 @@ h2 {
 }
 
 .fixed-top {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     padding-right: 90px;
+}
+
+.parameter-title {
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .relative-top-mobile {

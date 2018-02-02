@@ -40,7 +40,7 @@
 	<span class="test-things"><i id="m-auto-mosaic-enabled" class="initially-hidden-1-25">Automatically changing view every 15 sec</i></span>
 	</div>
 	<div class="row">
-		<div class="col-lg-9">
+		<div class="col-lg-9 text-center">
 			<div id="sketch-holder-holder" class="sticky-top">
 				<div id="sketch-holder"></div>
 			</div>
@@ -78,8 +78,10 @@
 			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
 		</div>
 		<div id="default-ui-controls">
-		<strong>Pattern</strong>
+		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-top-10 margin-bottom-15" onclick="showFullPresets()">Show Presets</button>
+		<button id="randomize-view" type="button" class="btn btn-outline-info margin-left-10 margin-top-10 margin-bottom-15" onclick="randomizeView()">Randomize View</button>
 		<br>
+		<div class="parameter-title">Pattern</div>
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
 			<label class="btn btn-secondary active">
 				<input type="radio" name="shape-options" id="option1" value="diamond" autocomplete="off" checked>
@@ -96,15 +98,13 @@
  -->		</label>
 		</div>
 		<br>
-		<strong>Refresh rate</strong>
-		<br>
+		<div class="parameter-title">Refresh Rate</div>
  		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
 		<br>
-		<strong>Columns</strong>
-		<br>
+		<div class="parameter-title">Columns</div>
 		<input type="range" id="num-columns" list="num-columns-data" min="0" max="100" step="10" value="60">
 		<datalist id="num-columns-data">
 		  <option value="0" label="0">
@@ -121,8 +121,7 @@
 		</datalist>
 		<span id="num-columns-display"></span>
 		<br>
-		<strong>Smoothing</strong>
-		<br>
+		<div class="parameter-title">Smoothing</div>
 		<input type="range" id="smoothing" list="smoothing-data" step="1" min="0" max="10" value="5">
 		<datalist id="smoothing-data">
 		  <option value="0">
@@ -139,7 +138,7 @@
 		</datalist>
 		<span id="smoothing-display"></span>
 		<br>
-		<strong>Color </strong><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
+		<div class="parameter-title">Color</div><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Colorset</button>
 				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
@@ -402,9 +401,7 @@
 			</div>
 			<button id="change-colors" type="button" class="btn btn-sm btn-outline-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Randomize Colors</button>
 		</div>
-		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-top-10 margin-bottom-15" onclick="showFullPresets()">Show Presets</button>
-		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-left-10 margin-top-10 margin-bottom-15" onclick="randomizeView()">Randomize View</button>
-		<br><div style="height:900px"></div>
+		<div style="height:900px"></div>
 		</div>
 		</div>
 	</div>

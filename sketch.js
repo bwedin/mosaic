@@ -856,10 +856,16 @@ function windowResized() {
     proposedWidth = 850;
   }
   else if(windowWidth>=1375 && windowWidth<1640) {
-    proposedWidth = 1000;
+    proposedWidth = 950;
+  }
+  else if(windowWidth>=1640 && windowWidth<1900) {
+    proposedWidth = 1200;
+  }
+  else if(windowWidth>=1900 && windowWidth<2200) {
+    proposedWidth = 1400;
   }
   else {
-    proposedWidth = 1200;
+    proposedWidth = 1600;
   }
   let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
   if(fullscreen()) {
