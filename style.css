@@ -321,7 +321,11 @@ h2 {
     position: relative;
     top: 30px;
     left: -15px;
-    margin-bottom: 40px;
+}
+
+.mobile-margin {
+    height: 40px;
+    display: none;
 }
 
 .sticky-top {
