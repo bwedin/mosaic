@@ -1080,7 +1080,12 @@ function executeAutoMosaic(chosenOption) {
   else if(chosenOption==='change-columns') {
     let chosenColumns = columnVal;
     while(chosenColumns===columnVal) {
-      chosenColumns = Math.round(Math.random()*10)*10;
+      if(!isMobile()) {
+        chosenColumns = Math.round(Math.random() * 10) * 10;
+      }
+      else {
+        chosenColumns = Math.round(Math.random() * 10) * 4;
+      }
     }
     setNumColumns(chosenColumns);
   }
