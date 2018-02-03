@@ -320,6 +320,7 @@ h2 {
 .relative-top-mobile {
     position: relative;
     margin-top: 30px;
+    margin-bottom: 30px;
     left: -15px;
 }
 
