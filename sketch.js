@@ -401,7 +401,7 @@ function setup() {
   shapeFieldReady = true;
   setupStartView();
   setupPresets();
-  if(!isMobile()) {
+  if(isMobile()) {
     showFullPresets();
     $('#mobile-header').fadeIn('3000',function() {
       mobileResize();
