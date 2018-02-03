@@ -401,12 +401,12 @@ function setup() {
   shapeFieldReady = true;
   setupStartView();
   setupPresets();
-  if(isMobile()) {
+  if(!isMobile()) {
     showFullPresets();
     $('#mobile-header').fadeIn('3000',function() {
       mobileResize();
     });
-    $('#mobile-margin').show();
+    $('.mobile-margin').show();
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
