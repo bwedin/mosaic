@@ -324,11 +324,6 @@ h2 {
     left: -15px;
 }
 
-.mobile-margin {
-    height: 40px;
-    display: none;
-}
-
 .sticky-top {
     position: sticky;
     top: 15px;

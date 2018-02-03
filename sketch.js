@@ -406,7 +406,6 @@ function setup() {
     $('#mobile-header').fadeIn('3000',function() {
       mobileResize();
     });
-    $('.mobile-margin').show();
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
