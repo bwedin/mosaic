@@ -236,6 +236,7 @@ function setNumColumns(num) {
 function setShape(shapeName) {
   let shapeType = $('#shape-toggle input:radio:checked').val();
   if(shapeType!=shapeName) {
+    colorTiles = {};
     // $('input[value="' + shapeName + '"]').prop('checked', true);
     $('input[value="' + shapeName + '"]').click();
     $('input[value="' + shapeName + '"]').blur();
@@ -408,7 +409,7 @@ function setup() {
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
-    $('.font-size-1-25.strong-font').addClass('font-size-2');
+    $('.font-size-1-25.strong-font').addClass('font-size-2-5');
     $('.font-size-1-25.strong-font').removeClass('font-size-1-25');
     $('#cancel-full-presets').hide();
     $('.btn-outline-success').css('width','30%');
