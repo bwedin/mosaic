@@ -408,6 +408,8 @@ function setup() {
     $('#sidebar-title').fadeOut();
     $('.btn-sm').addClass('btn-lg');
     $('.btn-sm').removeClass('btn-sm');
+    $('.font-size-1-25.strong-font').addClass('font-size-2');
+    $('.font-size-1-25.strong-font').removeClass('font-size-1-25');
     $('#cancel-full-presets').hide();
     $('.btn-outline-success').css('width','30%');
     $('.btn-outline-success').addClass('btn-success');
