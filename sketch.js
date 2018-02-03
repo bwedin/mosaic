@@ -584,7 +584,15 @@ function drawMain() {
     val=1;
   }
   columnVal = val;
+  var numColumnVal = columnVal;
   if(isMobile()) {
+    if(shapeType==='square') {
+      numColumnVal = Math.ceil(numColumnVal/2.5);
+    }
+    else if((shapeType==='diamond' || shapeType==='triangle')) {
+      numColumnVal = Math.ceil(numColumnVal/3);
+    }
+
     if(historyFraction===0) {
       setRefreshRate(256);
     }
@@ -599,13 +607,13 @@ function drawMain() {
   let alphaValues = [100,150,220];
   updateColorArray();
   if (shape==='triangle') {
-    drawTriangleField(columnVal, alphaValues);
+    drawTriangleField(numColumnVal, alphaValues);
   }
   else if (shape==='square') {
-    drawSquareField(columnVal, alphaValues);
+    drawSquareField(numColumnVal, alphaValues);
   }
   else {
-    drawDiamondField(columnVal, alphaValues);
+    drawDiamondField(numColumnVal, alphaValues);
   }
 }
 // drawing functions (shape-specific)
@@ -1042,12 +1050,7 @@ function executeAutoMosaic(chosenOption) {
   if(columnVal===1) {
     let chosenColumns = columnVal;
     while(chosenColumns===columnVal) {
-      if(!isMobile()) {
-        chosenColumns = Math.round(Math.random() * 10) * 10;
-      }
-      else {
-        chosenColumns = Math.round(Math.random() * 10) * 4;
-      }
+      chosenColumns = Math.round(Math.random() * 10) * 10;
     }
     setNumColumns(chosenColumns);
   };
@@ -1080,12 +1083,7 @@ function executeAutoMosaic(chosenOption) {
   else if(chosenOption==='change-columns') {
     let chosenColumns = columnVal;
     while(chosenColumns===columnVal) {
-      if(!isMobile()) {
-        chosenColumns = Math.round(Math.random() * 10) * 10;
-      }
-      else {
-        chosenColumns = Math.round(Math.random() * 10) * 4;
-      }
+      chosenColumns = Math.round(Math.random() * 10) * 10;
     }
     setNumColumns(chosenColumns);
   }
@@ -1103,9 +1101,6 @@ function executeAutoMosaic(chosenOption) {
   }
   else if(chosenOption=='remove-colorset') {
     removeColorset();
-  }
-  else if(chosenOption==='change-proportions') {
-
   }
   else if(chosenOption==='change-colors') {
     let changeColorset = Math.ceil(Math.random()*colorsetCount);
