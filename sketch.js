@@ -236,8 +236,9 @@ function setNumColumns(num) {
 function setShape(shapeName) {
   let shapeType = $('#shape-toggle input:radio:checked').val();
   if(shapeType!=shapeName) {
-    colorTiles = {};
-    $('#shape-toggle input:radio:checked').val(shapeName);
+    // $('input[value="' + shapeName + '"]').prop('checked', true);
+    $('input[value="' + shapeName + '"]').click();
+    $('input[value="' + shapeName + '"]').blur();
     shape = shapeName;
   }
 }
@@ -584,13 +585,6 @@ function drawMain() {
   }
   columnVal = val;
   if(isMobile()) {
-    if(columnVal>60 && shapeType==='square') {
-      setNumColumns(60);
-    }
-    else if((shapeType==='diamond' || shapeType==='triangle') && columnVal>40) {
-      setNumColumns(40);
-    }
-
     if(historyFraction===0) {
       setRefreshRate(256);
     }
@@ -600,7 +594,6 @@ function drawMain() {
     else if(refreshRate!=1/1000) {
       setRefreshRate(1000);
     }
-
   }
   // numberColumns = 1;
   let alphaValues = [100,150,220];
@@ -977,7 +970,6 @@ function toggleAutoMosaic() {
       $toggleFreeze.text('Freeze');
       isFrozen = false;
     }
-    $('#add-'+colorsetDiv).prop('disabled', false);
   }
   $toggleAutoMosaic.blur();
 }
@@ -1050,7 +1042,12 @@ function executeAutoMosaic(chosenOption) {
   if(columnVal===1) {
     let chosenColumns = columnVal;
     while(chosenColumns===columnVal) {
-      chosenColumns = Math.round(Math.random()*10)*10;
+      if(!isMobile()) {
+        chosenColumns = Math.round(Math.random() * 10) * 10;
+      }
+      else {
+        chosenColumns = Math.round(Math.random() * 10) * 4;
+      }
     }
     setNumColumns(chosenColumns);
   };
@@ -1072,13 +1069,9 @@ function executeAutoMosaic(chosenOption) {
     setShape(proposedShape);
   }
   else if(chosenOption==='change-proportions') {
-    let changeColorset = Math.ceil(Math.random()*colorsetCount);
-    setColorsetProportions(changeColorset,chooseRandom(proportionOptions))
-    // randomly change one colorset, also half chance to change the others
+    // randomly change all colorset proportions
     for(let i=1; i<=colorsetCount; i++) {
-      if(Math.random()>0.5) {
-        setColorsetProportions(i,chooseRandom(proportionOptions))
-      }
+      setColorsetProportions(i,chooseRandom(proportionOptions))
     }
   }
   else if(chosenOption==='choose-preset') {
@@ -1240,6 +1233,7 @@ function addColor(colorsetDiv) {
 }
 function removeColorset() {
   $('#add-colorset').prop('disabled', false);
+  $('#max-colorsets').fadeOut('fast');
 
   if(colorsetCount>1) {
     let shownObjects = colorsetObjects[colorsetCount];
@@ -1272,6 +1266,7 @@ function addColorset() {
   }
   if(colorsetCount == MAX_COLORSETS) {
     $('#add-colorset').prop('disabled', true);
+    $('#max-colorsets').fadeIn('slow');
   }
   updateColorArray();
 }

@@ -8,15 +8,20 @@ html, body {
 }
 
 hr {
-    -webkit-margin-before: 0.4em;
-    -webkit-margin-after: 0.4em;
+    -webkit-margin-before: .6em;
+    -webkit-margin-after: .6em;
 }
 
 body {
     font-family: "Avenir Next";
 }
 
+button {
+    font-family: "Avenir Next";
+}
+
 h2 {
+    font-size: 2.2em;
     font-weight: 600;
 	margin-top:25px;
 }
@@ -28,7 +33,6 @@ h2 {
 
 .btn-group {
     border-radius: 5px;
-    padding: 5px;
 }
 
 #m-toggle-auto-mosaic {
@@ -145,6 +149,10 @@ h2 {
     font-size: 1.5em;
 }
 
+.font-size-2-5 {
+    font-size: 1.5em;
+}
+
 .initially-hidden {
     display: none;
 }
@@ -254,7 +262,7 @@ h2 {
 }
 
 .margin-right-10 {
-    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .padding-top-5 {
@@ -288,7 +296,9 @@ h2 {
 
 .parameter-title {
     font-weight: 600;
-    margin-bottom: 4px;
+    font-size: 1.1em;
+    margin-bottom: 3px;
+    margin-top: 2px;
 }
 
 .relative-top-mobile {

@@ -30,13 +30,13 @@
 	<div class="container-fluid">
 	<div id="mobile-header" class="text-center initially-hidden">
 	<h1 class="margin-top-10">Hi! Welcome to the mobile version of Mosaic.</h1>
-	<p class='font-size-1-5'>Check out some of the features above/underneath the view and play around for a bit.<br>
-	If you're interested in seeing more, check out this page on a non-mobile device.<br></p>
+	<p class='font-size-2-5'>Click some buttons, play around for a bit.<br>
+	If you want more features and controls, check out this page on a non-mobile device.<br></p>
 <!-- 	// todo bw: make a "randomize view button", a "change colors" button-->	
-	<button id="m-change-colors" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Change Colors</button>
- 	<button id="m-randomize" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="randomizeView()">Randomize View</button><br>
-  	<button id="m-mutate" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5" onclick="generateAutoMosaic()">Permute View</button>
-	<button id="m-toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-left-10 margin-bottom-5" onclick="toggleAutoMosaicMobile()">Auto-Mosaic</button><br>
+	<button id="m-change-colors" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-1-5" onclick="executeAutoMosaic('change-colors')">Change Colors</button>
+ 	<button id="m-randomize" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-1-5" onclick="randomizeView()">Randomize View</button><br>
+  	<button id="m-mutate" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-1-5" onclick="generateAutoMosaic()">Permute View</button>
+	<button id="m-toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-left-10 margin-bottom-5 font-size-1-5" onclick="toggleAutoMosaicMobile()">Auto-Mosaic</button><br>
 	<span class="test-things"><i id="m-auto-mosaic-enabled" class="initially-hidden-1-25">Automatically changing view every 15 sec</i></span>
 	</div>
 	<div class="row">
@@ -54,10 +54,8 @@
 			<button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
 			<button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="executeSave()">Save Image</button>
 			<button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button>
-			<br>
-			<span class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 15 sec</i></span>
+			<div class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 15 sec</i></div>
 		</div>
-		<br>
 		<hr>
 		<div id="full-preset-picker" class="preset-picker form-rounded">
 			<strong class="font-size-1-25">Presets</strong>
@@ -78,9 +76,9 @@
 			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
 		</div>
 		<div id="default-ui-controls">
-		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-top-10 margin-bottom-15" onclick="showFullPresets()">Show Presets</button>
-		<button id="randomize-view" type="button" class="btn btn-outline-info margin-left-10 margin-top-10 margin-bottom-15" onclick="randomizeView()">Randomize View</button>
-		<br>
+		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-right-10 margin-top-5 margin-bottom-5" onclick="showFullPresets()">Show Presets</button>
+		<button id="randomize-view" type="button" class="btn btn-outline-info margin-top-5 margin-bottom-5" onclick="randomizeView()">Randomize View</button>
+		<div class="margin-top-10"></div>
 		<div class="parameter-title">Pattern</div>
 		<div class="btn-group" data-toggle="buttons" id="shape-toggle">
 			<label class="btn btn-secondary active">
@@ -97,13 +95,11 @@
 <!-- 		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
  -->		</label>
 		</div>
-		<br>
 		<div class="parameter-title">Refresh Rate</div>
- 		<input id="refresh-per-minute" type="number" class="input-number" value="500" min="1" size="6">&nbsp;times per minute<br>
+ 		<input id="refresh-per-minute" type="number" class="input-number" value="700" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
-		<br>
 		<div class="parameter-title">Columns</div>
 		<input type="range" id="num-columns" list="num-columns-data" min="0" max="100" step="10" value="60">
 		<datalist id="num-columns-data">
@@ -120,7 +116,6 @@
 		  <option value="100" label="100">
 		</datalist>
 		<span id="num-columns-display"></span>
-		<br>
 		<div class="parameter-title">Smoothing</div>
 		<input type="range" id="smoothing" list="smoothing-data" step="1" min="0" max="10" value="5">
 		<datalist id="smoothing-data">
@@ -137,11 +132,11 @@
 		  <option value="10">
 		</datalist>
 		<span id="smoothing-display"></span>
-		<br>
 		<div class="parameter-title">Color</div><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Colorset</button>
 				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
+				<div id="max-colorsets" class="initially-hidden-75">Max colorsets reached</div>
 
 
 				<!-- <div class="panel-group">
