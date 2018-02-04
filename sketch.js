@@ -1019,6 +1019,10 @@ function generateAutoMosaic() {
     'change-refresh-smoothing','change-columns','change-shape'];
   autoOptions = autoOptions.concat(autoOptions,['choose-preset']);
 
+  if(colorsetCount===1) {
+    autoOptions = ['add-colorset','change-colors','add-colors'];
+  }
+
   let chosenOption = chooseRandom(autoOptions);
   executeAutoMosaic(chosenOption)
 }
