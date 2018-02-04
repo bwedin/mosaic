@@ -1037,7 +1037,7 @@ function randomizeView() {
     autoOptions.push('add-colorset');
     newColorsetCount--;
   }
-  while(colorsetCount<newColorsetCount) {
+  while(colorsetCount>newColorsetCount) {
     autoOptions.push('remove-colorset');
     newColorsetCount++;
   }
