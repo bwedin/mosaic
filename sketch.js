@@ -66,7 +66,7 @@ var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
 var isAutoMosaic = false;
-var AUTO_MOSAIC_RATE = 10;
+var AUTO_MOSAIC_RATE = 8;
 var nextAutoMosaic = START_TIME+AUTO_MOSAIC_RATE;
 var checkboxHtml = '<i class="fa fa-check" aria-hidden="true"></i>';
 $(document).ready(function(){
@@ -1021,6 +1021,9 @@ function generateAutoMosaic() {
 
   if(colorsetCount===1) {
     autoOptions = ['add-colorset','change-colors','add-colors'];
+  }
+  else if(colorsetCount===2) {
+    autoOptions.concat(['add-colorset','add-colorset']);
   }
 
   let chosenOption = chooseRandom(autoOptions);
