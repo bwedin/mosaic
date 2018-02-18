@@ -1,4 +1,3 @@
-// todo bw: have a few different presets, randomly pick between the 7-8?
 
 // sketch.js
 var fullCanvas = null;
@@ -792,12 +791,17 @@ function getNewColor(rngColor, historyFraction, tileKey) {
 // p5js event listeners
 function mousePressed() {
   // Check if mouse is inside the circle
+  var noObjectFound=true;
   clickableObjects.forEach( function(obj) {
     if(obj.isMouseInside() && obj.isShown()) {
+      noObjectFound=false;
       activeObject = obj;
       return;
     }
   })
+  if(noObjectFound) {
+    activeObject = null;
+  }
   return;
 }
 function mouseDragged() {
@@ -1503,6 +1507,11 @@ const clickableCircle = (obj) => ({
   isMouseInside: () => {
     var d = dist(mouseX, mouseY, obj.xPos, obj.yPos);
     if (d < obj.radius) {
+      console.log('mouseX: ', mouseX)
+      console.log('mouseY: ', mouseY)
+      console.log('obj.xPos: ', obj.xPos)
+      console.log('obj.yPos: ', obj.yPos)
+
       return true;
     }
     else {
