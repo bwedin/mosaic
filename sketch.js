@@ -1002,7 +1002,7 @@ function generateNewColors(numNewColors) {
     let presetChoice = chooseRandom(colorsetKeys);
     let presetColorset = colorsetPresets[presetChoice];
     presetColorset = shuffle(presetColorset);
-    while(presetColorset<numNewColors) {
+    while(presetColorset.length<numNewColors) {
       presetColorset.push(chooseRandom(allColors));
     }
     presetColorset = presetColorset.slice(0,numNewColors);
