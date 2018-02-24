@@ -1507,10 +1507,6 @@ const clickableCircle = (obj) => ({
   isMouseInside: () => {
     var d = dist(mouseX, mouseY, obj.xPos, obj.yPos);
     if (d < obj.radius) {
-      console.log('mouseX: ', mouseX)
-      console.log('mouseY: ', mouseY)
-      console.log('obj.xPos: ', obj.xPos)
-      console.log('obj.yPos: ', obj.yPos)
 
       return true;
     }
