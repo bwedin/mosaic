@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Mosaic</title>
+    <title>Mosaic Learning</title>
     <link rel="icon" href="./img/favicon.ico">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" 
     	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -50,9 +50,9 @@
 		<div id="sidebar" class="col-lg-offset-9 col-lg-3 noselect">
 		<div id="sidebar-title">
 			<h2>Mosaic</h2>
-			<i>Interactive algorithm art</i>
+			<i>Interactive algorithm art inspired by machine learning</i>
 			<br>
-			<button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button>
+			<!-- <button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button> -->
 			<button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
 			<button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="executeSave()">Save Image</button>
 			<div class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 10 sec</i></div>
@@ -66,7 +66,7 @@
 			</table>
 			<button id="cancel-full-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hideFullPresets()">Cancel</button>
 		</div>
-		<div id="color-preset-picker" class="preset-picker form-rounded">
+		<!-- <div id="color-preset-picker" class="preset-picker form-rounded">
 			<strong id="preset-title">Colorset 1 (Max colors=8)</strong>
 			<hr>
 			<table id="color-preset-table" class="table-full">
@@ -75,7 +75,7 @@
 			<button id="cancel-choose-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hidePresets()">Cancel</button>
 			<button id="confirm-choose-presets" class="btn btn-rounded btn-outline-success float-right margin-top-10 margin-bottom-5">Set colors</button><br>
 			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
-		</div>
+		</div> -->
 		<div id="default-ui-controls">
 		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-right-10 margin-top-5 margin-bottom-5" onclick="showFullPresets()">Show Presets</button>
 		<button id="randomize-view" type="button" class="btn btn-outline-info margin-top-5 margin-bottom-5" onclick="randomizeView()">Randomize View</button>
@@ -97,7 +97,7 @@
  -->		</label>
 		</div>
 		<div class="parameter-title">Refresh Rate</div>
- 		<input id="refresh-per-minute" type="number" class="input-number" value="700" min="1" size="6">&nbsp;times per minute<br>
+ 		<input id="refresh-per-minute" type="number" class="input-number" value="70" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
@@ -135,9 +135,9 @@
 		<span id="smoothing-display"></span>
 		<div class="parameter-title">Color</div><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
 		<div id="color-picker-master" class="form-rounded">
-				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Colorset</button>
+				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Layer</button>
 				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
-				<div id="max-colorsets" class="initially-hidden-75">Max colorsets reached</div>
+				<div id="max-colorsets" class="initially-hidden-75">Max layers reached</div>
 
 
 				<!-- <div class="panel-group">
@@ -150,7 +150,7 @@
  -->
 
 			<div id="colorset-1" class="colorset-1">
-				<button class="btn btn-sm colorset-button background-colorset-1" id="colorset-1-toggle" onclick="toggleColorset('colorset-1')">Colorset 1
+				<button class="btn btn-sm colorset-button background-colorset-1" id="colorset-1-toggle" onclick="toggleColorset('colorset-1')">Layer 1 (Input)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<!--<a href="#" data-toggle="collapse" data-target="#colorset-1-collapse" id="colorset-1" class="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</a>-->
 				<div id="colorset-1-collapse" class="form-rounded-less collapse in">
@@ -161,7 +161,7 @@
 
 					<div class="tab-content">
 						<div id="colorset-1-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-1')>+ Add Color</button>
+							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-1')>+ Add Activation</button>
 							<button id="remove-colorset-1" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-1')>- Remove</button>
 							<div id="colorset-1-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
@@ -179,7 +179,7 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-1-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<button id="presets-colorset-1" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-1')>Presets</button>
+							<!-- <button id="presets-colorset-1" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-1')>Presets</button> -->
 							<br>
 						</div>
 						<div id="colorset-1-opacity" class="tab-pane fade opacity-controls">
@@ -201,7 +201,7 @@
 				</div>
 			</div>
 			<div id="colorset-2" class="colorset-2">
-				<button class="btn btn-sm colorset-button background-colorset-2" id="colorset-2-toggle" onclick="toggleColorset('colorset-2')">Colorset 2
+				<button class="btn btn-sm colorset-button background-colorset-2" id="colorset-2-toggle" onclick="toggleColorset('colorset-2')">Layer 2 (mixed3a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-2-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
@@ -211,7 +211,7 @@
 
 					<div class="tab-content">
 						<div id="colorset-2-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-2" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-2')>+ Add Color</button>
+							<button id="add-colorset-2" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-2')>+ Add Activation</button>
 							<button id="remove-colorset-2" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-2')>- Remove</button>
 							<div id="colorset-2-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
@@ -229,7 +229,7 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-2-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<button id="presets-colorset-2" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-2')>Presets</button>
+							<!-- <button id="presets-colorset-2" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-2')>Presets</button> -->
 						</div>
 						<div id="colorset-2-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-2-opacity" data-percent="30" value="80" >
@@ -250,7 +250,7 @@
 				</div>
 			</div>
 			<div id="colorset-3" class="colorset-3">
-				<button class="btn btn-sm colorset-button background-colorset-3" id="colorset-3-toggle" onclick="toggleColorset('colorset-3')">Colorset 3
+				<button class="btn btn-sm colorset-button background-colorset-3" id="colorset-3-toggle" onclick="toggleColorset('colorset-3')">Layer 3 (mixed4a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-3-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
@@ -259,7 +259,7 @@
 					</ul>
 					<div class="tab-content">
 						<div id="colorset-3-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-3" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-3')>+ Add Color</button>
+							<button id="add-colorset-3" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-3')>+ Add Activation</button>
 							<button id="remove-colorset-3" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-3')>- Remove</button>
 							<div id="colorset-3-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
@@ -277,7 +277,7 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-3-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<button id="presets-colorset-3" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-3')>Presets</button>
+							<!-- <button id="presets-colorset-3" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-3')>Presets</button> -->
 						</div>
 						<div id="colorset-3-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-3-opacity" data-percent="30" value="80" >
@@ -298,7 +298,7 @@
 				</div>
 			</div>
 			<div id="colorset-4" class="colorset-4">
-				<button class="btn btn-sm colorset-button background-colorset-4" id="colorset-4-toggle" onclick="toggleColorset('colorset-4')">Colorset 4
+				<button class="btn btn-sm colorset-button background-colorset-4" id="colorset-4-toggle" onclick="toggleColorset('colorset-4')">Layer 4 (mixed4d)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-4-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
@@ -308,7 +308,7 @@
 
 					<div class="tab-content">
 						<div id="colorset-4-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-4" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-4')>+ Add Color</button>
+							<button id="add-colorset-4" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-4')>+ Add Activation</button>
 							<button id="remove-colorset-4" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-4')>- Remove</button>
 							<div id="colorset-4-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
@@ -326,7 +326,7 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-4-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<button id="presets-colorset-4" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-4')>Presets</button>
+							<!-- <button id="presets-colorset-4" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-4')>Presets</button> -->
 						</div>
 						<div id="colorset-4-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-4-opacity" data-percent="30" value="80" >
@@ -347,7 +347,7 @@
 				</div>
 			</div>
 			<div id="colorset-5" class="colorset-5">
-				<button class="btn btn-sm colorset-button background-colorset-5" id="colorset-5-toggle" onclick="toggleColorset('colorset-5')">Colorset 5
+				<button class="btn btn-sm colorset-button background-colorset-5" id="colorset-5-toggle" onclick="toggleColorset('colorset-5')">Layer 5 (mixed5a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-5-collapse" class="form-rounded-less collapse in">
 					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
@@ -357,7 +357,7 @@
 
 					<div class="tab-content">
 						<div id="colorset-5-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-5" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-5')>+ Add Color</button>
+							<button id="add-colorset-5" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-5')>+ Add Activation</button>
 							<button id="remove-colorset-5" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-5')>- Remove</button>
 							<div id="colorset-5-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
@@ -375,7 +375,7 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-5-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<button id="presets-colorset-5" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-5')>Presets</button>
+							<!-- <button id="presets-colorset-5" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-5')>Presets</button> -->
 						</div>
 						<div id="colorset-5-opacity" class="tab-pane fade opacity-controls">
 							<input type="checkbox" name="colorset-5-opacity" data-percent="30" value="80">
@@ -395,7 +395,7 @@
 					</div>
 				</div>
 			</div>
-			<button id="change-colors" type="button" class="btn btn-sm btn-outline-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Randomize Colors</button>
+			<!-- <button id="change-colors" type="button" class="btn btn-sm btn-outline-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Randomize Colors</button> -->
 		</div>
 		<div style="height:900px"></div>
 		</div>

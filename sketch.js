@@ -1,5 +1,13 @@
+// june 11: 
+// rewrite colorsets to image layers
+// drawing a square based off position means creating a dictionary
+// 
+
 
 // sketch.js
+var uploadedImages = [0,0];
+
+
 var fullCanvas = null;
 var shape = "diamond";
 var columnVal = 60;
@@ -52,7 +60,7 @@ var shapesToDraw = [];
 var COLORSET_EQ_BOTTOM = 8;
 var COLORSET_EQ_TOP = 140;
 var CIRCLE_RADIUS = 8;
-var NUM_EQ_NODES = 6;
+var NUM_EQ_NODES = 3;
 var movingCircleArray = [];
 var clickableObjects = [];
 var colorTiles = {};
@@ -321,11 +329,49 @@ function setupPresetView(name) {
     $('[data-percent="60"]:checkbox').prop('checked', 'true');
   }
 }
+
+function drawSquareIcon(sideLength, leftPosX, topPosY, rngColor, tileKey) {
+    iconWidth = 25;
+    iconHeight = 25;
+    idx = Math.round(tileKey*100)%2;
+    if(Math.random()>0.5) {
+    idx=0;
+    }
+    else {
+      idx=1;
+    }
+    img = uploadedImages[idx];
+    image(img, leftPosX, topPosY, iconWidth, iconHeight); 
+    return;
+}
+
+
+function uploadFilepath(fpath, idx) {
+  // Create an image DOM element but don't show it
+    // var img = p.createImg(file.data).hide();
+      // Draw the image onto the canvas
+    // loadImage('assets/laDefense.jpg', function(img) {
+    loadImage(fpath, function(img) {
+      uploadedImages[idx] = img;  
+      console.log(uploadedImages);
+    });
+  }
+
+
 // function showPreset(id) {
 //     'rgb(,,)'
 // }
 // main p5
 function setup() {
+    fpaths = [
+      'https://i.imgur.com/mVXko0S.png',
+      'https://i.imgur.com/skwKtfz.png'
+    ];
+    uploadFilepath(fpaths[0],0)
+    uploadFilepath(fpaths[1],1)
+    console.log('2')
+    console.log(uploadedImages);
+
     noSmooth();
     fullCanvas = createCanvas(500, 500);
     fullCanvas.parent('sketch-holder');
@@ -379,7 +425,7 @@ function setup() {
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(width*((j+1)/5),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i);
+            circleObj =  MovingCircleMidpoint(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
@@ -398,7 +444,7 @@ function setup() {
   stroke(0, 0, 0);
   noFill();
   shapeFieldReady = true;
-  setupStartView();
+  // setupStartView();
   setupPresets();
   if(isMobile()) {
     showFullPresets();
@@ -566,12 +612,11 @@ function updateColorArray() {
     rKey = Math.round(rKey/colorCount).toString(16).padStart(2, '0');
     gKey = Math.round(gKey/colorCount).toString(16).padStart(2, '0');
     bKey = Math.round(bKey/colorCount).toString(16).padStart(2, '0');
-    let newColorsetColor = '#' + rKey + gKey + bKey;
-    colorsetColorKey[i] = newColorsetColor;
+    let newColorsetColor = colorsetColorKey[i];
     $('.' + colorsetName).css('color',newColorsetColor);
 
     $('.background-' + colorsetName).css('background-color',newColorsetColor);
-    $(' .expanded.background-' + colorsetName).css('background-color',newDarkColorsetColor);
+    $(' .expanded.background-' + colorsetName).css('background-color',newColorsetColor);
   }
 }
 function drawMain() {
@@ -612,6 +657,7 @@ function drawMain() {
     drawTriangleField(numColumnVal, alphaValues);
   }
   else if (shape==='square') {
+    console.log('frame');
     drawSquareField(numColumnVal, alphaValues);
   }
   else {
@@ -707,10 +753,14 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProport
   }
 }
 function drawSquare(sideLength, leftPosX, topPosY, rngColor, tileKey) {
-  let drawColor = getNewColor(rngColor,historyFraction,tileKey);
-  fill(drawColor);
-  noStroke();
-  rect(leftPosX,topPosY,sideLength,sideLength);
+  // console.log([sideLength, leftPosX, topPosY, rngColor, tileKey]);
+  // console.log('nice job!')
+  // console.log(uploadedImages);
+  drawSquareIcon(sideLength, leftPosX, topPosY, rngColor, tileKey);
+  // let drawColor = getNewColor(rngColor,historyFraction,tileKey);
+  // fill(drawColor);
+  // noStroke();
+  // rect(leftPosX,topPosY,sideLength,sideLength);
   return;
 }
 function drawDiamondField(numberColumns,alphaValues) {
