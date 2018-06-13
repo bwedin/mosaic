@@ -1,0 +1,12 @@
+{
+	"dog-and-cat" : {
+		"0" :
+			{
+				"5" : ["i-diamond.png","i-square.png"]
+			},
+		"1" :
+			{
+				"5" : ["i-triangle.png"]
+			}
+	}
+}

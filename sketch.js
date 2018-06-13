@@ -6,7 +6,9 @@
 
 // sketch.js
 var uploadedImages = [0,0];
-
+var imagesLoaded = false;
+var semanticDictionaries = null;
+var imageDictionary = {};
 
 var fullCanvas = null;
 var shape = "diamond";
@@ -333,14 +335,21 @@ function setupPresetView(name) {
 function drawSquareIcon(sideLength, leftPosX, topPosY, rngColor, tileKey) {
     iconWidth = 25;
     iconHeight = 25;
-    idx = Math.round(tileKey*100)%2;
-    if(Math.random()>0.5) {
-    idx=0;
+    let imgName = null;
+    if(leftPosX/width<0.5) {
+      imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
     }
     else {
-      idx=1;
+      imgName = semanticDictionaries['dog-and-cat']['1']['5'];
     }
-    img = uploadedImages[idx];
+    // idx = Math.round(tileKey*100)%2;
+    // if(Math.random()>0.5) {
+    // idx=0;
+    // }
+    // else {
+    //   idx=1;
+    // }
+    img = imageDictionary[imgName];
     image(img, leftPosX, topPosY, iconWidth, iconHeight); 
     return;
 }
@@ -353,24 +362,60 @@ function uploadFilepath(fpath, idx) {
     // loadImage('assets/laDefense.jpg', function(img) {
     loadImage(fpath, function(img) {
       uploadedImages[idx] = img;  
-      console.log(uploadedImages);
     });
   }
 
+function loadSemanticDictionaries() {
+  let promises = [];
+  let d = $.getJSON( "lib/img_dict.json")
+    .done(function(data) {
+      semanticDictionaries = data;
+    })
+    .fail(function(e) {
+      console.log( "error, could not load img_dict.json" );
+      console.log("response: ", e);
+    })
+  promises.push(d);
 
+  d = $.Deferred();
+  promises.push(d);
+  $.getJSON( "lib/unique_sprites.json")
+    .done(function(data) {
+      let p = null;
+      data.forEach(function(fpath) {
+        loadImage("img/"+fpath, function(img) {
+          imageDictionary[fpath] = img;
+          if(Object.keys(imageDictionary).length===data.length) {
+            d.resolve(); 
+          }
+        });
+      });
+    })
+    .fail(function(e) {
+      console.log( "error, could not load unique_sprites.json" );
+      console.log("response: ", e);
+    });
+  $.when.apply($, promises)
+    .fail(function () {
+      d.reject();
+    }).done(function() {
+      console.log('promises resolved. dictionaries:');
+      console.log(imageDictionary);
+      console.log(semanticDictionaries);
+    });
+}
 // function showPreset(id) {
 //     'rgb(,,)'
 // }
 // main p5
 function setup() {
+  loadSemanticDictionaries();
     fpaths = [
       'https://i.imgur.com/mVXko0S.png',
       'https://i.imgur.com/skwKtfz.png'
     ];
     uploadFilepath(fpaths[0],0)
     uploadFilepath(fpaths[1],1)
-    console.log('2')
-    console.log(uploadedImages);
 
     noSmooth();
     fullCanvas = createCanvas(500, 500);
@@ -419,25 +464,35 @@ function setup() {
             if (i>INIT_COLORSETS) { bezierObj.hide(); }
         }
         let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[0],i);
+        let startObj = circleObj;
+        shapesToDraw.push(circleObj);
+        clickableObjects.push(circleObj);
+        movingCircleArray.push(circleObj);
+        circleArray.push(circleObj);
+        if (i>INIT_COLORSETS) { circleObj.hide(); }
+        // for(let j=0; j<bezierArray.length-1; j++) {
+        //     circleObj =  MovingCircleMidpoint(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i);
+        //     shapesToDraw.push(circleObj);
+        //     clickableObjects.push(circleObj);
+        //     movingCircleArray.push(circleObj);
+        //     circleArray.push(circleObj);
+        //     if (i>INIT_COLORSETS) { circleObj.hide(); }
+        // }
+        circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[bezierArray.length-1],i);
+        let endObj = circleObj;
         shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpoint(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i);
+            circleObj =  MovingCircleMidpointLeader(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i,startObj,endObj);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
             if (i>INIT_COLORSETS) { circleObj.hide(); }
         }
-        circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[bezierArray.length-1],i);
-        shapesToDraw.push(circleObj);
-        clickableObjects.push(circleObj);
-        movingCircleArray.push(circleObj);
-        circleArray.push(circleObj);
-        if (i>INIT_COLORSETS) { circleObj.hide(); }
         colorsetObjects[i] = {'bezier': bezierArray, 'circle': circleArray};
     }
   background(255);
@@ -1345,7 +1400,7 @@ function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
       obj.lock();
     }
     else {
-      obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
+      obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()),true);
     }
   })
 }
@@ -1591,6 +1646,31 @@ const moveableXY = (obj) => ({
     obj.yPos = y;
   }
 });
+const moveableXYMidpointHorizontalLeader = (obj) => ({
+  setPosition: (x,y,repositioning) => {
+    obj.yPos = y;
+    if(!obj.leftObj.setEnd(x,y) || !obj.rightObj.setStart(x,y)) {
+      obj.leftObj.setEnd(obj.xPos,obj.yPos);
+      obj.rightObj.setStart(obj.xPos,obj.yPos);
+    }
+    else {
+      obj.xPos = x;
+    }
+    // console.log('rescale?')
+    if(!repositioning) {
+      obj.leftFollower.setPosition(obj.leftFollower.getX(),obj.yPos);
+      obj.rightFollower.setPosition(obj.rightFollower.getX(),obj.yPos);
+    }
+  },
+  rescalePosition: (x,y) => {
+    obj.yPos = y;
+    obj.leftObj.setEnd(window.canvas,y);
+    obj.rightObj.setStart(0,y);
+    obj.leftObj.setEnd(x,y);
+    obj.rightObj.setStart(x,y);
+    obj.xPos = x;
+  }
+});
 const moveableXYMidpointHorizontal = (obj) => ({
   setPosition: (x,y) => {
     obj.yPos = y;
@@ -1747,6 +1827,23 @@ const MovingCircleEndpoint = (xPos,yPos,radius,color,leftObj,text)  => {
     gettableXY(state),
     hideable(state)
   )
+};
+const MovingCircleMidpointLeader = (xPos,yPos,radius,color,leftObj,rightObj,text,leftFollower,rightFollower)  => {
+  var state = {
+    xPos,yPos,radius,color,leftObj,rightObj,text,leftFollower,rightFollower,
+    shown: true
+  }
+  leftObj.setEnd(xPos,yPos);
+  rightObj.setStart(xPos,yPos);
+  return Object.assign(
+    {},
+    clickableCircle(state),
+    drawableCircle(state),
+    moveableXYMidpointHorizontalLeader(state),
+    gettableXY(state),
+    hideable(state)
+  )
+
 };
 const MovingCircleMidpoint = (xPos,yPos,radius,color,leftObj,rightObj,text)  => {
   var state = {
