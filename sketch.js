@@ -393,7 +393,7 @@ function uploadFilepath(fpath, idx) {
 
 function loadSemanticDictionaries() {
   let promises = [];
-  let d = $.getJSON( "lib/img_dict_new.json")
+  let d = $.getJSON( "lib/img_dict.json")
     .done(function(data) {
       semanticDictionaries = data;
     })
