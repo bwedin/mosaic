@@ -101,7 +101,7 @@
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
-		<div class="parameter-title">Columns</div>
+		<!-- <div class="parameter-title">Columns</div>
 		<input type="range" id="num-columns" list="num-columns-data" min="0" max="100" step="10" value="20">
 		<datalist id="num-columns-data">
 		  <option value="0" label="0">
@@ -116,28 +116,29 @@
 		  <option value="90">
 		  <option value="100" label="100">
 		</datalist>
-		<span id="num-columns-display"></span>
-		<div class="parameter-title">Smoothing</div>
-		<input type="range" id="smoothing" list="smoothing-data" step="1" min="0" max="10" value="5">
-		<datalist id="smoothing-data">
+		<span id="num-columns-display"></span> -->
+		<div class="parameter-title">Opacity</div>
+		<input type="range" id="opacity" list="opacity-data" step="10" min="0" max="100" value="50">
+		<datalist id="opacity-data">
 		  <option value="0">
-		  <option value="1">
-		  <option value="2">
-		  <option value="3">
-		  <option value="4">
-		  <option value="5">
-		  <option value="6">
-		  <option value="7">
-		  <option value="8">
-		  <option value="9">
 		  <option value="10">
+		  <option value="20">
+		  <option value="30">
+		  <option value="40">
+		  <option value="50">
+		  <option value="60">
+		  <option value="70">
+		  <option value="80">
+		  <option value="90">
+		  <option value="100">
 		</datalist>
-		<span id="smoothing-display"></span>
-		<div class="parameter-title">Color</div><i id="opacity-enabled" class="initially-hidden-75">Opacity controls enabled! (See colorset)</i>
+		<span id="opacity-display"></span>
+		<div class="font-size-75"><i>Set opacity to 100% to improve performance speed</i></div>
+		<div class="parameter-title">Layers</div>
 		<div id="color-picker-master" class="form-rounded">
 				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Layer</button>
 				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
-				<div id="max-colorsets" class="initially-hidden-75">Max layers reached</div>
+				<div id="max-layers" class="initially-hidden-75">Max layers reached</div>
 
 
 				<!-- <div class="panel-group">
@@ -154,13 +155,11 @@
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<!--<a href="#" data-toggle="collapse" data-target="#colorset-1-collapse" id="colorset-1" class="colorset-1"><span class="colorset-1">&#9679;</span> Colorset 1</a>-->
 				<div id="colorset-1-collapse" class="form-rounded-less collapse in">
-					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-1-colors">Colors</a>
-						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-1-opacity">Opacity</a>
-					</ul>
 
 					<div class="tab-content">
-						<div id="colorset-1-colors" class="tab-pane color-controls active">
+						<div id="colorset-1-colors" class="tab-pane font-size-75 color-controls active">
+							No activation controls available for input layer
+							<div style="display: none">
 							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-1')>+ Add Activation</button>
 							<button id="remove-colorset-1" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-1')>- Remove</button>
 							<div id="colorset-1-color-1" class="input-group colorpicker-component">
@@ -179,23 +178,9 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-1-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							</div>
 							<!-- <button id="presets-colorset-1" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-1')>Presets</button> -->
 							<br>
-						</div>
-						<div id="colorset-1-opacity" class="tab-pane fade opacity-controls">
-								<input style="margin-top:25px" type="checkbox" name="colorset-1-opacity" data-percent="30" value="80" >
-								<label class="checkbox-label opacity-03">30%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="colorset-1-opacity" data-percent="50" value="128">
-								<label class="checkbox-label opacity-05">50%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="colorset-1-opacity" data-percent="60" value="155" checked>
-								<label class="checkbox-label opacity-06">60%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="colorset-1-opacity" data-percent="70" value="175" checked>
-								<label class="checkbox-label opacity-07">70%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="colorset-1-opacity" data-percent="90" value="240" checked>
-								<label class="checkbox-label opacity-09">90%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label><br>
-								<input type="checkbox" name="colorset-1-opacity" data-percent="100" value="255">
-								<label class="checkbox-label opacity-10">100%<span class="colorset-1 opacity-box">&nbsp;&#9724;</span></label>
-							<!--<div font-size="1.25em"><span class="colorset-1 opacity-05">&#9724;</span> 50%</div>-->
 						</div>
 					</div>
 				</div>
@@ -204,10 +189,6 @@
 				<button class="btn btn-sm colorset-button background-colorset-2" id="colorset-2-toggle" onclick="toggleColorset('colorset-2')">Layer 2 (mixed3a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-2-collapse" class="form-rounded-less collapse in">
-					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-2-colors">Colors</a>
-						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-2-opacity">Opacity</a>
-					</ul>
 
 					<div class="tab-content">
 						<div id="colorset-2-colors" class="tab-pane color-controls active">
@@ -231,21 +212,6 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<!-- <button id="presets-colorset-2" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-2')>Presets</button> -->
 						</div>
-						<div id="colorset-2-opacity" class="tab-pane fade opacity-controls">
-							<input type="checkbox" name="colorset-2-opacity" data-percent="30" value="80" >
-							<label class="checkbox-label opacity-03">30%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-2-opacity" data-percent="50" value="128">
-							<label class="checkbox-label opacity-05">50%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-2-opacity" data-percent="60" value="155" checked>
-							<label class="checkbox-label opacity-06">60%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-2-opacity" data-percent="70" value="175" checked>
-							<label class="checkbox-label opacity-07">70%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-2-opacity" data-percent="90" value="240" checked>
-							<label class="checkbox-label opacity-09">90%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-2-opacity" data-percent="100" value="255">
-							<label class="checkbox-label opacity-10">100%<span class="colorset-2 opacity-box">&nbsp;&#9724;</span></label>
-							<!--<div font-size="1.25em"><span class="colorset-2 opacity-05">&#9724;</span> 50%</div>-->
-						</div>
 					</div>
 				</div>
 			</div>
@@ -253,10 +219,6 @@
 				<button class="btn btn-sm colorset-button background-colorset-3" id="colorset-3-toggle" onclick="toggleColorset('colorset-3')">Layer 3 (mixed4a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-3-collapse" class="form-rounded-less collapse in">
-					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-3-colors">Colors</a>
-						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-3-opacity">Opacity</a>
-					</ul>
 					<div class="tab-content">
 						<div id="colorset-3-colors" class="tab-pane color-controls active">
 							<button id="add-colorset-3" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-3')>+ Add Activation</button>
@@ -279,21 +241,6 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<!-- <button id="presets-colorset-3" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-3')>Presets</button> -->
 						</div>
-						<div id="colorset-3-opacity" class="tab-pane fade opacity-controls">
-							<input type="checkbox" name="colorset-3-opacity" data-percent="30" value="80" >
-							<label class="checkbox-label opacity-03">30%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-3-opacity" data-percent="50" value="128">
-							<label class="checkbox-label opacity-05">50%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-3-opacity" data-percent="60" value="155" checked>
-							<label class="checkbox-label opacity-06">60%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-3-opacity" data-percent="70" value="175" checked>
-							<label class="checkbox-label opacity-07">70%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-3-opacity" data-percent="90" value="240" checked>
-							<label class="checkbox-label opacity-09">90%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-3-opacity" data-percent="100" value="255">
-							<label class="checkbox-label opacity-10">100%<span class="colorset-3 opacity-box">&nbsp;&#9724;</span></label>
-							<!--<div font-size="1.25em"><span class="colorset-3 opacity-05">&#9724;</span> 50%</div>-->
-						</div>
 					</div>
 				</div>
 			</div>
@@ -301,10 +248,6 @@
 				<button class="btn btn-sm colorset-button background-colorset-4" id="colorset-4-toggle" onclick="toggleColorset('colorset-4')">Layer 4 (mixed4d)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-4-collapse" class="form-rounded-less collapse in">
-					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-4-colors">Colors</a>
-						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-4-opacity">Opacity</a>
-					</ul>
 
 					<div class="tab-content">
 						<div id="colorset-4-colors" class="tab-pane color-controls active">
@@ -328,21 +271,6 @@
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<!-- <button id="presets-colorset-4" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-4')>Presets</button> -->
 						</div>
-						<div id="colorset-4-opacity" class="tab-pane fade opacity-controls">
-							<input type="checkbox" name="colorset-4-opacity" data-percent="30" value="80" >
-							<label class="checkbox-label opacity-03">30%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-4-opacity" data-percent="50" value="128">
-							<label class="checkbox-label opacity-05">50%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-4-opacity" data-percent="60" value="155" checked>
-							<label class="checkbox-label opacity-06">60%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-4-opacity" data-percent="70" value="175" checked>
-							<label class="checkbox-label opacity-07">70%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-4-opacity" data-percent="90" value="240" checked>
-							<label class="checkbox-label opacity-09">90%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-4-opacity" data-percent="100" value="255">
-							<label class="checkbox-label opacity-10">100%<span class="colorset-4 opacity-box">&nbsp;&#9724;</span></label>
-							<!--<div font-size="1.25em"><span class="colorset-4 opacity-05">&#9724;</span> 50%</div>-->
-						</div>
 					</div>
 				</div>
 			</div>
@@ -350,10 +278,6 @@
 				<button class="btn btn-sm colorset-button background-colorset-5" id="colorset-5-toggle" onclick="toggleColorset('colorset-5')">Layer 5 (mixed5a)
 					<strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
 				<div id="colorset-5-collapse" class="form-rounded-less collapse in">
-					<ul class="nav nav-tabs" style="margin-bottom: 5px;">
-						<a class="nav-item nav-link active" name="nav-link-colors" data-toggle="pill" href="#colorset-5-colors">Colors</a>
-						<a class="nav-item nav-link" data-toggle="pill" href="#colorset-5-opacity">Opacity</a>
-					</ul>
 
 					<div class="tab-content">
 						<div id="colorset-5-colors" class="tab-pane color-controls active">
@@ -376,21 +300,6 @@
 							<div id="colorset-5-color-8" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<!-- <button id="presets-colorset-5" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-5')>Presets</button> -->
-						</div>
-						<div id="colorset-5-opacity" class="tab-pane fade opacity-controls">
-							<input type="checkbox" name="colorset-5-opacity" data-percent="30" value="80">
-							<label class="checkbox-label opacity-03">30%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-5-opacity" data-percent="50" value="128">
-							<label class="checkbox-label opacity-05">50%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-5-opacity" data-percent="60" value="155" checked>
-							<label class="checkbox-label opacity-06">60%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-5-opacity" data-percent="70" value="175" checked>
-							<label class="checkbox-label opacity-07">70%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-5-opacity" data-percent="90" value="240" checked>
-							<label class="checkbox-label opacity-09">90%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label><br>
-							<input type="checkbox" name="colorset-5-opacity" data-percent="100" value="255">
-							<label class="checkbox-label opacity-10">100%<span class="colorset-5 opacity-box">&nbsp;&#9724;</span></label>
-							<!--<div font-size="1.25em"><span class="colorset-5 opacity-05">&#9724;</span> 50%</div>-->
 						</div>
 					</div>
 				</div>

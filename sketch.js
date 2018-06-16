@@ -22,16 +22,18 @@ var layerActivationCounts = {
   'mixed3a':2
 };
 var MAX_ACTIVATIONS = 5;
+var tintPercent = 50;
+var loadedLayers = {};
 
 var aspectRatio = 12/20;
 var fullCanvas = null;
 var shape = "diamond";
-var columnVal = 60;
+var columnVal = 20;
 // colorset variables
 var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
-var MAX_COLORSETS = 5;
+var MAX_LAYERS = 5;
 var WINDOW_BOTTOM_PADDING = 10;
 var colorsetCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
@@ -101,11 +103,11 @@ $(document).ready(function(){
     // document.getElementById('colorset-3').style.color = colorset_color_3;
     // document.getElementById('colorset-4').style.color = colorset_color_4;
     // document.getElementById('colorset-5').style.color = colorset_color_5;
-    $('#num-columns').on('input change', function(e) {
-        $('#num-columns-display').text(e.target.value);
-    });
-    $('#smoothing').on('input change', function(e) {
-      updateSmoothing();
+    // $('#num-columns').on('input change', function(e) {
+    //     $('#num-columns-display').text(e.target.value);
+    // });
+    $('#opacity').on('input change', function(e) {
+      updateOpacity();
     });
     $('#refresh-seconds').on('change', function(e) {
       updateRefreshRate('#refresh-seconds');
@@ -113,9 +115,9 @@ $(document).ready(function(){
     $('#refresh-per-minute').on('change', function(e) {
         updateRefreshRate('#refresh-per-minute');
     });
-    updateSmoothing();
+    updateOpacity();
     updateRefreshRate('#refresh-per-minute');
-    $('#num-columns-display').text($('#num-columns').val());
+    // $('#num-columns-display').text($('#num-columns').val());
     $(document).bind('webkitfullscreenchange mozfullscreenchange fullscreenchange', function(e) {
       var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
       if(!state) {
@@ -250,11 +252,11 @@ function setNumColorsetColors(colorset,num) {
     addColor(colorset);
   }
 }
-function setNumColumns(num) {
-  $('#num-columns').val(num);
-  $('#num-columns-display').text(num);
-  columnVal = num;
-}
+// function setNumColumns(num) {
+//   $('#num-columns').val(num);
+//   $('#num-columns-display').text(num);
+//   columnVal = num;
+// }
 function setShape(shapeName) {
   let shapeType = $('#shape-toggle input:radio:checked').val();
   if(shapeType!=shapeName) {
@@ -265,9 +267,9 @@ function setShape(shapeName) {
     shape = shapeName;
   }
 }
-function setSmoothing(num) {
-  $('#smoothing').val(num);
-  updateSmoothing();
+function setOpacity(num) {
+  $('#opacity').val(num);
+  updateOpacity();
 }
 function setRefreshRate(num) {
   $('#refresh-per-minute').val(num);
@@ -380,17 +382,6 @@ function drawSquareIcon(sideLength, imageName,layerProportions,columnKey,rowKey)
   }
 }
 
-
-function uploadFilepath(fpath, idx) {
-  // Create an image DOM element but don't show it
-    // var img = p.createImg(file.data).hide();
-      // Draw the image onto the canvas
-    // loadImage('assets/laDefense.jpg', function(img) {
-    loadImage(fpath, function(img) {
-      uploadedImages[idx] = img;  
-    });
-  }
-
 function loadSemanticDictionaries() {
   let promises = [];
   let d = $.getJSON( "lib/img_dict.json")
@@ -407,7 +398,6 @@ function loadSemanticDictionaries() {
   promises.push(d);
   $.getJSON( "lib/unique_sprites.json")
     .done(function(data) {
-      loadedLayers = {};
       Object.keys(data).forEach(function(layer) {
         imageDictionary[layer] = {};
         data[layer].forEach(function(num) {
@@ -415,7 +405,6 @@ function loadSemanticDictionaries() {
           loadImage(fpath, function(img) {
             imageDictionary[layer][num] = img;
             if(Object.keys(imageDictionary[layer]).length===data[layer].length) {
-              console.log(layer)
               loadedLayers[layer] = true;
             }
             if(Object.keys(loadedLayers).length===Object.keys(data).length) {
@@ -456,7 +445,7 @@ function setup() {
     $('.colorset-4').css('color',colorset_color_4);
     $('.colorset-5').css('color',colorset_color_5);
     // hide all ones we don't want
-    for(let i=1; i<=MAX_COLORSETS; i++) {
+    for(let i=1; i<=MAX_LAYERS; i++) {
         //adding colorpickers
         if(i>INIT_COLORSETS) {
             let colorsetDiv = '#colorset-' + i;
@@ -515,7 +504,7 @@ function setup() {
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
-            circleObj =  MovingCircleMidpointLeader(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i,startObj,endObj);
+            circleObj =  MovingCircleMidpointLeader(width*(i)/(MAX_LAYERS+1),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i,startObj,endObj);
             shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
@@ -529,6 +518,7 @@ function setup() {
   noFill();
   // setupStartView();
   setupPresets();
+  updateColorArray();
   if(isMobile()) {
     showFullPresets();
     $('#mobile-header').fadeIn('3000',function() {
@@ -553,7 +543,11 @@ function setup() {
 function drawShapeField() {
   if(shapeFieldReady) {
     background(255);
-    image(imageDictionary['inputs']['birds'],0,0,width,width*(12/20))
+    noTint();
+    image(imageDictionary['inputs']['birds'],0,0,width,width*(12/20));
+    if(tintPercent!=1) {
+      tint(255, Math.round(tintPercent*255));
+    }
     drawMain();
     stroke(0, 0, 0);
     noFill();
@@ -566,24 +560,29 @@ function isMobile() {
 };
 function draw() {
   nowTime = new Date() / 1000;
-  if(nowTime>nextTime && !isFrozen) {
-    drawShapeField();
-    nextTime = nowTime + refreshRate;
+  if(!shapeFieldReady) {
+    drawProgress();
   }
-  if(isAutoMosaic && nowTime>nextAutoMosaic && !isFrozen) {
-    nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE;
-    generateAutoMosaic();
-  }
-  // noFill();
-  // stroke(0, 0, 0);
-  // rect(0,width*aspectRatio,width,height);
-  if(!fullscreen() && !isMobile()) {
-    drawProportionBox();
-    shapesToDraw.forEach( function (shape) {
-      if(shape.isShown()) {
-        shape.draw();
-      }
-    });
+  else {
+    if(nowTime>nextTime && !isFrozen) {
+      drawShapeField();
+      nextTime = nowTime + refreshRate;
+    }
+    if(isAutoMosaic && nowTime>nextAutoMosaic && !isFrozen) {
+      nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE;
+      generateAutoMosaic();
+    }
+    // noFill();
+    // stroke(0, 0, 0);
+    // rect(0,width*aspectRatio,width,height);
+    if(!fullscreen() && !isMobile()) {
+      drawProportionBox();
+      shapesToDraw.forEach( function (shape) {
+        if(shape.isShown()) {
+          shape.draw();
+        }
+      });
+    }
   }
 }
 // drawing functions (misc)
@@ -709,12 +708,12 @@ function drawMain() {
     colorTiles = {};
     shape = shapeType;
   }
-  // should update all colorsets etc in memory
-  let val = $('#num-columns').val();
-  if (val==0) {
-    val=1;
-  }
-  columnVal = val;
+  // // should update all colorsets etc in memory
+  // let val = $('#num-columns').val();
+  // if (val==0) {
+  //   val=1;
+  // }
+  // columnVal = val;
   var numColumnVal = columnVal;
   if(isMobile()) {
     if(shapeType==='square') {
@@ -1182,7 +1181,7 @@ function randomizeView() {
 }
 function executeAutoMosaic(chosenOption) {
   // fixing uninteresting cases
-  if(chosenOption==='add-colorset' && colorsetCount==MAX_COLORSETS) {
+  if(chosenOption==='add-colorset' && colorsetCount==MAX_LAYERS) {
     chosenOption='remove-colorset';
   }
   else if(chosenOption==='remove-colorset' && colorsetCount==1) {
@@ -1314,27 +1313,10 @@ function refreshDrawing() {
   nextTime = nowTime + refreshRate;
   drawProportionBox();
 }
-function updateSmoothing() {
-  let val = $('#smoothing').val();
-  $('#smoothing-display').text(val);
-  val++;
-  if(val===1) {
-    if(historyFraction>0) {
-      $('.nav-tabs').show(400);
-      $( "#opacity-enabled" ).fadeIn( "slow", function() {
-      });
-    }
-    historyFraction = 0;
-    $('[name="opacity-lock"]').hide();
-  }
-  else {
-    historyFraction = 1-1/val;
-    $( "#opacity-enabled" ).fadeOut( "fast", function() {
-      // Animation complete
-    });
-    $('[name="nav-link-colors"]').click();
-    $('.nav-tabs').hide(400);
-  }
+function updateOpacity() {
+  let val = $('#opacity').val();
+  $('#opacity-display').text(val+'%');
+  tintPercent = val/100;
 }
 function updateRefreshRate() {
   let $refreshPerMinute = $('#refresh-per-minute');
@@ -1378,7 +1360,7 @@ function addColor(colorsetDiv) {
 }
 function removeColorset() {
   $('#add-colorset').prop('disabled', false);
-  $('#max-colorsets').fadeOut('fast');
+  $('#max-layers').fadeOut('fast');
 
   if(colorsetCount>1) {
     let shownObjects = colorsetObjects[colorsetCount];
@@ -1401,7 +1383,7 @@ function makeFullScreen() {
 }
 function addColorset() {
   $('#remove-colorset').prop('disabled', false);
-  if(colorsetCount < MAX_COLORSETS) {
+  if(colorsetCount < MAX_LAYERS) {
     colorsetCount++;
     let newDiv = '#colorset-' + colorsetCount;
     $(newDiv).toggle();
@@ -1409,9 +1391,9 @@ function addColorset() {
     hiddenObjects.bezier.forEach(function(obj) { obj.show();})
     hiddenObjects.circle.forEach(function(obj) { obj.show();})
   }
-  if(colorsetCount == MAX_COLORSETS) {
+  if(colorsetCount == MAX_LAYERS) {
     $('#add-colorset').prop('disabled', true);
-    $('#max-colorsets').fadeIn('slow');
+    $('#max-layers').fadeIn('slow');
   }
   updateColorArray();
 }
@@ -1587,6 +1569,37 @@ function toggleColorset(colorsetName) {
     $(colorsetToggleSelector + ' .fa').addClass('fa-angle-up');
     $(colorsetToggleSelector).addClass('expanded');
   }
+}
+function drawProgress() {
+  background(255);
+  stroke(30);
+  fill(30);
+  console.log(Object.keys(loadedLayers).length);
+  console.log(MAX_LAYERS);
+  // humans like seeing something close to 100.
+  let pct = (Object.keys(loadedLayers).length/MAX_LAYERS*100+10).toString();
+  if(pct>100) { pct=100; }
+  textSize(20);
+  textAlign("center");
+  text("Loading images...", width/2, height*1/2);
+  text(pct, width/2, 30+height*1/2);
+  let layersToShow = ['mixed3a','mixed4a','mixed4d','mixed5a'];
+  while(layersToShow.length>0) {
+    let layerName = layersToShow[layersToShow.length-1];
+    if(imageDictionary[layerName]) {
+      i=900;
+      while(i>=0) {
+        if(imageDictionary[layerName][i]) {
+          image(imageDictionary[layerName][i], width/2-50,height*1/2-150,100,100);
+          return;
+        }
+        i = i-100;
+      }
+    }
+    layersToShow.pop();
+  }
+  return;
+
 }
 function drawProportionBox() {
   strokeWeight(0);

@@ -157,6 +157,10 @@ h2 {
     box-shadow: 0 !important;
 }
 
+.font-size-75 {
+    font-size: .75em;
+}
+
 .font-size-1-25 {
     font-size: 1.25em;
 }
