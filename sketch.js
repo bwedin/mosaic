@@ -7,11 +7,26 @@
 // sketch.js
 var semanticDictionaries = null;
 var imageDictionary = {};
+var shapeFieldReady = false;
+var idxToLayer = [null,'input','mixed5a','mixed4d','mixed4a','mixed3a']
+var layerTileCounts = {'input':0,
+  'mixed5a':1,
+  'mixed4d':2,
+  'mixed4a':2,
+  'mixed3a':4};
+var layerActivationCounts = {
+  'input':null,
+  'mixed5a':2,
+  'mixed4d':2,
+  'mixed4a':2,
+  'mixed3a':2
+};
+var MAX_ACTIVATIONS = 5;
 
+var aspectRatio = 12/20;
 var fullCanvas = null;
 var shape = "diamond";
 var columnVal = 60;
-var shapeFieldReady = false;
 // colorset variables
 var INIT_COLORS = 3;
 var INIT_COLORSETS = 2;
@@ -329,18 +344,40 @@ function setupPresetView(name) {
     $('[data-percent="60"]:checkbox').prop('checked', 'true');
   }
 }
-
-function drawSquareIcon(sideLength, leftPosX, topPosY, img) {
-    // let imgName = null;
-    // if(leftPosX/width<0.5) {
-    //   imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
-    // }
-    // else {
-    //   imgName = semanticDictionaries['dog-and-cat']['1']['5'];
-    // }
-    // img = imageDictionary[imgName];
-    image(img, leftPosX, topPosY, sideLength, sideLength); 
+function drawSquareSubIcon(sideLength,columnKey,rowKey,imageName,layerName,activationCount) {
+  let activations = semanticDictionaries[imageName][layerName][rowKey][columnKey];
+  let topPosY = sideLength*rowKey;
+  let leftPosX = sideLength*columnKey;
+  let idx = activations[Math.floor(Math.random()*activationCount)];
+  let img = imageDictionary[layerName][idx];
+  image(img, leftPosX, topPosY, sideLength, sideLength); 
+}
+function drawSquareIcon(sideLength, imageName,layerProportions,columnKey,rowKey) {
+  let val = Math.random();
+  let layerName = null;
+  for(let idx=0; idx<layerProportions.length; idx++) {
+    let p = layerProportions[idx];
+    if(p>val){
+      layerName = idxToLayer[idx];
+      break;
+    }
+  }
+  let tileCount = layerTileCounts[layerName];
+  if(tileCount) {
+    let activationCount = layerActivationCounts[layerName];
+    let newSideLength = sideLength/tileCount;
+    let newColumnKey = columnKey*tileCount;
+    let newRowKey = rowKey*tileCount;
+    // i as columns, j as rows
+    for(let i=0; i<tileCount; i++) {
+      for(let j=0; j<tileCount; j++) {
+        drawSquareSubIcon(newSideLength, 
+          newColumnKey+j, newRowKey+i,
+          imageName,layerName,activationCount);
+      }
+    }
     return;
+  }
 }
 
 
@@ -356,7 +393,7 @@ function uploadFilepath(fpath, idx) {
 
 function loadSemanticDictionaries() {
   let promises = [];
-  let d = $.getJSON( "lib/img_dict.json")
+  let d = $.getJSON( "lib/img_dict_new.json")
     .done(function(data) {
       semanticDictionaries = data;
     })
@@ -370,13 +407,21 @@ function loadSemanticDictionaries() {
   promises.push(d);
   $.getJSON( "lib/unique_sprites.json")
     .done(function(data) {
-      let p = null;
-      data.forEach(function(fpath) {
-        loadImage("img/"+fpath, function(img) {
-          imageDictionary[fpath] = img;
-          if(Object.keys(imageDictionary).length===data.length) {
-            d.resolve(); 
-          }
+      loadedLayers = {};
+      Object.keys(data).forEach(function(layer) {
+        imageDictionary[layer] = {};
+        data[layer].forEach(function(num) {
+          fpath = "img/sprites/" + layer + "/" + num + ".jpeg";
+          loadImage(fpath, function(img) {
+            imageDictionary[layer][num] = img;
+            if(Object.keys(imageDictionary[layer]).length===data[layer].length) {
+              console.log(layer)
+              loadedLayers[layer] = true;
+            }
+            if(Object.keys(loadedLayers).length===Object.keys(data).length) {
+              d.resolve(); 
+            }
+          });
         });
       });
     })
@@ -388,6 +433,7 @@ function loadSemanticDictionaries() {
     .fail(function () {
       d.reject();
     }).done(function() {
+      shapeFieldReady = true;
       console.log('promises resolved. dictionaries:');
       console.log(imageDictionary);
       console.log(semanticDictionaries);
@@ -481,7 +527,6 @@ function setup() {
   background(255);
   stroke(0, 0, 0);
   noFill();
-  shapeFieldReady = true;
   // setupStartView();
   setupPresets();
   if(isMobile()) {
@@ -508,6 +553,7 @@ function setup() {
 function drawShapeField() {
   if(shapeFieldReady) {
     background(255);
+    image(imageDictionary['inputs']['birds'],0,0,width,width*(12/20))
     drawMain();
     stroke(0, 0, 0);
     noFill();
@@ -530,7 +576,7 @@ function draw() {
   }
   // noFill();
   // stroke(0, 0, 0);
-  // rect(0,width*9/16,width,height);
+  // rect(0,width*aspectRatio,width,height);
   if(!fullscreen() && !isMobile()) {
     drawProportionBox();
     shapesToDraw.forEach( function (shape) {
@@ -704,7 +750,7 @@ function drawMain() {
 }
 // drawing functions (shape-specific)
 function drawTriangleField(numberColumns,alphaValues) {
-  let fieldHeight = Math.ceil(width*(9/16));
+  let fieldHeight = Math.ceil(width*aspectRatio);
   let columnWidth = width/numberColumns;
   if(columnWidth%1!=0) {
     columnWidth = Math.floor(columnWidth);
@@ -714,7 +760,7 @@ function drawTriangleField(numberColumns,alphaValues) {
   else {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
-  let columnHeight = width*(9/16);
+  let columnHeight = width*aspectRatio;
   if(fullscreen() || isMobile()) {
     columnHeight = height;
   }
@@ -757,7 +803,6 @@ function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor, tileKe
   return;
 }
 function drawSquareField(numberColumns,alphaValues) {
-  let fieldHeight = Math.ceil(width*(9/16));
   let columnWidth = width/numberColumns;
   if(columnWidth%1!=0) {
     columnWidth = Math.floor(columnWidth);
@@ -767,7 +812,7 @@ function drawSquareField(numberColumns,alphaValues) {
   else {
   }
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
-  let columnHeight = width*(9/16);
+  let columnHeight = width*aspectRatio;
   if(fullscreen() || isMobile()) {
     columnHeight = height;
   }
@@ -787,17 +832,16 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportion
   // squareColumn()
   // generateRngImage(imageName,proportions,columnKey,rowKey)
   //    pluck layer based off proportions in position, get activation count, pick random from that list
-  imageName='dog-and-cat';
-  sideLength = 25;
-  while(yPosTop<=columnHeight) {
-    i++;
-    let img = generateRngImage(imageName,layerProportions,columnKey,i);
-    drawSquareIcon(sideLength, xPosL, yPosTop, img);
+  imageName='birds';
+  sideLength = columnWidth;
+  while(yPosTop<columnHeight) {
+    drawSquareIcon(sideLength, imageName,layerProportions,columnKey,i);
     yPosTop += sideLength;
+    i++;
   }
 }
 function drawDiamondField(numberColumns,alphaValues) {
-  let fieldHeight = Math.ceil(width*(9/16));
+  let fieldHeight = Math.ceil(width*aspectRatio);
   let columnWidth = width/numberColumns;
   if(columnWidth%1!=0) {
     columnWidth = Math.floor(columnWidth);
@@ -806,7 +850,7 @@ function drawDiamondField(numberColumns,alphaValues) {
   }
   numberColumns = numberColumns*2;
   let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
-  let columnHeight = width*(9/16);
+  let columnHeight = width*aspectRatio;
   if(fullscreen() || isMobile()) {
     columnHeight = height;
   }
@@ -845,13 +889,8 @@ function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor, tileKey) {
   return;
 }
 function generateRngImage(imageName,proportions,columnKey,rowKey) {
-  if((columnKey)%2===0) {
-      imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
-    }
-    else {
-      imgName = semanticDictionaries['dog-and-cat']['1']['5'];
-  }
-  return imageDictionary[imgName];
+  imgName = semanticDictionaries['birds']['mixed5a'][rowKey][columnKey][0]
+  return imageDictionary['mixed5a'][imgName];
 }
 function getNewColor(rngColor, historyFraction, tileKey) {
   if(historyFraction>0) {
@@ -916,7 +955,7 @@ function mouseDragged() {
 function forceResize(proposedWidth) {
   let oldHeight = height;
   let oldWidth = width;
-  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
+  let proposedHeight = Math.ceil(150+proposedWidth*aspectRatio+WINDOW_BOTTOM_PADDING);
   movingCircleArray.sort(function(a, b) {
     return b.getX() - a.getX();
   });
@@ -953,10 +992,10 @@ function windowResized() {
     proposedWidth = 700;
   }
   else if(windowWidth<1375) {
-    proposedWidth = 850;
+    proposedWidth = 880;
   }
   else if(windowWidth>=1375 && windowWidth<1640) {
-    proposedWidth = 950;
+    proposedWidth = 960;
   }
   else if(windowWidth>=1640 && windowWidth<1900) {
     proposedWidth = 1200;
@@ -967,7 +1006,7 @@ function windowResized() {
   else {
     proposedWidth = 1600;
   }
-  let proposedHeight = Math.ceil(150+proposedWidth*(9/16)+WINDOW_BOTTOM_PADDING);
+  let proposedHeight = Math.ceil(150+proposedWidth*aspectRatio+WINDOW_BOTTOM_PADDING);
   if(fullscreen()) {
     proposedWidth= windowWidth;
     proposedHeight = windowHeight;
@@ -1006,12 +1045,12 @@ function executeSave() {
 function saveFieldToDisk(proposedWidth, fname) {
   // ughhhh okay
   let saveWidth = proposedWidth;
-  let saveHeight = saveWidth*(9/16);
+  let saveHeight = saveWidth*aspectRatio;
   var img = createImage(saveWidth, saveHeight);
   // ughhhh okay
   let numChunks = 1;
   let sourceWidthChunk = width/numChunks;
-  let sourceHeightChunk = (width*9/16)/numChunks;
+  let sourceHeightChunk = (width*aspectRatio)/numChunks;
   for(let i=0; i<numChunks; i++) {
     for(let j=0; j<numChunks; j++) {
       let sourceX = i*sourceWidthChunk;
@@ -1552,7 +1591,7 @@ function toggleColorset(colorsetName) {
 function drawProportionBox() {
   strokeWeight(0);
   fill(255);
-  rect(0,width*9/16,width,height);
+  rect(0,width*aspectRatio,width,height);
   let dashedLineLength = 10;
   let gapX = 20;
   let fontSize=14;
