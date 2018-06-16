@@ -5,8 +5,6 @@
 
 
 // sketch.js
-var uploadedImages = [0,0];
-var imagesLoaded = false;
 var semanticDictionaries = null;
 var imageDictionary = {};
 
@@ -332,25 +330,16 @@ function setupPresetView(name) {
   }
 }
 
-function drawSquareIcon(sideLength, leftPosX, topPosY, rngColor, tileKey) {
-    iconWidth = 25;
-    iconHeight = 25;
-    let imgName = null;
-    if(leftPosX/width<0.5) {
-      imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
-    }
-    else {
-      imgName = semanticDictionaries['dog-and-cat']['1']['5'];
-    }
-    // idx = Math.round(tileKey*100)%2;
-    // if(Math.random()>0.5) {
-    // idx=0;
+function drawSquareIcon(sideLength, leftPosX, topPosY, img) {
+    // let imgName = null;
+    // if(leftPosX/width<0.5) {
+    //   imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
     // }
     // else {
-    //   idx=1;
+    //   imgName = semanticDictionaries['dog-and-cat']['1']['5'];
     // }
-    img = imageDictionary[imgName];
-    image(img, leftPosX, topPosY, iconWidth, iconHeight); 
+    // img = imageDictionary[imgName];
+    image(img, leftPosX, topPosY, sideLength, sideLength); 
     return;
 }
 
@@ -409,13 +398,7 @@ function loadSemanticDictionaries() {
 // }
 // main p5
 function setup() {
-  loadSemanticDictionaries();
-    fpaths = [
-      'https://i.imgur.com/mVXko0S.png',
-      'https://i.imgur.com/skwKtfz.png'
-    ];
-    uploadFilepath(fpaths[0],0)
-    uploadFilepath(fpaths[1],1)
+    loadSemanticDictionaries();
 
     noSmooth();
     fullCanvas = createCanvas(500, 500);
@@ -796,27 +779,22 @@ function drawSquareField(numberColumns,alphaValues) {
   }
   // + sidelength*i, orientation=i;
 }
-function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues,columnKey) {
+function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportions,alphaValues,columnKey) {
   let sideLength = columnWidth; // todo bw: square change here?
   let i = 0;
   // draw squares down to bottom
+   // squareField()
+  // squareColumn()
+  // generateRngImage(imageName,proportions,columnKey,rowKey)
+  //    pluck layer based off proportions in position, get activation count, pick random from that list
+  imageName='dog-and-cat';
+  sideLength = 25;
   while(yPosTop<=columnHeight) {
     i++;
-    let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawSquare(sideLength, xPosL, yPosTop, drawColor,[columnVal,columnKey,i]);
+    let img = generateRngImage(imageName,layerProportions,columnKey,i);
+    drawSquareIcon(sideLength, xPosL, yPosTop, img);
     yPosTop += sideLength;
   }
-}
-function drawSquare(sideLength, leftPosX, topPosY, rngColor, tileKey) {
-  // console.log([sideLength, leftPosX, topPosY, rngColor, tileKey]);
-  // console.log('nice job!')
-  // console.log(uploadedImages);
-  drawSquareIcon(sideLength, leftPosX, topPosY, rngColor, tileKey);
-  // let drawColor = getNewColor(rngColor,historyFraction,tileKey);
-  // fill(drawColor);
-  // noStroke();
-  // rect(leftPosX,topPosY,sideLength,sideLength);
-  return;
 }
 function drawDiamondField(numberColumns,alphaValues) {
   let fieldHeight = Math.ceil(width*(9/16));
@@ -865,6 +843,15 @@ function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor, tileKey) {
     xPosMid+diagonalHalf,yPosMid,
     xPosMid,yPosMid+diagonalHalf);
   return;
+}
+function generateRngImage(imageName,proportions,columnKey,rowKey) {
+  if((columnKey)%2===0) {
+      imgName = semanticDictionaries['dog-and-cat']['0']['5']['1'];
+    }
+    else {
+      imgName = semanticDictionaries['dog-and-cat']['1']['5'];
+  }
+  return imageDictionary[imgName];
 }
 function getNewColor(rngColor, historyFraction, tileKey) {
   if(historyFraction>0) {
