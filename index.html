@@ -160,8 +160,8 @@
 						<div id="colorset-1-colors" class="tab-pane font-size-75 color-controls active">
 							No activation controls available for input layer
 							<div style="display: none">
-							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-1')>+ Add Activation</button>
-							<button id="remove-colorset-1" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-1')>- Remove</button>
+							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('colorset-1')>+ Add</button>
+							<button id="remove-colorset-1" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('colorset-1')>- Remove</button>
 							<div id="colorset-1-color-1" class="input-group colorpicker-component">
 								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
 							<div id="colorset-1-color-2" class="input-group colorpicker-component">
@@ -192,24 +192,15 @@
 
 					<div class="tab-content">
 						<div id="colorset-2-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-2" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-2')>+ Add Activation</button>
-							<button id="remove-colorset-2" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-2')>- Remove</button>
-							<div id="colorset-2-color-1" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-2" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-3" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-4" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-5" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-6" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-7" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-2-color-8" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<button id="add-mixed5a" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('mixed5a')>+ Add</button>
+							<button id="remove-mixed5a" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('mixed5a')>- Remove</button>
+							<div id="mixed5a-activation-text" class="activation-text">Showing highest activation</div>
+							<div id="mixed5a-activation-1" class="activation-display" style="width:80%"></div>
+							<div id="mixed5a-activation-2" class="activation-display" style="width:70%"></div>
+							<div id="mixed5a-activation-3" class="activation-display" style="width:60%"></div>
+							<div id="mixed5a-activation-4" class="activation-display" style="width:50%"></div>
+							<div id="mixed5a-activation-5" class="activation-display" style="width:40%"></div>
+
 							<!-- <button id="presets-colorset-2" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-2')>Presets</button> -->
 						</div>
 					</div>
@@ -221,24 +212,14 @@
 				<div id="colorset-3-collapse" class="form-rounded-less collapse in">
 					<div class="tab-content">
 						<div id="colorset-3-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-3" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-3')>+ Add Activation</button>
-							<button id="remove-colorset-3" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-3')>- Remove</button>
-							<div id="colorset-3-color-1" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-2" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-3" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-4" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-5" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-6" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-7" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-3-color-8" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<button id="add-mixed4d" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('mixed4d')>+ Add</button>
+							<button id="remove-mixed4d" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('mixed4d')>- Remove</button>
+							<div id="mixed4d-activation-text" class="activation-text">Showing highest activation</div>
+							<div id="mixed4d-activation-1" class="activation-display" style="width:80%"></div>
+							<div id="mixed4d-activation-2" class="activation-display" style="width:70%"></div>
+							<div id="mixed4d-activation-3" class="activation-display" style="width:60%"></div>
+							<div id="mixed4d-activation-4" class="activation-display" style="width:50%"></div>
+							<div id="mixed4d-activation-5" class="activation-display" style="width:40%"></div>
 							<!-- <button id="presets-colorset-3" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-3')>Presets</button> -->
 						</div>
 					</div>
@@ -251,24 +232,14 @@
 
 					<div class="tab-content">
 						<div id="colorset-4-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-4" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-4')>+ Add Activation</button>
-							<button id="remove-colorset-4" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-4')>- Remove</button>
-							<div id="colorset-4-color-1" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-2" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-3" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-4" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-5" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-6" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-7" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-4-color-8" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<button id="add-mixed4a" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('mixed4a')>+ Add</button>
+							<button id="remove-mixed4a" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('mixed4a')>- Remove</button>
+							<div id="mixed4a-activation-text" class="activation-text">Showing highest activation</div>
+							<div id="mixed4a-activation-1" class="activation-display" style="width:80%"></div>
+							<div id="mixed4a-activation-2" class="activation-display" style="width:70%"></div>
+							<div id="mixed4a-activation-3" class="activation-display" style="width:60%"></div>
+							<div id="mixed4a-activation-4" class="activation-display" style="width:50%"></div>
+							<div id="mixed4a-activation-5" class="activation-display" style="width:40%"></div>
 							<!-- <button id="presets-colorset-4" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-4')>Presets</button> -->
 						</div>
 					</div>
@@ -281,24 +252,14 @@
 
 					<div class="tab-content">
 						<div id="colorset-5-colors" class="tab-pane color-controls active">
-							<button id="add-colorset-5" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColor('colorset-5')>+ Add Activation</button>
-							<button id="remove-colorset-5" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColor('colorset-5')>- Remove</button>
-							<div id="colorset-5-color-1" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-2" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-3" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-4" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-5" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-6" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-7" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-5-color-8" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
+							<button id="add-mixed3a" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('mixed3a')>+ Add</button>
+							<button id="remove-mixed3a" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('mixed3a')>- Remove</button>
+							<div id="mixed3a-activation-text" class="activation-text">Showing highest activation</div>
+							<div id="mixed3a-activation-1" class="activation-display" style="width:80%"></div>
+							<div id="mixed3a-activation-2" class="activation-display" style="width:70%"></div>
+							<div id="mixed3a-activation-3" class="activation-display" style="width:60%"></div>
+							<div id="mixed3a-activation-4" class="activation-display" style="width:50%"></div>
+							<div id="mixed3a-activation-5" class="activation-display" style="width:40%"></div>
 							<!-- <button id="presets-colorset-5" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-5')>Presets</button> -->
 						</div>
 					</div>

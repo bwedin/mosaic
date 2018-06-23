@@ -14,14 +14,16 @@ var layerTileCounts = {'input':0,
   'mixed4d':2,
   'mixed4a':2,
   'mixed3a':4};
+var MAX_ACTIVATIONS = 5;
+var INIT_ACTIVATIONS = 2;
 var layerActivationCounts = {
   'input':null,
-  'mixed5a':2,
-  'mixed4d':2,
-  'mixed4a':2,
-  'mixed3a':2
+  'mixed5a':MAX_ACTIVATIONS,
+  'mixed4d':MAX_ACTIVATIONS,
+  'mixed4a':MAX_ACTIVATIONS,
+  'mixed3a':MAX_ACTIVATIONS
 };
-var MAX_ACTIVATIONS = 5;
+let layersWithActivations = ['mixed5a','mixed4d','mixed4a','mixed3a']; // used for setup
 var tintPercent = 50;
 var loadedLayers = {};
 var inputImage = 'birds';
@@ -408,35 +410,26 @@ function setup() {
     fullCanvas = createCanvas(500, 500);
     fullCanvas.parent('sketch-holder');
     windowResized();
+    $('.background-colorset-1').css('background-color',colorset_color_1);
     $('.colorset-1').css('color',colorset_color_1);
-    $('.colorset-2').css('color',colorset_color_2);
-    $('.colorset-3').css('color',colorset_color_3);
-    $('.colorset-4').css('color',colorset_color_4);
-    $('.colorset-5').css('color',colorset_color_5);
+    $('.background-colorset-2').css('background-color',colorset_color_2);
+    $('.background-colorset-3').css('background-color',colorset_color_3);
+    $('.background-colorset-4').css('background-color',colorset_color_4);
+    $('.background-colorset-5').css('background-color',colorset_color_5);
+
     // hide all ones we don't want
+    layersWithActivations.forEach(function(layer) {
+        console.log('hello?')
+        for(let i=MAX_ACTIVATIONS; i>INIT_ACTIVATIONS; i--) {
+            removeActivation(layer);
+            console.log('removed');
+        }
+    });
     for(let i=1; i<=MAX_LAYERS; i++) {
         //adding colorpickers
         if(i>INIT_COLORSETS) {
             let colorsetDiv = '#colorset-' + i;
             $(colorsetDiv).toggle();
-        }
-        for (let j=1; j<=MAX_COLORS; j++) {
-            let colorpickerDiv = '#colorset-' + i + '-color-' + j;
-            $(colorpickerDiv).colorpicker({
-              format: 'rgb',
-              color: 'rgb(255,255,254)'
-            })
-            .on('hidePicker', function(e, colorpickerDiv) {
-              let rgb = e.color.toRGB();
-              if (rgb.r==rgb.g && rgb.g==rgb.b) {
-                rgb.b++;
-                let newColor = 'rgb(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ')';
-                $('#'+e.target.id).colorpicker().data('colorpicker').setValue(newColor);
-              }
-            });
-            if (j>INIT_COLORS) {
-              $(colorpickerDiv).toggle();
-            }
         }
 
         // adding bezier curves/EQ circles to canvas
@@ -486,7 +479,7 @@ function setup() {
   noFill();
   // setupStartView();
   setupPresets();
-  updateColorArray();
+  // updateColorArray();
   if(isMobile()) {
     showFullPresets();
     $('#mobile-header').fadeIn('3000',function() {
@@ -680,7 +673,7 @@ function drawMain() {
     }
   }
   // numberColumns = 1;
-  updateColorArray();
+  // updateColorArray();
   drawImageField(numColumnVal);
 }
 // drawing functions (shape-specific)
@@ -1159,24 +1152,47 @@ function updateRefreshRate() {
   nowTime = new Date() / 1000;
   nextTime = nowTime + refreshRate;
 }
-function removeColor(colorsetDiv) {
-  $('#add-'+colorsetDiv).prop('disabled', false);
-  let removeColorNum = colorsetColorCount[colorsetDiv];
-  if(removeColorNum>1) {
-    let newDiv = '#' + colorsetDiv + '-color-' + removeColorNum;
+function removeActivation(layerDiv) {
+  if(layerDiv==='input') {
+      return;
+  }
+  $('#add-'+layerDiv).prop('disabled', false);
+  let layerDict = {
+      'colorset-1':'input',
+      'colorset-2':'mixed5a',
+      'colorset-3':'mixed4d',
+      'colorset-4':'mixed4a',
+      'colorset-5':'mixed3a'
+  };
+  let removeActivationNum = layerActivationCounts[layerDiv];
+  if(removeActivationNum>1) {
+    let newDiv = '#' + layerDiv + '-activation-' + removeActivationNum;
     $(newDiv).toggle();
-    colorsetColorCount[colorsetDiv]--;
+    layerActivationCounts[layerDiv]--;
   }
-  if(colorsetColorCount[colorsetDiv] == 1) {
-    $('#remove-'+colorsetDiv).prop('disabled', true);
+  let newText = "Showing " + layerActivationCounts[layerDiv] + " highest activations";
+  if(layerActivationCounts[layerDiv] == 1) {
+      newText = "Showing highest activation";
+      $('#remove-'+layerDiv).prop('disabled', true);
   }
+  $('#' + layerDiv + '-activation-text').text(newText);
 }
-function addColor(colorsetDiv) {
-  $('#remove-'+colorsetDiv).prop('disabled', false);
-  let newColorNum = colorsetColorCount[colorsetDiv] + 1;
-  if(newColorNum <= MAX_COLORS) {
-    colorsetColorCount[colorsetDiv]++;
-    let newDiv = '#' + colorsetDiv + '-color-' + newColorNum;
+function addActivation(layerDiv) {
+  if(layerDiv==='input') {
+      return;
+  }
+  $('#remove-'+layerDiv).prop('disabled', false);
+  let layerDict = {
+    'colorset-1':'input',
+      'colorset-2':'mixed5a',
+      'colorset-3':'mixed4d',
+      'colorset-4':'mixed4a',
+      'colorset-5':'mixed3a'
+  };
+  let newActivationNum = layerActivationCounts[layerDiv] + 1;
+  if(newActivationNum <= MAX_ACTIVATIONS) {
+    layerActivationCounts[layerDiv]++;
+    let newDiv = '#' + layerDiv + '-activation-' + newActivationNum;
     $(newDiv).toggle();
     // todo bw: change back?
     // $(newDiv).colorpicker({
@@ -1184,9 +1200,11 @@ function addColor(colorsetDiv) {
     //   color: '#FFFFFE'
     // });
   }
-  if(colorsetColorCount[colorsetDiv] == MAX_COLORS) {
-    $('#add-'+colorsetDiv).prop('disabled', true);
+  if(layerActivationCounts[layerDiv] == MAX_ACTIVATIONS) {
+    $('#add-'+layerDiv).prop('disabled', true);
   }
+  let newText = "Showing " + layerActivationCounts[layerDiv] + " highest activations";
+  $('#' + layerDiv + '-activation-text').text(newText);
 }
 function removeLayer() {
   $('#add-layer').prop('disabled', false);
@@ -1225,7 +1243,7 @@ function addLayer() {
     $('#add-layer').prop('disabled', true);
     $('#max-layers').fadeIn('slow');
   }
-  updateColorArray();
+  // updateColorArray();
 }
 // Proportion box drawing/UI
 function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
