@@ -47,24 +47,47 @@
 			<i>Interactive algorithm art</i>
 			<br>
 			<!-- <button id="toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-bottom-5" onclick="toggleAutoMosaic()">Auto-Mosaic</button> -->
-			<button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
-			<button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-top-10 margin-bottom-5" onclick="executeSave()">Save Image</button>
-			<div class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 10 sec</i></div>
-		</div>
-		<hr>
+            <div id="colorset-0" class="colorset-2">
+                <button class="btn btn-sm colorset-button" id="colorset-0-toggle" style="background-color: #555555; color: #ffffff" onclick="toggleColorset('colorset-0')">What am I looking at?!
+                    <strong><i class="float-right bold fa fa-angle-down" aria-hidden="true"></i></strong></button><br>
+                <div id="colorset-0-collapse" class="form-rounded-less collapse in">
 
-		<!-- <div id="color-preset-picker" class="preset-picker form-rounded">
-			<strong id="preset-title">Colorset 1 (Max colors=8)</strong>
-			<hr>
-			<table id="color-preset-table" class="table-full">
-				<tr class="table-color-preset"></tr>
-			</table>
-			<button id="cancel-choose-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hidePresets()">Cancel</button>
-			<button id="confirm-choose-presets" class="btn btn-rounded btn-outline-success float-right margin-top-10 margin-bottom-5">Set colors</button><br>
-			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
-		</div> -->
+                    <div class="tab-content font-size-75" style="margin-left:5%; width:90%">
+                        This project is an alternative version of <a href="http://www.benwedin.com/mosaic-live" target="_blank">Mosaic</a> inspired by
+                        <a href="https://distill.pub/2018/building-blocks/" target="_blank">"The Building Blocks of Interpretability"</a> from distill.pub.
+                        <br>
+                        <br>
+                        The point of this visualization is to see what neurons in our network are highly
+                        activated for different images.
+                        <br>
+                        <br>
+                        Depending on the parameters you've set, the image will show what neurons are most excited
+                        at that location in the image. For example, you might see images that look a lot like birds in
+                        the part of an image that contains birds on a birdfeeder:
+                        <br>
+                        <br>
+                        <img class="rounded" src="./img/birds-5a.png" style="margin-left: 30%; width:40%; height:auto">
+                        <br>
+                        <br>
+                        You may also want to add other lower layers to see more abstract feature visualizations (or to
+                        see both at once!):
+                        <br>
+                        <br>
+                        <img class="rounded" src="./img/birds-lower.png" style="margin-left: 30%; width:40%; height:auto">
+                        <br>
+                        <br>
+                        For a more complete explanation, please check out
+                        <a href="https://distill.pub/2018/building-blocks/" target="_blank">the distill.pub article.</a>
+                    </div>
+                </div>
+            </div>
+		</div>
+        <hr>
 		<div id="default-ui-controls">
-		<div class="margin-top-10"></div>
+		<div class="margin-top-10">
+            <button id="fullscreen" type="button" class="btn btn-outline-info btn-sm margin-bottom-5" onclick="makeFullScreen()">Fullscreen</button>
+            <button id="save-image" type="button" class="btn btn-outline-info btn-sm margin-bottom-5" onclick="executeSave()">Save Image</button>
+        </div>
 		<div class="parameter-title">Image</div>
 		<div class="btn-group" data-toggle="buttons" id="image-toggle">
 			<label class="btn btn-secondary active">
@@ -78,30 +101,13 @@
 		  <label class="btn btn-secondary">
 		    <input type="radio" name="shape-options" id="option3" value="flowers" autocomplete="off">
 			  <img class="rounded" src="./img/i-flowers.png" alt="Square" style="height:30px; width: 30px">
-<!-- 		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
- -->		</label>
+          </label>
 		</div>
 		<div class="parameter-title">Refresh Rate</div>
  		<input id="refresh-per-minute" type="number" class="input-number" value="20" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
-		<!-- <div class="parameter-title">Columns</div>
-		<input type="range" id="num-columns" list="num-columns-data" min="0" max="100" step="10" value="20">
-		<datalist id="num-columns-data">
-		  <option value="0" label="0">
-		  <option value="10">
-		  <option value="20">
-		  <option value="30">
-		  <option value="40">
-		  <option value="50" label="50">
-		  <option value="60">
-		  <option value="70">
-		  <option value="80">
-		  <option value="90">
-		  <option value="100" label="100">
-		</datalist>
-		<span id="num-columns-display"></span> -->
 		<div class="parameter-title">Opacity</div>
 		<input type="range" id="opacity" list="opacity-data" step="10" min="0" max="100" value="50">
 		<datalist id="opacity-data">
