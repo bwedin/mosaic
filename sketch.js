@@ -24,6 +24,7 @@ var layerActivationCounts = {
 var MAX_ACTIVATIONS = 5;
 var tintPercent = 50;
 var loadedLayers = {};
+var inputImage = 'birds';
 
 var aspectRatio = 12/20;
 var fullCanvas = null;
@@ -257,6 +258,16 @@ function setNumColorsetColors(colorset,num) {
 //   $('#num-columns-display').text(num);
 //   columnVal = num;
 // }
+function setImage(imageName) {
+  let inputImage = $('#image-toggle input:radio:checked').val();
+  if(imageName!=inputImage) {
+    colorTiles = {};
+    // $('input[value="' + shapeName + '"]').prop('checked', true);
+    $('input[value="' + imageName + '"]').click();
+    $('input[value="' + imageName + '"]').blur();
+    inputImage = imageName;
+  }
+}
 function setShape(shapeName) {
   let shapeType = $('#shape-toggle input:radio:checked').val();
   if(shapeType!=shapeName) {
@@ -544,7 +555,7 @@ function drawShapeField() {
   if(shapeFieldReady) {
     background(255);
     noTint();
-    image(imageDictionary['inputs']['birds'],0,0,width,width*(12/20));
+    image(imageDictionary['inputs'][inputImage],0,0,width,width*(12/20));
     if(tintPercent!=1) {
       tint(255, Math.round(tintPercent*255));
     }
@@ -703,10 +714,10 @@ function updateColorArray() {
   }
 }
 function drawMain() {
-  let shapeType = $('#shape-toggle input:radio:checked').val();
-  if(shapeType!=shape) {
+  let imageName = $('#image-toggle input:radio:checked').val();
+  if(imageName!=inputImage) {
     colorTiles = {};
-    shape = shapeType;
+    inputImage = imageName;
   }
   // // should update all colorsets etc in memory
   // let val = $('#num-columns').val();
@@ -734,18 +745,8 @@ function drawMain() {
     }
   }
   // numberColumns = 1;
-  let alphaValues = [100,150,220];
   updateColorArray();
-  if (shape==='triangle') {
-    drawTriangleField(numColumnVal, alphaValues);
-  }
-  else if (shape==='square') {
-    console.log('frame');
-    drawSquareField(numColumnVal, alphaValues);
-  }
-  else {
-    drawDiamondField(numColumnVal, alphaValues);
-  }
+  drawImageField(numColumnVal);
 }
 // drawing functions (shape-specific)
 function drawTriangleField(numberColumns,alphaValues) {
@@ -801,7 +802,7 @@ function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor, tileKe
   triangle(topPosX,topPosY,xMid,yMid,xLast,yLast);
   return;
 }
-function drawSquareField(numberColumns,alphaValues) {
+function drawImageField(numberColumns) {
   let columnWidth = width/numberColumns;
   if(columnWidth%1!=0) {
     columnWidth = Math.floor(columnWidth);
@@ -819,11 +820,11 @@ function drawSquareField(numberColumns,alphaValues) {
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
     let yPosTop = 0;
-    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues,i);
+    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],i);
   }
   // + sidelength*i, orientation=i;
 }
-function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportions,alphaValues,columnKey) {
+function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportions,columnKey) {
   let sideLength = columnWidth; // todo bw: square change here?
   let i = 0;
   // draw squares down to bottom
@@ -831,10 +832,9 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportion
   // squareColumn()
   // generateRngImage(imageName,proportions,columnKey,rowKey)
   //    pluck layer based off proportions in position, get activation count, pick random from that list
-  imageName='birds';
   sideLength = columnWidth;
   while(yPosTop<columnHeight) {
-    drawSquareIcon(sideLength, imageName,layerProportions,columnKey,i);
+    drawSquareIcon(sideLength, inputImage,layerProportions,columnKey,i);
     yPosTop += sideLength;
     i++;
   }
@@ -886,10 +886,6 @@ function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor, tileKey) {
     xPosMid+diagonalHalf,yPosMid,
     xPosMid,yPosMid+diagonalHalf);
   return;
-}
-function generateRngImage(imageName,proportions,columnKey,rowKey) {
-  imgName = semanticDictionaries['birds']['mixed5a'][rowKey][columnKey][0]
-  return imageDictionary['mixed5a'][imgName];
 }
 function getNewColor(rngColor, historyFraction, tileKey) {
   if(historyFraction>0) {
