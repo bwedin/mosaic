@@ -92,12 +92,12 @@
 		  </label>
 		  <label class="btn btn-secondary">
 		    <input type="radio" name="shape-options" id="option3" value="flowers" autocomplete="off">
-			  <img class="rounded" src="./img/i-square.png" alt="Square" style="height:30px; width: 30px">
+			  <img class="rounded" src="./img/i-flowers.png" alt="Square" style="height:30px; width: 30px">
 <!-- 		    <img class="rounded" src="icon.jpg" alt="Circle" style="height:50px; width: 50px">
  -->		</label>
 		</div>
 		<div class="parameter-title">Refresh Rate</div>
- 		<input id="refresh-per-minute" type="number" class="input-number" value="70" min="1" size="6">&nbsp;times per minute<br>
+ 		<input id="refresh-per-minute" type="number" class="input-number" value="20" min="1" size="6">&nbsp;times per minute<br>
  		<span id="refresh-seconds-text" class="alt-text">(every 0.5 seconds)</span><br>
 		<button id="refresh-drawing" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="refreshDrawing()">Refresh</button>
 		<button id="toggle-freeze" type="button" class="btn btn-outline-primary btn-sm margin-top-5 margin-bottom-10" onclick="toggleFreeze()">Freeze</button>
@@ -136,8 +136,8 @@
 		<div class="font-size-75"><i>Set opacity to 100% to improve performance speed</i></div>
 		<div class="parameter-title">Layers</div>
 		<div id="color-picker-master" class="form-rounded">
-				<button id="add-colorset" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addColorset()>+ Add Layer</button>
-				<button id="remove-colorset" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeColorset()>- Remove</button><br>
+				<button id="add-layer" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addLayer()>+ Add Layer</button>
+				<button id="remove-layer" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeLayer()>- Remove</button><br>
 				<div id="max-layers" class="initially-hidden-75">Max layers reached</div>
 
 

@@ -36,7 +36,7 @@ var INIT_COLORSETS = 2;
 var MAX_COLORS = 8;
 var MAX_LAYERS = 5;
 var WINDOW_BOTTOM_PADDING = 10;
-var colorsetCount = 2;
+var layerCount = 2;
 var colorsetColorCount = {"colorset-1": 3, "colorset-2": 3, "colorset-3": 3, "colorset-4": 3, "colorset-5": 3};
 var colorArray = {};
 var alphaArray = {};
@@ -291,49 +291,7 @@ function setupPresetViewButton(name) {
   hideFullPresets();
 }
 function setupPresetView(name) {
-  if(name==='sun-and-ice') {
-    setShape('diamond');
-    setRefreshRate(512);
-    setNumColumns(90);
-    setSmoothing(6);
-    setNumColorsets(2);
-    setColors('colorset-1',fallColorset);
-    setNumColorsetColors('colorset-1',3);
-    setColorsetProportions(1,'leftHalf');
-    setColors('colorset-2',winterColorset);
-    setNumColorsetColors('colorset-2',3);
-    setColorsetProportions(2,'rightHalf');
-  }
-  else if(name==='1966') {
-    setShape('diamond');
-    setRefreshRate(500);
-    setNumColumns(60);
-    setSmoothing(1);
-    setNumColorsets(2);
-    setColors('colorset-1',grayscaleColorset);
-    setNumColorsetColors('colorset-1',3);
-    setColorsetProportions(1,'rightEdgeDescent');
-    setColors('colorset-2',brightColorset);
-    setNumColorsetColors('colorset-2',3);
-    setColorsetProportions(2,'rightEdgeAscent');
-  }
-  else if(name==='vivaldi') {
-    setShape('triangle');
-    setRefreshRate(500);
-    setNumColumns(60);
-    setSmoothing(3);
-    setNumColorsets(4);
-    setColors('colorset-1',winterColorset);
-    setNumColorsetColors('colorset-1',8);
-    setColorsetProportions(1,'firstQuarter');
-    setColors('colorset-2',springColorset);
-    setColorsetProportions(2,'secondQuarter');
-    setColors('colorset-3',summerColorset);
-    setColorsetProportions(3,'thirdQuarter');
-    setColors('colorset-4',fallColorset);
-    setColorsetProportions(4,'fourthQuarter');
-  }
-  else if (name==='color-party') {
+  if (name==='color-party') {
     setShape('square');
     setRefreshRate(90);
     setNumColumns(80);
@@ -494,7 +452,6 @@ function setup() {
         }
         let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[0],i);
         let startObj = circleObj;
-        shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
@@ -509,14 +466,12 @@ function setup() {
         // }
         circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[bezierArray.length-1],i);
         let endObj = circleObj;
-        shapesToDraw.push(circleObj);
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
         if (i>INIT_COLORSETS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
             circleObj =  MovingCircleMidpointLeader(width*(i)/(MAX_LAYERS+1),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i,startObj,endObj);
-            shapesToDraw.push(circleObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
@@ -524,6 +479,8 @@ function setup() {
         }
         colorsetObjects[i] = {'bezier': bezierArray, 'circle': circleArray};
     }
+    // circles look better on top
+  shapesToDraw = shapesToDraw.concat(movingCircleArray);
   background(255);
   stroke(0, 0, 0);
   noFill();
@@ -555,6 +512,12 @@ function drawShapeField() {
   if(shapeFieldReady) {
     background(255);
     noTint();
+    let imageName = $('#image-toggle input:radio:checked').val()
+    if(imageName!=inputImage) {
+        console.log('change')
+        colorTiles = {};
+        inputImage = imageName;
+    }
     image(imageDictionary['inputs'][inputImage],0,0,width,width*(12/20));
     if(tintPercent!=1) {
       tint(255, Math.round(tintPercent*255));
@@ -597,35 +560,12 @@ function draw() {
   }
 }
 // drawing functions (misc)
-function findColorRNG(proportions, alphas){
-  let val = Math.random();
-  for(let idx=1; idx<=proportions.length; idx++) {
-    let p = proportions[idx];
-    if(p>val){
-      let colorsetNumber = idx;
-      let colorChoices = colorArray[colorsetNumber];
-      let colorRGB = colorChoices[Math.floor(Math.random()*colorChoices.length)];
-      let alphaChoices = alphaArray[colorsetNumber];
-      // todo bw also change this
-      // alphaChoices = alphas
-      if(historyFraction>0) {
-        return [colorRGB.r, colorRGB.g, colorRGB.b, 255];
-      }
-      else {
-        let alpha = Number(alphaChoices[Math.floor(Math.random() * alphaChoices.length)]);
-        // console.log(alpha);
-        // todo bw change this
-        return [colorRGB.r, colorRGB.g, colorRGB.b, alpha];
-      }
-    }
-  }
-}
-function calculateColorsetProportionsShared(steps) {
+function calculateLayerProportionsShared(steps) {
   let stepIncrement = width/steps;
   let probsByColorset = [];
   let sumArrays = [];
   // how to evaluate:
-  for(let c=1; c<=colorsetCount; c++) {
+  for(let c=1; c<=layerCount; c++) {
     let colorsetProbs = [];
     // all curves are already sorted from left to right, start with leftmost
     let curves = colorsetObjects[c].bezier;
@@ -665,7 +605,7 @@ function calculateColorsetProportionsShared(steps) {
   return sumArrays;
 }
 function updateColorArray() {
-  for(let i=1; i<= colorsetCount; i++) {
+  for(let i=1; i<= layerCount; i++) {
     let colorsetName = 'colorset-' + i;
     let colorCount = colorsetColorCount[colorsetName];
     let colorsetArray = [];
@@ -714,11 +654,6 @@ function updateColorArray() {
   }
 }
 function drawMain() {
-  let imageName = $('#image-toggle input:radio:checked').val();
-  if(imageName!=inputImage) {
-    colorTiles = {};
-    inputImage = imageName;
-  }
   // // should update all colorsets etc in memory
   // let val = $('#num-columns').val();
   // if (val==0) {
@@ -749,59 +684,6 @@ function drawMain() {
   drawImageField(numColumnVal);
 }
 // drawing functions (shape-specific)
-function drawTriangleField(numberColumns,alphaValues) {
-  let fieldHeight = Math.ceil(width*aspectRatio);
-  let columnWidth = width/numberColumns;
-  if(columnWidth%1!=0) {
-    columnWidth = Math.floor(columnWidth);
-    numberColumns = Math.ceil(width/columnWidth);
-    numberColumns++;
-  }
-  else {
-  }
-  let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
-  let columnHeight = width*aspectRatio;
-  if(fullscreen() || isMobile()) {
-    columnHeight = height;
-  }
-  let yPosTop = 0;
-  for(let i=0; i<numberColumns; i++) {
-    let xPosL = i*columnWidth;
-    let yPosTop = 0;
-    drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],alphaValues,i)
-  }
-  // + sidelength*i, orientation=i;
-}
-function drawTriangleColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions,alphaValues,columnKey) {
-  let sideLength = 2*columnWidth/Math.sqrt(3);
-  let i = 0;
-  // draw triangle pointing right, and triangle above it, facing left
-  while(yPosTop<=columnHeight) {
-    i++;
-    let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawTriangle(sideLength, xPosL, yPosTop, 1, drawColor, [columnVal,columnKey,i]);
-    drawColor = findColorRNG(colorsetProportions,alphaValues);
-    i++
-    drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor, [columnVal,columnKey,i]);
-    yPosTop += sideLength;
-  }
-  i++;
-  // one more for good measure
-  let drawColor = findColorRNG(colorsetProportions,alphaValues);
-  drawTriangle(sideLength, xPosL+columnWidth, yPosTop-sideLength/2, -1, drawColor,[columnVal,columnKey,i]);
-}
-function drawTriangle(sideLength, topPosX, topPosY, xDirection, rngColor, tileKey) {
-  let drawColor = getNewColor(rngColor,historyFraction,tileKey);
-  fill(drawColor);
-  noStroke();
-  // Math.sqrt(3)/2
-  let xMid = topPosX+((sideLength*xDirection)*Math.sqrt(3)/2);
-  let yMid = topPosY+sideLength/2;
-  let xLast = topPosX;
-  let yLast = topPosY+sideLength;
-  triangle(topPosX,topPosY,xMid,yMid,xLast,yLast);
-  return;
-}
 function drawImageField(numberColumns) {
   let columnWidth = width/numberColumns;
   if(columnWidth%1!=0) {
@@ -811,7 +693,7 @@ function drawImageField(numberColumns) {
   }
   else {
   }
-  let colorsetProportions = calculateColorsetProportionsShared(numberColumns);
+  let layerProportions = calculateLayerProportionsShared(numberColumns);
   let columnHeight = width*aspectRatio;
   if(fullscreen() || isMobile()) {
     columnHeight = height;
@@ -820,7 +702,7 @@ function drawImageField(numberColumns) {
   for(let i=0; i<numberColumns; i++) {
     let xPosL = i*columnWidth;
     let yPosTop = 0;
-    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,colorsetProportions[i],i);
+    drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportions[i],i);
   }
   // + sidelength*i, orientation=i;
 }
@@ -838,54 +720,6 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportion
     yPosTop += sideLength;
     i++;
   }
-}
-function drawDiamondField(numberColumns,alphaValues) {
-  let fieldHeight = Math.ceil(width*aspectRatio);
-  let columnWidth = width/numberColumns;
-  if(columnWidth%1!=0) {
-    columnWidth = Math.floor(columnWidth);
-    numberColumns = Math.ceil(width/columnWidth);
-    numberColumns++;
-  }
-  numberColumns = numberColumns*2;
-  let colorsetProportions = calculateColorsetProportionsShared(numberColumns+1); // extra one for edge
-  let columnHeight = width*aspectRatio;
-  if(fullscreen() || isMobile()) {
-    columnHeight = height;
-  }
-  let yPosTop = 0;
-  // todo: make column key: unique identifier will be numberColumns, columnId, rowId)
-  for(let i=0; i<=numberColumns; i=i+2) {
-    let xPosMid = i*columnWidth/2;
-    let yPosTop = 0;
-    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues,i);
-    xPosMid += columnWidth/2;
-    yPosTop = yPosTop-(columnWidth/2);
-    drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions[i],alphaValues,i+1);
-  }
-  // + sidelength*i, orientation=i;
-}
-function drawDiamondColumn(columnWidth,columnHeight,xPosMid,yPosTop,colorsetProportions,alphaValues,columnKey) {
-  let diagonalHalf = columnWidth/2;
-  let yPosMid = yPosTop;
-  let i = 0;
-  // draw triangle pointing right, and triangle above it, facing left
-  while((yPosMid-diagonalHalf)<=columnHeight) {
-    i++;
-    let drawColor = findColorRNG(colorsetProportions,alphaValues);
-    drawDiamond(diagonalHalf, xPosMid, yPosMid, drawColor,[columnVal,columnKey,i]);
-    yPosMid += diagonalHalf*2;
-  }
-}
-function drawDiamond(diagonalHalf, xPosMid, yPosMid, rngColor, tileKey) {
-  let drawColor = getNewColor(rngColor,historyFraction,tileKey);
-  fill(drawColor);
-  noStroke();
-  quad(xPosMid-diagonalHalf,yPosMid,
-    xPosMid,yPosMid-diagonalHalf,
-    xPosMid+diagonalHalf,yPosMid,
-    xPosMid,yPosMid+diagonalHalf);
-  return;
 }
 function getNewColor(rngColor, historyFraction, tileKey) {
   if(historyFraction>0) {
@@ -1317,8 +1151,8 @@ function updateOpacity() {
 function updateRefreshRate() {
   let $refreshPerMinute = $('#refresh-per-minute');
   refreshRate = 60/$refreshPerMinute.val();
-  if(refreshRate<0.01) {
-    refreshRate = 0.01;
+  if(refreshRate<0.1) {
+    refreshRate = 0.1;
   }
   $('#refresh-seconds-text').text('(every '+refreshRate+' seconds)');
   $refreshPerMinute.val(Math.round(60/refreshRate));
@@ -1354,21 +1188,21 @@ function addColor(colorsetDiv) {
     $('#add-'+colorsetDiv).prop('disabled', true);
   }
 }
-function removeColorset() {
-  $('#add-colorset').prop('disabled', false);
+function removeLayer() {
+  $('#add-layer').prop('disabled', false);
   $('#max-layers').fadeOut('fast');
 
-  if(colorsetCount>1) {
-    let shownObjects = colorsetObjects[colorsetCount];
+  if(layerCount>1) {
+    let shownObjects = colorsetObjects[layerCount];
     shownObjects.bezier.forEach(function(obj) { obj.hide();})
     shownObjects.circle.forEach(function(obj) { obj.hide();})
 
-    let removeDiv = '#colorset-' + colorsetCount;
+    let removeDiv = '#colorset-' + layerCount;
     $(removeDiv).toggle();
-    colorsetCount--;
+    layerCount--;
   }
-  if(colorsetCount == 1) {
-    $('#remove-colorset').prop('disabled', true);
+  if(layerCount == 1) {
+    $('#remove-layer').prop('disabled', true);
   }
 }
 function makeFullScreen() {
@@ -1377,18 +1211,18 @@ function makeFullScreen() {
   $('#sketch-holder-holder').addClass('fixed-top');
   $('#sketch-holder-holder').removeClass('sticky-top');
 }
-function addColorset() {
-  $('#remove-colorset').prop('disabled', false);
-  if(colorsetCount < MAX_LAYERS) {
-    colorsetCount++;
-    let newDiv = '#colorset-' + colorsetCount;
+function addLayer() {
+  $('#remove-layer').prop('disabled', false);
+  if(layerCount < MAX_LAYERS) {
+    layerCount++;
+    let newDiv = '#colorset-' + layerCount;
     $(newDiv).toggle();
-    let hiddenObjects = colorsetObjects[colorsetCount];
+    let hiddenObjects = colorsetObjects[layerCount];
     hiddenObjects.bezier.forEach(function(obj) { obj.show();})
     hiddenObjects.circle.forEach(function(obj) { obj.show();})
   }
-  if(colorsetCount == MAX_LAYERS) {
-    $('#add-colorset').prop('disabled', true);
+  if(layerCount == MAX_LAYERS) {
+    $('#add-layer').prop('disabled', true);
     $('#max-layers').fadeIn('slow');
   }
   updateColorArray();
@@ -1570,8 +1404,6 @@ function drawProgress() {
   background(255);
   stroke(30);
   fill(30);
-  console.log(Object.keys(loadedLayers).length);
-  console.log(MAX_LAYERS);
   // humans like seeing something close to 100.
   let pct = (Object.keys(loadedLayers).length/MAX_LAYERS*100+10).toString();
   if(pct>100) { pct=100; }
