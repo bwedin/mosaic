@@ -30,11 +30,9 @@ var inputImage = 'birds';
 
 var aspectRatio = 12/20;
 var fullCanvas = null;
-var shape = "diamond";
 var columnVal = 20;
 // colorset variables
-var INIT_COLORS = 3;
-var INIT_COLORSETS = 2;
+var INIT_LAYERS = 2;
 var MAX_COLORS = 8;
 var MAX_LAYERS = 5;
 var WINDOW_BOTTOM_PADDING = 10;
@@ -48,32 +46,9 @@ var colorset_color_3 = "#8ddc1c";
 var colorset_color_4 = "#9159de";
 var colorset_color_5 = "#fd8f2f";
 var colorsetColorKey = {1: colorset_color_1, 2: colorset_color_2, 3: colorset_color_3,
-  4: colorset_color_4, 5: colorset_color_5};
+    4: colorset_color_4, 5: colorset_color_5};
+
 var colorsetObjects = {};
-// some default colors/preset
-var fullPresets = ['vivaldi','1966','sun-and-ice','color-party'];
-var fallColorset = ["rgb(232,19,19)", "rgb(235,182,38)", "rgb(246,238,0)", "rgb(28,9,9)",
-  "rgb(227,174,140)", "rgb(151,92,48)", "rgb(156,26,84)", "rgb(228,105,129)"];
-var winterColorset = ["rgb(50,49,238)", "rgb(77,17,148)", "rgb(119,209,253)", "rgb(141,87,255)",
-  "rgb(89,250,234)", "rgb(71,111,216)", "rgb(22,146,148)", "rgb(92,108,131)"];
-var springColorset = ["rgb(221,61,202)", "rgb(169,104,210)", "rgb(252,194,251)", "rgb(88,37,105)",
-  "rgb(191,214,250)", "rgb(246,86,139)", "rgb(242,145,128)", "rgb(97,8,232)"];
-var summerColorset = ["rgb(11,83,19)", "rgb(42,150,86)", "rgb(87,226,76)", "rgb(195,239,178)",
-  "rgb(11,19,6)", "rgb(200,242,81)", "rgb(53,224,169)", "rgb(134,151,100)"];
-var brightColorset = ["rgb(231,0,100)","rgb(0,163,255)","rgb(255,197,0)"];
-var grayscaleColorset = ["rgb(0,0,1)","rgb(67,67,68)","rgb(133,133,134)"];
-var colorsetPresets = {'fall':fallColorset,'winter':winterColorset,'spring':springColorset,'summer':summerColorset,
-        'bright': brightColorset, 'grayscale': grayscaleColorset};
-var proportionOptions = ['leftHalf','rightHalf','rightEdgeDescent','rightEdgeAscent',
-  'middleThird','firstQuarter','secondQuarter','thirdQuarter','fourthQuarter',
-  'base90','cos','negCos'];
-var colorsetKeys = Object.keys(colorsetPresets);
-var allColors = [];
-colorsetKeys.forEach(function(key) {
-  allColors = allColors.concat(colorsetPresets[key]);
-});
-// thirds, fourths, increaseEdge, decreaseEdge, sinWave, -sinWave, cosWave, -cosWave
-var chosenColors = [];
 // shape drawing (proportion box)
 var shapesToDraw = [];
 // proportion box variables
@@ -92,9 +67,6 @@ var historyFraction = 0.75;
 var nextTime = START_TIME+refreshRate;
 var nowTime = START_TIME;
 var isFrozen = false;
-var isAutoMosaic = false;
-var AUTO_MOSAIC_RATE = 10;
-var nextAutoMosaic = START_TIME+AUTO_MOSAIC_RATE;
 var checkboxHtml = '<i class="fa fa-check" aria-hidden="true"></i>';
 $(document).ready(function(){
     let elements = null;
@@ -159,72 +131,6 @@ function setColorsSetup(colorset,name,isRandom) {
     $(colorpickerDiv).colorpicker().data('colorpicker').setValue(colorsToUse[i-1]);
   }
 }
-function getYPosFromPercent(pct) {
-  pct=pct/100;
-  // find bottom position (0%), then offset an additional amount by (colorset eq width)*pct
-  return height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM-pct*(COLORSET_EQ_TOP-COLORSET_EQ_BOTTOM);
-}
-function getXPosFromPercent(pct) {
-  pct=pct/100;
-  // find bottom position (0%), then offset an additional amount by (colorset eq width)*pct
-  return width*pct;
-}
-function setColorsetProportions(colorsetNum,type) {
-  let coordinateArray = null;
-  // thirds, fourths, increaseEdge, decreaseEdge, sinWave, -sinWave, cosWave, -cosWave
-  if(type==='leftHalf') {
-    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
-  }
-  else if(type=='rightHalf') {
-    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,10],[100*3/5,90],[100*4/5,95],[100,100]];
-  }
-  else if(type==='rightEdgeDescent') {
-    coordinateArray = [[0,100],[100*1/5,100],[100*3/10,99],[100*7/10,90],[100*9/10,25],[100,1]];
-  }
-  else if(type==='rightEdgeAscent') {
-    coordinateArray = [[0,0],[100*1/5,0],[100*3/10,1],[100*7/10,10],[100*9/10,75],[100,99]];
-  }
-  else if(type==='middleThird') {
-    coordinateArray = [[0,0],[100*1/4,0],[100*4/10,100],[100*6/10,100],[100*3/4,0],[100,0]];
-  }
-  else if(type==='firstQuarter') {
-    coordinateArray = [[0,100],[12,100],[32,0],[100*3/5,0],[100*4/5,0],[100,0]];
-  }
-  else if(type==='secondQuarter') {
-    coordinateArray = [[0,0],[12,0],[32,100],[100*4/10,100],[100*6/10,0],[100,0]];
-  }
-  else if(type==='thirdQuarter') {
-    coordinateArray = [[0,0],[100*4/10,0],[100*6/10,100],[68,100],[88,0],[100,0]];
-  }
-  else if(type==='fourthQuarter') {
-    coordinateArray = [[0,0],[100*1/5,0],[100*2/5,0],[68,0],[88,100],[100,100]];
-  }
-  else if(type==='base10') {
-    coordinateArray = [[0,10],[100*1/5,10],[100*2/5,10],[100*3/5,10],[100*4/5,10],[100,10]];
-  }
-  else if(type==='base90') {
-    coordinateArray = [[0,90],[100*1/5,90],[100*2/5,90],[100*3/5,90],[100*4/5,90],[100,90]];
-  }
-  else if(type==='cos') {
-    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
-  }
-  else if(type==='negCos') {
-    coordinateArray = [[0,100],[100*1/5,95],[100*2/5,90],[100*3/5,10],[100*4/5,0],[100,0]];
-  }
-  else {
-    return;
-  }
-  let circles = colorsetObjects[colorsetNum].circle;
-  circles = circles.reverse();
-  circles.forEach(function(circle) {
-    circle.setPosition(getXPosFromPercent(100),getYPosFromPercent(0));
-  });
-  circles = circles.reverse();
-  circles.forEach(function(circle,idx) {
-    circle.setPosition(getXPosFromPercent(coordinateArray[idx][0]),getYPosFromPercent(coordinateArray[idx][1]));
-  });
-  // obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()));
-}
 function setupStartView() {
   //Sun & Ice - https://www.youtube.com/watch?v=tlEinFS01lk
   let seasonArray = shuffle(['fall','winter','summer','spring']);
@@ -239,27 +145,6 @@ function setupStartView() {
   setColorsetProportions(4,'base90');
   setColorsetProportions(5,'rightEdgeAscent');
 }
-function setNumColorsets(num) {
-  while(colorsetCount>num) {
-    removeColorset();
-  }
-  while(colorsetCount<num) {
-    addColorset();
-  }
-}
-function setNumColorsetColors(colorset,num) {
-  while(colorsetColorCount[colorset]>num) {
-    removeColor(colorset);
-  }
-  while(colorsetColorCount[colorset]>num) {
-    addColor(colorset);
-  }
-}
-// function setNumColumns(num) {
-//   $('#num-columns').val(num);
-//   $('#num-columns-display').text(num);
-//   columnVal = num;
-// }
 function setImage(imageName) {
   let inputImage = $('#image-toggle input:radio:checked').val();
   if(imageName!=inputImage) {
@@ -270,52 +155,9 @@ function setImage(imageName) {
     inputImage = imageName;
   }
 }
-function setShape(shapeName) {
-  let shapeType = $('#shape-toggle input:radio:checked').val();
-  if(shapeType!=shapeName) {
-    colorTiles = {};
-    // $('input[value="' + shapeName + '"]').prop('checked', true);
-    $('input[value="' + shapeName + '"]').click();
-    $('input[value="' + shapeName + '"]').blur();
-    shape = shapeName;
-  }
-}
-function setOpacity(num) {
-  $('#opacity').val(num);
-  updateOpacity();
-}
 function setRefreshRate(num) {
   $('#refresh-per-minute').val(num);
   updateRefreshRate();
-}
-function setupPresetViewButton(name) {
-  setupPresetView(name);
-  hideFullPresets();
-}
-function setupPresetView(name) {
-  if (name==='color-party') {
-    setShape('square');
-    setRefreshRate(90);
-    setNumColumns(80);
-    setSmoothing(0);
-    setNumColorsets(5);
-    setColors('colorset-1',brightColorset);
-    setNumColorsetColors('colorset-1',8);
-    setColorsetProportions(1,'base10');
-    setColors('colorset-2',springColorset);
-    setColorsetProportions(2,'base10');
-    setColors('colorset-3',winterColorset);
-    setColorsetProportions(3,'base10');
-    setColors('colorset-4',summerColorset);
-    setColorsetProportions(4,'base10');
-    setColors('colorset-5',fallColorset);
-    setColorsetProportions(5,'base10');
-    $('input:checkbox').prop('checked', 0);
-    $('[data-percent="100"]:checkbox').prop('checked', 'true');
-    $('[data-percent="90"]:checkbox').prop('checked', 'true');
-    $('[data-percent="70"]:checkbox').prop('checked', 'true');
-    $('[data-percent="60"]:checkbox').prop('checked', 'true');
-  }
 }
 function drawSquareSubIcon(sideLength,columnKey,rowKey,imageName,layerName,activationCount) {
   let activations = semanticDictionaries[imageName][layerName][rowKey][columnKey];
@@ -352,7 +194,6 @@ function drawSquareIcon(sideLength, imageName,layerProportions,columnKey,rowKey)
     return;
   }
 }
-
 function loadSemanticDictionaries() {
   let promises = [];
   let d = $.getJSON( "lib/img_dict.json")
@@ -394,14 +235,8 @@ function loadSemanticDictionaries() {
       d.reject();
     }).done(function() {
       shapeFieldReady = true;
-      console.log('promises resolved. dictionaries:');
-      console.log(imageDictionary);
-      console.log(semanticDictionaries);
     });
 }
-// function showPreset(id) {
-//     'rgb(,,)'
-// }
 // main p5
 function setup() {
     loadSemanticDictionaries();
@@ -419,15 +254,13 @@ function setup() {
 
     // hide all ones we don't want
     layersWithActivations.forEach(function(layer) {
-        console.log('hello?')
         for(let i=MAX_ACTIVATIONS; i>INIT_ACTIVATIONS; i--) {
             removeActivation(layer);
-            console.log('removed');
         }
     });
     for(let i=1; i<=MAX_LAYERS; i++) {
         //adding colorpickers
-        if(i>INIT_COLORSETS) {
+        if(i>INIT_LAYERS) {
             let colorsetDiv = '#colorset-' + i;
             $(colorsetDiv).toggle();
         }
@@ -441,34 +274,34 @@ function setup() {
             let bezierObj = MovingBezierHorizontal(0,0,width,0,i);
             shapesToDraw.push(bezierObj);
             bezierArray.push(bezierObj);
-            if (i>INIT_COLORSETS) { bezierObj.hide(); }
+            if (i>INIT_LAYERS) { bezierObj.hide(); }
         }
         let circleObj =  MovingCircleStartpoint(0,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[0],i);
         let startObj = circleObj;
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
-        if (i>INIT_COLORSETS) { circleObj.hide(); }
+        if (i>INIT_LAYERS) { circleObj.hide(); }
         // for(let j=0; j<bezierArray.length-1; j++) {
         //     circleObj =  MovingCircleMidpoint(width*((j+1)/(NUM_EQ_NODES-1)),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i);
         //     shapesToDraw.push(circleObj);
         //     clickableObjects.push(circleObj);
         //     movingCircleArray.push(circleObj);
         //     circleArray.push(circleObj);
-        //     if (i>INIT_COLORSETS) { circleObj.hide(); }
+        //     if (i>INIT_LAYERS) { circleObj.hide(); }
         // }
         circleObj =  MovingCircleEndpoint(width,height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[bezierArray.length-1],i);
         let endObj = circleObj;
         clickableObjects.push(circleObj);
         movingCircleArray.push(circleObj);
         circleArray.push(circleObj);
-        if (i>INIT_COLORSETS) { circleObj.hide(); }
+        if (i>INIT_LAYERS) { circleObj.hide(); }
         for(let j=0; j<bezierArray.length-1; j++) {
             circleObj =  MovingCircleMidpointLeader(width*(i)/(MAX_LAYERS+1),height-WINDOW_BOTTOM_PADDING-COLORSET_EQ_BOTTOM,CIRCLE_RADIUS,i,bezierArray[j],bezierArray[j+1],i,startObj,endObj);
             clickableObjects.push(circleObj);
             movingCircleArray.push(circleObj);
             circleArray.push(circleObj);
-            if (i>INIT_COLORSETS) { circleObj.hide(); }
+            if (i>INIT_LAYERS) { circleObj.hide(); }
         }
         colorsetObjects[i] = {'bezier': bezierArray, 'circle': circleArray};
     }
@@ -478,10 +311,8 @@ function setup() {
   stroke(0, 0, 0);
   noFill();
   // setupStartView();
-  setupPresets();
   // updateColorArray();
   if(isMobile()) {
-    showFullPresets();
     $('#mobile-header').fadeIn('3000',function() {
       mobileResize();
     });
@@ -534,10 +365,6 @@ function draw() {
     if(nowTime>nextTime && !isFrozen) {
       drawShapeField();
       nextTime = nowTime + refreshRate;
-    }
-    if(isAutoMosaic && nowTime>nextAutoMosaic && !isFrozen) {
-      nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE;
-      generateAutoMosaic();
     }
     // noFill();
     // stroke(0, 0, 0);
@@ -597,62 +424,7 @@ function calculateLayerProportionsShared(steps) {
   }
   return sumArrays;
 }
-function updateColorArray() {
-  for(let i=1; i<= layerCount; i++) {
-    let colorsetName = 'colorset-' + i;
-    let colorCount = colorsetColorCount[colorsetName];
-    let colorsetArray = [];
-    let rKey = 0;
-    let gKey = 0;
-    let bKey = 0;
-    for(let j=1; j<=colorCount; j++){
-      let colorpickerName = '#' + colorsetName + '-color-' + j;
-      let newColor = $(colorpickerName).colorpicker().data('colorpicker').color.toRGB();
-      colorsetArray.push(newColor);
-      rKey = rKey + newColor.r;
-      gKey = gKey + newColor.g;
-      bKey = bKey + newColor.b;
-    }
-
-    colorArray[i] = colorsetArray;
-    let alphaName = colorsetName+'-opacity';
-    let singleAlphaArray = [];
-    // todo bw not just colorset-1;
-    $('[name='+alphaName+']:checked').each(function(i){
-      singleAlphaArray.push($(this).val());
-    });
-    if(singleAlphaArray.length===0) {
-      singleAlphaArray = [255];
-    }
-    alphaArray[i] = singleAlphaArray;
-    if((rKey+gKey+bKey)/colorCount/3 > 140) {
-      rKey = rKey*0.5;
-      gKey = gKey*0.5;
-      bKey = bKey*0.5
-    }
-
-    let rKeyDark = Math.round(rKey*0.9/colorCount).toString(16).padStart(2, '0');
-    let gKeyDark = Math.round(gKey*0.9/colorCount).toString(16).padStart(2, '0');
-    let bKeyDark = Math.round(bKey*0.9/colorCount).toString(16).padStart(2, '0');
-    let newDarkColorsetColor = '#' + rKeyDark + gKeyDark + bKeyDark;
-
-    rKey = Math.round(rKey/colorCount).toString(16).padStart(2, '0');
-    gKey = Math.round(gKey/colorCount).toString(16).padStart(2, '0');
-    bKey = Math.round(bKey/colorCount).toString(16).padStart(2, '0');
-    let newColorsetColor = colorsetColorKey[i];
-    $('.' + colorsetName).css('color',newColorsetColor);
-
-    $('.background-' + colorsetName).css('background-color',newColorsetColor);
-    $(' .expanded.background-' + colorsetName).css('background-color',newColorsetColor);
-  }
-}
 function drawMain() {
-  // // should update all colorsets etc in memory
-  // let val = $('#num-columns').val();
-  // if (val==0) {
-  //   val=1;
-  // }
-  // columnVal = val;
   var numColumnVal = columnVal;
   if(isMobile()) {
     if(shapeType==='square') {
@@ -712,33 +484,6 @@ function drawSquareColumn(columnWidth,columnHeight,xPosL,yPosTop,layerProportion
     drawSquareIcon(sideLength, inputImage,layerProportions,columnKey,i);
     yPosTop += sideLength;
     i++;
-  }
-}
-function getNewColor(rngColor, historyFraction, tileKey) {
-  if(historyFraction>0) {
-    if(!colorTiles[tileKey[0]]){
-      colorTiles[tileKey[0]] = {};
-    }
-    if(!colorTiles[tileKey[0]][tileKey[1]]){
-      colorTiles[tileKey[0]][tileKey[1]] = {};
-    }
-    if(!colorTiles[tileKey[0]][tileKey[1]][tileKey[2]]){
-      colorTiles[tileKey[0]][tileKey[1]][tileKey[2]] = rngColor;
-      return color(rngColor);
-    }
-    else {
-      let newFraction = 1-historyFraction;
-      oldColor = colorTiles[tileKey[0]][tileKey[1]][tileKey[2]];
-      newColor = [(historyFraction*oldColor[0]+newFraction*rngColor[0]),
-        (historyFraction*oldColor[1]+newFraction*rngColor[1]),
-        (historyFraction*oldColor[2]+newFraction*rngColor[2]),
-        255];
-      colorTiles[tileKey[0]][tileKey[1]][tileKey[2]] = newColor;
-      return color(newColor);
-    }
-  }
-  else {
-    return color(rngColor);
   }
 }
 // p5js event listeners
@@ -831,7 +576,7 @@ function windowResized() {
   let proposedHeight = Math.ceil(150+proposedWidth*aspectRatio+WINDOW_BOTTOM_PADDING);
   if(fullscreen()) {
     proposedWidth= windowWidth;
-    proposedHeight = windowHeight;
+    proposedHeight = windowWidth*aspectRatio;
   }
 
   if(isMobile()) {
@@ -898,237 +643,6 @@ function toggleFreeze() {
     isFrozen = true;
   }
   $toggleFreeze.blur();
-}
-function toggleAutoMosaicMobile() {
-  let $toggleAutoMosaic = $('#m-toggle-auto-mosaic');
-  if($toggleAutoMosaic.hasClass('active')) {
-    $toggleAutoMosaic.removeClass('active');
-    isAutoMosaic = false;
-    $( "#m-auto-mosaic-enabled" ).fadeOut( "fast", function() {
-    });
-  }
-  else {
-    $toggleAutoMosaic.addClass('active');
-    isAutoMosaic = true;
-    $( "#m-auto-mosaic-enabled" ).fadeIn( "slow", function() {
-    });
-    
-    nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE/2;
-  }
-  $toggleAutoMosaic.blur();
-}
-function toggleAutoMosaic() {
-  let $toggleAutoMosaic = $('#toggle-auto-mosaic');
-  if($toggleAutoMosaic.hasClass('active')) {
-    $toggleAutoMosaic.removeClass('active');
-    isAutoMosaic = false;
-    $( "#auto-mosaic-enabled" ).fadeOut( "fast", function() {
-    });
-
-  }
-  else {
-    $toggleAutoMosaic.addClass('active');
-    isAutoMosaic = true;
-    $( "#auto-mosaic-enabled" ).fadeIn( "slow", function() {
-    });
-    nextAutoMosaic = nowTime+AUTO_MOSAIC_RATE/2;
-    let $toggleFreeze = $('#toggle-freeze');
-    if($toggleFreeze.hasClass('active')) {
-      $toggleFreeze.removeClass('active');
-      $toggleFreeze.text('Freeze');
-      isFrozen = false;
-    }
-  }
-  $toggleAutoMosaic.blur();
-}
-function arrayToRGB(array) {
-  let newArray = [];
-  array.forEach(function(obj) {
-    let newStr = 'rgb(' + obj.r + ',' + obj.g + ',' + obj.b + ')';
-    newArray.push(newStr);
-  })
-  return newArray;
-}
-function generateNewColors(numNewColors) {
-  if(Math.random()>0.5) {
-    // add colors from some colorset
-    let presetChoice = chooseRandom(colorsetKeys);
-    let presetColorset = colorsetPresets[presetChoice];
-    presetColorset = shuffle(presetColorset);
-    while(presetColorset.length<numNewColors) {
-      presetColorset.push(chooseRandom(allColors));
-    }
-    presetColorset = presetColorset.slice(0,numNewColors);
-    return presetColorset;
-  }
-  else {
-    // add random colors
-    let newColors = [];
-    for(let j=0; j<numNewColors; j++) {
-      newColors.push(chooseRandom(allColors));
-    }
-    return newColors;
-  }
-}
-function generateAutoMosaic() {
-  let autoOptions = ['add-colorset','remove-colorset','add-colors',
-    'remove-colors','change-colors','change-proportions',
-    'change-refresh-smoothing','change-columns','change-shape'];
-  autoOptions = autoOptions.concat(autoOptions,['choose-preset']);
-
-  if(colorsetCount===1) {
-    autoOptions = ['add-colorset','change-colors','add-colors'];
-  }
-  else if(colorsetCount===2) {
-    autoOptions.concat(['add-colorset','add-colorset']);
-  }
-
-  let chosenOption = chooseRandom(autoOptions);
-  executeAutoMosaic(chosenOption)
-}
-function randomizeView() {
-  let autoOptions = ['remove-colors','add-colors','change-colors','change-proportions',
-    'change-refresh-smoothing','change-columns','change-shape'];
-  newColorsetCount = Math.ceil(Math.random()*5);
-  while(colorsetCount<newColorsetCount) {
-    autoOptions.push('add-colorset');
-    newColorsetCount--;
-  }
-  while(colorsetCount>newColorsetCount) {
-    autoOptions.push('remove-colorset');
-    newColorsetCount++;
-  }
-  autoOptions.forEach(function(name) {
-    executeAutoMosaic(name);
-  });  
-}
-function executeAutoMosaic(chosenOption) {
-  // fixing uninteresting cases
-  if(chosenOption==='add-colorset' && colorsetCount==MAX_LAYERS) {
-    chosenOption='remove-colorset';
-  }
-  else if(chosenOption==='remove-colorset' && colorsetCount==1) {
-    chosenOption='add-colorset';
-  }
-  else if(chosenOption==='change-proporions' && colorsetCount==1) {
-    chosenOption='add-colorset';
-  }
-
-  if(columnVal===1) {
-    let chosenColumns = columnVal;
-    while(chosenColumns===columnVal) {
-      chosenColumns = Math.round(Math.random() * 10) * 10;
-    }
-    setNumColumns(chosenColumns);
-  };
-
-  if(chosenOption==='add-colorset') {
-    addColorset();
-    let colorsetName = 'colorset-' + colorsetCount;
-    let newColors = generateNewColors(Math.round(Math.random()*MAX_COLORS));
-    setColors(colorsetName,newColors);
-    setColorsetProportions(colorsetCount,chooseRandom(proportionOptions))
-  }
-  else if(chosenOption==='change-shape') {
-    let shapeType = $('#shape-toggle input:radio:checked').val();
-    let proposedShape = shapeType;
-    let shapeOptions = ['triangle','diamond','square'];
-    while(proposedShape===shapeType) {
-      proposedShape = chooseRandom(shapeOptions);
-    }
-    setShape(proposedShape);
-  }
-  else if(chosenOption==='change-proportions') {
-    // randomly change all colorset proportions
-    for(let i=1; i<=colorsetCount; i++) {
-      setColorsetProportions(i,chooseRandom(proportionOptions))
-    }
-  }
-  else if(chosenOption==='choose-preset') {
-    setupPresetView(chooseRandom(fullPresets));
-  }
-  else if(chosenOption==='change-columns') {
-    let chosenColumns = columnVal;
-    while(chosenColumns===columnVal) {
-      chosenColumns = Math.round(Math.random() * 10) * 10;
-    }
-    setNumColumns(chosenColumns);
-  }
-  else if(chosenOption==='change-refresh-smoothing') {
-    let refreshOptions = [];
-    if(historyFraction>0.25) {
-      refreshOptions = [[3,800],[4,1000],[5,1000],[6,1200],[7,1400]];
-    }
-    else {
-      refreshOptions = [[0,60],[1,128],[2,256],[2,512]];
-    }
-    let newRefreshSmooth = chooseRandom(refreshOptions);
-    setSmoothing(newRefreshSmooth[0]);
-    setRefreshRate(newRefreshSmooth[1]);
-  }
-  else if(chosenOption=='remove-colorset') {
-    removeColorset();
-  }
-  else if(chosenOption==='change-colors') {
-    let changeColorset = Math.ceil(Math.random()*colorsetCount);
-    let key = 'colorset-'+changeColorset;
-    let numNewColors = colorsetColorCount[key];
-    let newColors = generateNewColors(numNewColors);
-    setColors(key,newColors);
-    // randomly change one colorset, also half chance to change the others
-    for(let i=1; i<=colorsetCount; i++) {
-      let key = 'colorset-'+i;
-      if(Math.random()>0.5) {
-        let newColors = generateNewColors(colorsetColorCount[key]);
-        setColors(key,newColors);
-      }
-    }
-  }
-  else if(chosenOption==='remove-colors') {
-    // halves colors
-    for(let i=1; i<=colorsetCount; i++) {
-      let key = 'colorset-'+i;
-      let countBefore = colorsetColorCount[key];
-      let countNew = Math.ceil(Math.random()*countBefore);
-      setNumColorsetColors(key,countNew);
-    }
-  }
-  else if(chosenOption==='add-colors') {
-    for(let i=1; i<=colorsetCount; i++) {
-      let key = 'colorset-'+i;
-      let countBefore = colorsetColorCount[key];
-      if(countBefore===MAX_COLORS) { countBefore--; }
-      let countNew = countBefore+1+Math.round(Math.random()*(MAX_COLORS-1-countBefore));
-      let colorChoice = Math.random();
-      let newColors = arrayToRGB(shuffle(colorArray[i]));
-      if(colorChoice<0.5) {
-        // add colors from some colorset
-        let presetChoice = chooseRandom(colorsetKeys);
-        let presetColorset = colorsetPresets[presetChoice];
-        presetColorset = shuffle(presetColorset);
-        while(presetColorset.length<(countNew-countBefore)) {
-          presetColorset.push(chooseRandom(allColors));
-        }
-        while(newColors.length<countNew) {
-          newColors.push(presetColorset.shift());
-        }
-        setColors(key,newColors);
-      }
-      else {
-        // add random colors
-        while(newColors.length<countNew) {
-          newColors.push(chooseRandom(allColors));
-        }
-        setColors(key,newColors);
-      }
-    }
-  }
-  else {
-    console.log('pass')
-  }
-}
-function chooseRandom(array) {
-  return array[Math.floor(Math.random()*array.length)]
 }
 function refreshDrawing() {
   nowTime = new Date() / 1000;
@@ -1259,139 +773,6 @@ function repositionMovingCircles(oldWidth, oldHeight, newWidth, newHeight) {
       obj.setPosition(obj.getX()*(newWidth/oldWidth),newHeight-(oldHeight-obj.getY()),true);
     }
   })
-}
-function setupPresets() {
-  // full presets
-  fullPresets.forEach(function(preset, idx) {
-    let $tableRow = $('<tr class="table-color-preset">' +
-      '<td class="full-preset"><img style="width:50%; overflow: auto;" class="margin-left-5 rounded float-right" src="./img/' + preset + '.png" alt="' + preset +
-      '"><span class="font-size-1-25 strong-font margin-top-15">' + preset + '</span><br>' +
-      '<button class="btn btn-rounded btn-sm btn-outline-success margin-top-15 full-preset-link" onclick="setupPresetViewButton' +
-      "('" + preset + "')" + '">Go</button>' +
-      '</td></tr>');
-    $tableRow.appendTo('#full-preset-table');
-  });
-  // color presets
-  for(let key in colorsetPresets) {
-    let buttonsHtml = '';
-    colorsetPresets[key].forEach(function(colorName) {
-      buttonsHtml = buttonsHtml + '<button class="btn-icon" data-color="' + colorName +
-      '" onclick="togglePreset('+ "'" + colorName + "'" + ')" ></button>';
-    })
-    let $newHtml = $('<tr>' +
-    '<td class="width-40"><span class="font-size-1-25 strong-font padding-top-5">' + key + '</span><br>' +
-    '<a href="javascript:" class="select-all-link" onclick="selectAllColors' +
-    "('" + key + "')" + '">Select all</a></td><td>' + buttonsHtml + '</td></tr>' +
-    '<tr class="table-color-preset"><td></td><td></td></tr>');
-    $newHtml.appendTo('#color-preset-table');
-    colorsetPresets[key].forEach(function(colorName) {
-      // rgb(----)
-      let colorSelector = "[data-color='" + colorName + "']";
-      let rgbStrings = colorName.slice(4,-1).split(',');
-      if( (parseInt(rgbStrings[0])+parseInt(rgbStrings[1])+parseInt(rgbStrings[2])) > 420) {
-        $(colorSelector).css('color','black');
-      }
-      else {
-        $(colorSelector).css('color','white');
-      }
-      $(colorSelector).css('background-color',colorName);
-    })
-  }
-}
-function showFullPresets() {
-  $('#default-ui-controls').fadeOut(400, function() {
-    $('#full-preset-picker').fadeIn(500);
-  });
-}
-function hideFullPresets() {
-  $('.full-preset-link').blur();
-  if(!isMobile()){
-    $('#full-preset-picker').fadeOut(400, function() {
-      $('#default-ui-controls').fadeIn(500);
-    });
-  }
-  else {
-    jQuery('html,body').animate({scrollTop:0},0);
-  }
-}
-function showPresets(colorset) {
-  clearPresetColors();
-  $('#confirm-choose-presets').prop("disabled",true);
-  let titleText = 'Colorset ' + colorset.split('-')[1] + ' (Max colors=' + MAX_COLORS + ')';
-  $('#preset-title').text(titleText);
-  $('#default-ui-controls').fadeOut(400, function() {
-    $('#color-preset-picker').fadeIn(500);
-  });
-  $('#confirm-choose-presets').off('click');
-  $('#confirm-choose-presets').on('click', function() {
-    setColors(colorset,chosenColors);
-    hidePresets();
-  })
-}
-function hidePresets() {
-  $('#color-preset-picker').fadeOut(400, function() {
-    $('#default-ui-controls').fadeIn(500);
-  });
-}
-function clearPresetColors() {
-  chosenColors.forEach(function(colorName) {
-    removePresetColor(colorName);
-  });
-  $('#clear-preset-colors').blur();
-}
-function selectAllColors(key) {
-  $('.select-all-link').blur();
-  chosenColors.forEach(function(colorName) {
-    removePresetColor(colorName);
-  });
-  colorsetPresets[key].forEach(function(colorName) {
-    // rgb(----)
-    choosePresetColor(colorName);
-  });
-}
-// todo bw: debug
-function choosePresetColor(colorName) {
-  if(chosenColors.indexOf(colorName)<0) {
-    chosenColors.push(colorName);
-    let colorSelector = "[data-color='" + colorName + "']";
-    $(colorSelector).html(checkboxHtml);
-    $(colorSelector).addClass('checked');
-    if (chosenColors.length > MAX_COLORS) {
-      removePresetColor(chosenColors.shift());
-    }
-  }
-  if(chosenColors.length>0) {
-    $('#confirm-choose-presets').prop("disabled",false);
-  }
-}
-function removePresetColor(colorName) {
-  let colorSelector = "[data-color='" + colorName + "']";
-  $(colorSelector).html('');
-  $(colorSelector).removeClass('checked');
-  let idx = chosenColors.indexOf(colorName);
-  if(idx!=-1) {
-    if(idx==0) {
-      chosenColors = chosenColors.slice(1);
-    }
-    else if(idx==chosenColors.length-1) {
-      chosenColors = chosenColors.slice(0,-1);
-    }
-    else {
-      chosenColors = chosenColors.slice(0,idx).concat(chosenColors.slice(idx+1));
-    }
-  }
-  if(chosenColors.length==0) {
-    $('#confirm-choose-presets').prop("disabled",true);
-  }
-}
-function togglePreset(colorName) {
-  if(chosenColors.indexOf(colorName)<0){
-    choosePresetColor(colorName);
-  }
-  else {
-    removePresetColor(colorName);
-  }
-// <i class="fa fa-check" aria-hidden="true"></i>
 }
 function collapseColorset(colorsetName) {
   let colorsetToggleSelector = '#' + colorsetName + '-toggle';

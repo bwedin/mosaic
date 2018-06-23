@@ -32,13 +32,7 @@
 	<div class="container-fluid">
 	<div id="mobile-header" class="text-center initially-hidden">
 	<h1 class="margin-top-10">Hi! Welcome to the mobile version of Mosaic.</h1>
-	<p class='font-size-1-5'>Check out the mobile features above/below the view and play around for a bit. If you want more features and controls, check out the full version on a non-mobile device.<br></p>
-<!-- 	// todo bw: make a "randomize view button", a "change colors" button-->	
-	<button id="m-change-colors" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-2-5" onclick="executeAutoMosaic('change-colors')">Change Colors</button>
- 	<button id="m-randomize" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-2-5" onclick="randomizeView()">Randomize View</button><br>
-  	<button id="m-mutate" type="button" class="btn btn-sm btn-info margin-left-10 margin-top-10 margin-bottom-5 font-size-2-5" onclick="generateAutoMosaic()">Permute View</button>
-	<button id="m-toggle-auto-mosaic" type="button" class="btn btn-sm btn-outline-warning margin-top-10 margin-left-10 margin-bottom-5 font-size-2-5" onclick="toggleAutoMosaicMobile()">Auto-Mosaic</button><br>
-	<span class="test-things"><i id="m-auto-mosaic-enabled" class="initially-hidden-1-25">Automatically changing view every 10 sec</i></span>
+	<p class='font-size-1-5'>Unfortunately, this version is not interactive. If you want more features and controls, check out the full version on a non-mobile device.<br></p>
 	</div>
 	<div class="row">
 		<div class="col-lg-9 text-center">
@@ -58,14 +52,7 @@
 			<div class="test-things"><i id="auto-mosaic-enabled" class="initially-hidden-75">Automatically changing view every 10 sec</i></div>
 		</div>
 		<hr>
-		<div id="full-preset-picker" class="preset-picker form-rounded">
-			<p class="font-size-1-25 strong-font">Presets</p>
-			<hr>
-			<table id="full-preset-table" class="table-full">
-				<tr class="table-color-preset"></tr>
-			</table>
-			<button id="cancel-full-presets" class="btn btn-rounded btn-outline-danger margin-top-10 margin-bottom-5" onclick="hideFullPresets()">Cancel</button>
-		</div>
+
 		<!-- <div id="color-preset-picker" class="preset-picker form-rounded">
 			<strong id="preset-title">Colorset 1 (Max colors=8)</strong>
 			<hr>
@@ -77,8 +64,6 @@
 			<a id="clear-preset-colors" href="javascript:;" onclick="clearPresetColors()">Clear selection</a>
 		</div> -->
 		<div id="default-ui-controls">
-		<button id="toggle-full-presets" type="button" class="btn btn-outline-info margin-right-10 margin-top-5 margin-bottom-5" onclick="showFullPresets()">Show Presets</button>
-		<button id="randomize-view" type="button" class="btn btn-outline-info margin-top-5 margin-bottom-5" onclick="randomizeView()">Randomize View</button>
 		<div class="margin-top-10"></div>
 		<div class="parameter-title">Image</div>
 		<div class="btn-group" data-toggle="buttons" id="image-toggle">
