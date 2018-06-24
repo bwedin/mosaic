@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" 
     	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="./lib/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
     <link href="./style.css" rel="stylesheet">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -14,7 +13,6 @@
 
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
 
-    <script src="./lib/colorpicker/js/bootstrap-colorpicker.js"></script>
 
     <script src="./sketch.js"></script>
 
@@ -153,23 +151,6 @@
 							<div style="display: none">
 							<button id="add-colorset-1" type="button" class="btn btn-outline-primary btn-sm margin-bottom-5" onclick=addActivation('colorset-1')>+ Add</button>
 							<button id="remove-colorset-1" type="button" class="btn btn-outline-danger btn-sm margin-bottom-5 float-right" onclick=removeActivation('colorset-1')>- Remove</button>
-							<div id="colorset-1-color-1" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-2" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-3" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-4" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-5" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-6" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-7" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							<div id="colorset-1-color-8" class="input-group colorpicker-component">
-								<input type="text" format="rgb" value="#00AABB" class="form-control" /><span class="input-group-addon"><i></i></span></div>
-							</div>
 							<!-- <button id="presets-colorset-1" type="button" class="btn btn-outline-info btn-sm btn-show-color-presets" onclick=showPresets('colorset-1')>Presets</button> -->
 							<br>
 						</div>
@@ -258,8 +239,9 @@
 			</div>
 			<!-- <button id="change-colors" type="button" class="btn btn-sm btn-outline-info margin-top-10 margin-bottom-5" onclick="executeAutoMosaic('change-colors')">Randomize Colors</button> -->
 		</div>
-		<div style="height:900px"></div>
 		</div>
+		</div>
+		<div style="height:900px"></div>
 		</div>
 	</div>
 	</div>
